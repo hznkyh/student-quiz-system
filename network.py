@@ -24,7 +24,7 @@ class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
         self.wfile.write(b'<html><body><h1>Answers submitted successfully!</h1></body></html>')
 
         #testing
-        url = 'QB address'  # Replace with desired URL
+        url = '10.135.173.5:5500'  # Replace with desired URL
         data = answers  # Replace with desired data to be posted
         data = data.encode('utf-8')
         headers = {'Content-Type': 'application/x-www-form-urlencoded', 'Content-Length': len(data)}
