@@ -1,0 +1,8 @@
+Step 1: Open a terminal then Compile QB.c (gcc QB.c -o QB) then Run QB (./QB)
+Step 2: Open a second terminal window/tab and run the TM.py (python3 TM.py)
+Step 3: Open test.html
+Step 4: Answer the quesitons and press 'Submit'
+Step 5: You should see the page shows the message the TM sent to QB for example:
+                Message sent to QB.c server: q1=a&q2=a&q3=a&q4=a&q5=a
+        The terminal running QB should say "Received message: q1=a&q2=a&q3=a&q4=a&q5=a"
+        (obviously this will be different if you submitted different answers)
