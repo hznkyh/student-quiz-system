@@ -1,17 +1,17 @@
 {
-	"S1": {
-		"name": "alice", 
+	"1": {
+		"name": "Alice", 
 		"password": "pass1",
 		"grade": 0
 	}, 
-	"S2": {
-		"name": "bob", 
+	"2": {
+		"name": "Bob", 
 		"password": "pass2",
 		"grade": 0
 	}, 
 
-	"S3": {
-		"name": "caleb", 
+	"3": {
+		"name": "Caleb", 
 		"password": "pass3",
 		"grade": 0
 	}
