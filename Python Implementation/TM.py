@@ -1,6 +1,6 @@
 import json
 import random
-import placeholderQB cas QB
+import placeholderQB as QB
 
 JSON_FILENAME = "student_info.json"
 

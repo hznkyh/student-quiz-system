@@ -7,14 +7,14 @@
 
 #define BUF_SIZE 1024
 
-int main(int argc, char *argv[]) {
-    int sockfd;
+int main(int argc, char *argv[]){
+    int sockfd, connfd;
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_len = sizeof(client_addr);
     char buf[BUF_SIZE];
 
     // Create a socket
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+    if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("socket creation failed");
         exit(EXIT_FAILURE);
     }
@@ -34,11 +34,22 @@ int main(int argc, char *argv[]) {
         printf("Binded to port 9001\n");
     }
 
-    // Listen for incoming messages
+    // Listen for incoming connections
+    if (listen(sockfd, 5) < 0) {
+        perror("listen failed");
+        exit(EXIT_FAILURE);
+    }
+
+    // Accept incoming connections and handle them
     while (1) {
-        int len = recvfrom(sockfd, buf, BUF_SIZE, 0, (struct sockaddr *)&client_addr, &client_len);
+        if ((connfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len)) < 0) {
+            perror("accept failed");
+            exit(EXIT_FAILURE);
+        }
+
+        int len = recv(connfd, buf, BUF_SIZE, 0);
         if (len < 0) {
-            perror("recvfrom failed");
+            perror("recv failed");
             exit(EXIT_FAILURE);
         }
 
@@ -48,10 +59,12 @@ int main(int argc, char *argv[]) {
         // Send acknowledgement back to sender
         char ack_msg[BUF_SIZE];
         sprintf(ack_msg, "Acknowledgement for %s", buf);
-        if (sendto(sockfd, ack_msg, strlen(ack_msg), 0, (struct sockaddr *)&client_addr, client_len) < 0) {
-            perror("sendto failed");
+        if (send(connfd, ack_msg, strlen(ack_msg), 0) < 0) {
+            perror("send failed");
             exit(EXIT_FAILURE);
         }
+
+        close(connfd); // Close the connection
     }
 
     // Close the socket
