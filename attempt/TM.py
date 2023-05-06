@@ -27,13 +27,16 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             self.wfile.write(bytes(content, 'utf-8'))
 
     def do_POST(self):
-        if self.path == '/':
-            content_length = int(self.headers['Content-Length'])
-            message_data = self.rfile.read(content_length)
-            message = message_data.decode('utf-8')
-            username, password = message.split('&')
-            username = username.split('=')[1]
-            password = password.split('=')[1]
+        content_length = int(self.headers['Content-Length'])
+        message_data = self.rfile.read(content_length)
+        data = message_data.decode('utf-8')
+        button = data.split('&')[-1].split('=')[1]
+        message = data.split('&')[0:-1]
+       
+        if button == "Login":
+            print(f"{message}")
+            username = message[0].split('=')[1]
+            password = message[1].split('=')[1]
 
             # Check if the username and password are correct
             if username == 'myusername' and password == 'mypassword':
@@ -50,10 +53,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 with open('login.html', 'r') as f:
                     content = f.read()
                 self.wfile.write(bytes(content, "utf8"))
-        elif self.path == '/test':
-            content_length = int(self.headers['Content-Length'])
-            message_data = self.rfile.read(content_length)
-            message = message_data.decode('utf-8')
+
+        elif button == "Submit":
+            print("test")
 
             # Send the data to the QB server using UDP
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
