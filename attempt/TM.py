@@ -34,7 +34,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         message = data.split('&')[0:-1]
        
         if button == "Login":
-            print(f"{message}")
             username = message[0].split('=')[1]
             password = message[1].split('=')[1]
 
@@ -55,8 +54,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(content, "utf8"))
 
         elif button == "Submit":
-            print("test")
-
             # Send the data to the QB server using UDP
             with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
                 s.sendto(message_data, (QB_HOST, QB_PORT))
