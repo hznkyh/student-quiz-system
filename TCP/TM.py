@@ -2,8 +2,8 @@ import socket
 import hashlib
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-QB_HOST = 'localhost'
-QB_PORT = 9002
+QB_HOST = '10.135.187.157'
+QB_PORT = 9001
 
 
 def build_message_with_header(message):

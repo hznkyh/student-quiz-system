@@ -8,9 +8,17 @@
 #include <ifaddrs.h>
 #include <netdb.h>
 
+int calculate_checksum(char* buf, int len) {
+    int sum = 0;
+    for (int i = 0; i < len; i++) {
+        sum += buf[i];
+    }
+    return sum;
+}
+
 // Not DHCP, i doubt thats a requirement?
 // based on this https://www.sanfoundry.com/c-program-get-ip-address/
-// https://www.includehelp.com/c-programs/get-ip-address-in-linux.aspx
+
 void get_local_ip(char *ip, int size) {
     struct ifaddrs *ifaddr, *ifa;
     struct sockaddr_in *sa;
@@ -28,7 +36,7 @@ void get_local_ip(char *ip, int size) {
         if (ifa->ifa_addr != NULL && ifa->ifa_addr->sa_family == AF_INET) {
             // Make sure that it doesnt use local host
             sa = (struct sockaddr_in *) ifa->ifa_addr;
-            // inet_ntoa convert and return ip address in array format
+            // Converts to array 
             if (strcmp(inet_ntoa(sa->sin_addr), "127.0.0.1") != 0) {
                // Host name ip and address to buffer
                 if (getnameinfo(ifa->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST) == 0) {
@@ -86,26 +94,35 @@ void listen_for_connections(int sockfd) {
 void handle_connection(int sockfd) {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
-    char buf[BUF_SIZE];
+    int fail = 0;
     int connfd;
 
+    // Accept the connection
     if ((connfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len)) < 0) {
         perror("accept failed");
         exit(EXIT_FAILURE);
     }
 
-    int len = recv(connfd, buf, BUF_SIZE, 0);
+    // Read the message and size
+    struct message msg;
+    int len = read(connfd, &msg, sizeof(msg));
     if (len < 0) {
-        perror("recv failed");
+        perror("read failed");
         exit(EXIT_FAILURE);
     }
 
-    buf[len] = '\0';
-    printf("Received message: %s\n", buf);
+    int expected_checksum = calculate_checksum((char*)&msg, sizeof(msg) - sizeof(int));
+    if (expected_checksum != msg.type) {
+        printf("Invalid message checksum\n");
+        send(connfd, "CHECKSUM FAILED", strlen("CHECKSUM FAILED"), 0);
+        fail++; // keeps track of failed message
+    }
+    // Print the message payload
+    printf("Received message of type %d, length %d: %s\n", msg.type, msg.length, msg.payload);
 
-    // Send acknowledgement back to sender
+    // Basic ACK, needs to acknowledge received and failed messages
     char ack_msg[BUF_SIZE];
-    sprintf(ack_msg, "Acknowledgement for %s", buf);
+    sprintf(ack_msg, "ACK for: '%s'", msg.payload);
     if (send(connfd, ack_msg, strlen(ack_msg), 0) < 0) {
         perror("send failed");
         exit(EXIT_FAILURE);

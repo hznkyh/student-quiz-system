@@ -17,7 +17,7 @@ int main(void){
     while (1) {
         handle_connection(sockfd);
     }
-
+    
     // Close the socket
     close_connection(sockfd);
 

@@ -3,6 +3,11 @@
 
 #define BUF_SIZE 1024
 
+struct message {
+    int type;      // Type of message (e.g. 0 = login, 1 = logout, 2 = send message)
+    int length;    // Length of payload in bytes
+    char payload[1024];  // Payload data
+};
 void create_socket(int *sockfd);
 void bind_socket(int sockfd);
 void listen_for_connections(int sockfd);
