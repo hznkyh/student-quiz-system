@@ -1,10 +1,15 @@
 import socket
 import hashlib
+import argparse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-QB_HOST = '10.135.187.157'
+DEFAULT_QB_HOST = '10.0.0.100'
 QB_PORT = 9001
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--qb_host', type=str, help='QB Host IP Address', default=DEFAULT_QB_HOST)
+args = parser.parse_args()
+QB_HOST = args.qb_host
 
 def build_message_with_header(message):
     # Calculate the checksum of the message
