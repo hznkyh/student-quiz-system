@@ -1,9 +1,22 @@
 import socket
 import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import webbrowser # for opening browser
 
 QB_HOST = 'localhost'
 QB_PORT = 9001
+
+
+# below code is to automatically open a browser window
+# only tested on mac, path might need adjustment for windows
+file_name = "test.html"
+
+cwd = os.getcwd()
+path = cwd + "/" + file_name
+url = "file://" + path
+
+webbrowser.open_new(url)  # open in new window
+
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
