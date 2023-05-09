@@ -1,5 +1,3 @@
-# test2345
-
 import socket
 import os
 import json
@@ -14,6 +12,8 @@ HTML_LOGIN_FILENAME = "login.html"
 HTML_TEST_FILENAME = "test.html"
 JSON_FILENAME = "student_info.json"
 
+active_tests = {}
+
 
 def main():
     # Set up the HTTP server to listen on port 9000
@@ -23,6 +23,7 @@ def main():
     print('Listening on port 9000...')
 
     openBrowser()
+
 
     # anything past this won't be run
     httpd.serve_forever()
@@ -84,6 +85,10 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_response(302)
                 self.send_header('Location', '/test')
                 self.end_headers()
+
+                # do all necessary tasks after login
+                processLogin(username)
+
             else:
                 # Send a response to the client indicating that the login credentials are incorrect
                 self.send_response(200)
@@ -96,7 +101,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(content, "utf8"))
 
             # now need to create a test instance before the test is displayed
-
 
         
         elif button == "Submit":
@@ -113,20 +117,36 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
 
 #################################################
+# General functions
+#################################################
+
+def processLogin(student_id):
+    print("processing login")
+    # TODO check if test instance already exists
+
+    # once logged in activate a test
+    # these are already the defualt parameters, purely for clarity
+    active_tests[student_id] = Test(resume_state=False, num_questions=10)
+    print("created test object")
+
+
+
+#################################################
 # Code for test instances
 #################################################
 
 
-class Test:
-    # each test can be assigned a session id 
-    # would allow concurrently running sessions to be distinguished
-    session_ids = []
+# each test can be assigned a session id 
+# would allow concurrently running sessions to be distinguished
+    
+session_ids = []
 
+class Test:
     def __init__(self, resume_state=False, num_questions=10):
         
         if not resume_state:
             self.questions = []
-            self.session_id
+            self.session_id = random.randint(0, 1000000)
             self.question_counter = 0
     
             # create a session id to keep track of the test
@@ -143,7 +163,6 @@ class Test:
         else: # if state is to be resumed
             # read file
             pass
-
 
 
     # For when the next question button is pressed
@@ -172,9 +191,6 @@ class Test:
     # save the state of the current question to a file
     def saveState(self):
         pass
-
-
-def resumeTest
 
 
 
@@ -276,6 +292,7 @@ def resumeTest(student_id):
 
 def get_question(question_bank):
     question = question_bank.get_question()
+
     return question
     
 
