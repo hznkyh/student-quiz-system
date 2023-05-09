@@ -9,13 +9,13 @@ QB_PORT = 9001
 
 # below code is to automatically open a browser window
 # only tested on mac, path might need adjustment for windows
-file_name = "test.html"
+# file_name = "test.html"
 
-cwd = os.getcwd()
-path = cwd + "/" + file_name
-url = "file://" + path
+# cwd = os.getcwd()
+# path = cwd + "/" + file_name
+# url = "file://" + path
 
-webbrowser.open_new(url)  # open in new window
+webbrowser.open_new('http://localhost:9000')  # open in new window
 
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
