@@ -2,10 +2,10 @@ import socket
 import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import webbrowser # for opening browser
+import struct
 
-QB_HOST = '10.135.173.5'
+QB_HOST = '172.20.10.4' # -- INSERT THE IP OF YOUR MACHINE RUNNING QB HERE -- 
 QB_PORT = 9001
-
 
 # below code is to automatically open a browser window
 # only tested on mac, path might need adjustment for windows
@@ -15,8 +15,7 @@ QB_PORT = 9001
 # path = cwd + "/" + file_name
 # url = "file://" + path
 
-#webbrowser.open_new('http://localhost:9000')  # open in new window
-
+webbrowser.open_new('http://localhost:9000')  # open in new window
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -67,7 +66,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(bytes(content, "utf8"))
 
         elif button == "Submit":
-            # Send the data to the QB server using UDP
+            
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             server_address = (QB_HOST, QB_PORT)
             try:
@@ -77,19 +76,17 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 print(f"Error connecting to server: {e}")
                 exit(1)
 
-            sock.sendto(message_data, server_address)
-            data = sock.recv(1024)
-            msg = str(data,'utf-8')
-            print(f"Received response: {msg}")
-
+            header = "answer"
+            header_len = len(header)
             
-            # print("sent msg to:")
-            # print(QB_HOST)
-            # print(QB_PORT)
+            # Pack the header length as a 4-byte integer in network byte order
+            header_len_bytes = struct.pack("!I", header_len)
+            data = header_len_bytes + header.encode() + message_data
 
-            # data = s.recv(1024)
-            # print(f"Received response: {data}")
-
+            sock.sendto(data, server_address) #TCP Should be reliable so don't think we need a check on this.
+            response = sock.recv(1024) #Awaits a response.
+            msg = str(response,'utf-8')
+            print(f"Received response: {msg}")
 
             # Send a response to the client
             self.send_response(200)

@@ -8,6 +8,7 @@
 #include <ifaddrs.h>
 #include <netdb.h>
 
+
 int calculate_checksum(char* buf, int len) {
     int sum = 0;
     for (int i = 0; i < len; i++) {
@@ -96,21 +97,55 @@ void handle_connection(int sockfd) {
     socklen_t client_len = sizeof(client_addr);
     int fail = 0;
     int connfd;
-    printf("im here before accept()\n");
+    printf("* Ready to accept()\n");
     // Accept the connection
     if ((connfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len)) < 0) {
         perror("accept failed");
         exit(EXIT_FAILURE);
     }
-    printf("Accepted.\n");
+    printf(" * Transmission accepted\n");
 
     // Read the message and size
     struct message msg;
-    int len = read(connfd, &msg, sizeof(msg));
-    if (len < 0) {
-        perror("read failed");
-        exit(EXIT_FAILURE);
+    ssize_t n;
+    int payload_len;
+
+    // int len = read(connfd, &msg, sizeof(msg));
+    // if (len < 0) {
+    //     perror("read failed");
+    //     exit(EXIT_FAILURE);
+    // }
+
+    //Receive the Message header
+    n = recv(connfd, &msg, sizeof(msg), 0);
+        if (n <= 0) {
+            perror("recv");
+            exit(1);
+        }
+
+    
+    msg.length = ntohl(msg.length);
+
+    printf("Received message of length %d: %s\n", msg.length, msg.payload);
+
+    if (msg.length > MAX_PAYLOAD_LEN){
+        char* nack = "Payload too long\n";
+        send(connfd, nack, strlen(nack), 0);
+        fprintf(stderr, "Payload too long\n");
+        printf("%d | %d \n",msg.length,MAX_PAYLOAD_LEN);
+        exit(1);
     }
+
+    char payload[msg.length];
+    // Receive the payload data
+    n = recv(connfd, payload, msg.length, 0);
+    if (n <= 0) {
+        perror("** ERORR Reading Payload **");
+        exit(1);
+    }
+
+    // Copy the payload data to the message struct
+    memcpy(msg.payload, payload, msg.length);
 
     // int expected_checksum = calculate_checksum((char*)&msg, sizeof(msg) - sizeof(int));
     // if (expected_checksum != msg.type) {
@@ -121,7 +156,7 @@ void handle_connection(int sockfd) {
     // Print the message payload
     //printf("Received message of type %d, length %d: %s\n", msg.type, msg.length, msg.payload);
 
-    printf("\nReceived message: %s\n", msg.payload);
+    printf("\nRECEIVED: %s\n", msg.payload);
 
 
     // Basic ACK, needs to acknowledge received and failed messages
