@@ -4,8 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import webbrowser # for opening browser
 import struct
 
-QB_HOST = '10.20.135.251' # -- INSERT THE IP OF YOUR MACHINE RUNNING QB HERE -- 
-QB_PORT = 9001
+
 
 # below code is to automatically open a browser window
 # only tested on mac, path might need adjustment for windows
@@ -14,8 +13,21 @@ QB_PORT = 9001
 # cwd = os.getcwd()
 # path = cwd + "/" + file_name
 # url = "file://" + path
+QB_PORT = 9001
 
+ip = input("Enter IP address: ")
+QB_HOST = ip
 webbrowser.open_new('http://localhost:9000')  # open in new window
+def connect_to_server(host, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_address = (host, port)
+    try:
+        sock.connect(server_address)
+        print("Connection successful!")
+    except socket.error as e:
+        print(f"Error connecting to server: {e}")
+        exit(1)
+    return sock
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -67,14 +79,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
         elif button == "Submit":
             
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock = connect_to_server(QB_HOST, QB_PORT)
             server_address = (QB_HOST, QB_PORT)
-            try:
-                sock.connect(server_address)
-                print("Connection successful!")
-            except socket.error as e:
-                print(f"Error connecting to server: {e}")
-                exit(1)
+            
 
             header = "answer"
             header_len = len(header)
