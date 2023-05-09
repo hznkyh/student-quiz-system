@@ -4,7 +4,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import webbrowser # for opening browser
 import struct
 
-QB_HOST = '172.20.10.4' # -- INSERT THE IP OF YOUR MACHINE RUNNING QB HERE -- 
+QB_HOST = '10.20.135.251' # -- INSERT THE IP OF YOUR MACHINE RUNNING QB HERE -- 
 QB_PORT = 9001
 
 # below code is to automatically open a browser window
