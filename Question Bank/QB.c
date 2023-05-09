@@ -122,30 +122,39 @@ void handle_connection(int sockfd) {
             perror("recv");
             exit(1);
         }
-
-    
     msg.length = ntohl(msg.length);
 
-    printf("Received message of length %d: %s\n", msg.length, msg.payload);
+    printf("Received message of length %d: '%s' \n", msg.length, msg.payload);
 
-    if (msg.length > MAX_PAYLOAD_LEN){
-        char* nack = "Payload too long\n";
-        send(connfd, nack, strlen(nack), 0);
-        fprintf(stderr, "Payload too long\n");
-        printf("%d | %d \n",msg.length,MAX_PAYLOAD_LEN);
-        exit(1);
+    char *source = msg.payload;
+    char header[msg.length];
+    for (int i = 0; i < msg.length; i++) {
+        printf("-> %c\n",source[i]);
+        strncat(header, &source[i], 1);
     }
+    char *newPayload = msg.payload+msg.length;
+    
+    printf("HEADER: %s\nPAYLOAD: %s\n",header, newPayload);
 
-    char payload[msg.length];
-    // Receive the payload data
-    n = recv(connfd, payload, msg.length, 0);
-    if (n <= 0) {
-        perror("** ERORR Reading Payload **");
-        exit(1);
-    }
+
+    // if (msg.length > MAX_PAYLOAD_LEN){
+    //     char* nack = "Payload too long\n";
+    //     send(connfd, nack, strlen(nack), 0);
+    //     fprintf(stderr, "Payload too long\n");
+    //     printf("%d | %d \n",msg.length,MAX_PAYLOAD_LEN);
+    //     exit(1);
+    // }
+
+    // char payload[msg.length];
+    // // Receive the payload data
+    // n = recv(connfd, payload, msg.length, 0);
+    // if (n <= 0) {
+    //     perror("** ERORR Reading Payload **");
+    //     exit(1);
+    // }
 
     // Copy the payload data to the message struct
-    memcpy(msg.payload, payload, msg.length);
+    //memcpy(msg.payload, payload, msg.length);
 
     // int expected_checksum = calculate_checksum((char*)&msg, sizeof(msg) - sizeof(int));
     // if (expected_checksum != msg.type) {
@@ -156,7 +165,7 @@ void handle_connection(int sockfd) {
     // Print the message payload
     //printf("Received message of type %d, length %d: %s\n", msg.type, msg.length, msg.payload);
 
-    printf("\nRECEIVED: %s\n", msg.payload);
+    //printf("\nRECEIVED: %s\n", msg.payload);
 
 
     // Basic ACK, needs to acknowledge received and failed messages
