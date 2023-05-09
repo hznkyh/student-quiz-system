@@ -93,6 +93,9 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     content = f.read()
                 self.wfile.write(bytes(content, "utf8"))
 
+            # now need to create a test instance before the test is displayed
+
+
         
         elif button == "Submit":
             # Send the data to the QB server using UDP
@@ -117,24 +120,59 @@ class Test:
     # would allow concurrently running sessions to be distinguished
     session_ids = []
 
-    def __init__(self, num_questions):
-        self.questions = []
-        self.session_id
+    def __init__(self, resume_state=False, num_questions=10):
+        
+        if not resume_state:
+            self.questions = []
+            self.session_id
+            self.question_counter = 0
+    
+            # create a session id to keep track of the test
+            if len(session_ids) == 0:
+                self.session_id = 0
+            else:
+                self.session_id = session_ids[-1] + 1
+    
+            for _ in range(num_questions):
+                # retrieve all of the questions before the user begins the test
+                # questions could be sent back to QB to be marked individually though
+                pass
 
-        # create a session id to keep track of the test
-        if len(session_ids) == 0:
-            self.session_id = 0
-        else:
-            self.session_id = session_ids[-1] + 1
-
-        for _ in range(num_questions):
-            # retrieve all of the questions before the user begins the test
-            # questions could be sent back to QB to be marked individually though
+        else: # if state is to be resumed
+            # read file
             pass
 
 
+
+    # For when the next question button is pressed
+    def nextQuestion(self):
+        if question_counter > num_questions - 1:
+            return False
+
+        question_counter += 1
+        return self.questions[question_counter]
+
+
+    # For when the previous question button is pressed
+    def previousQuestion(self):
+        if question_counter == 0:
+            return False
+
+        question_counter -= 1
+        return self.questions[question_counter]
+
+
+    # returns the number of questions in the test session
     def getNumQuestions(self):
         return len(self.questions)
+
+
+    # save the state of the current question to a file
+    def saveState(self):
+        pass
+
+
+def resumeTest
 
 
 
@@ -263,3 +301,4 @@ def openBrowser():
 
 if __name__ == '__main__':
     main()
+
