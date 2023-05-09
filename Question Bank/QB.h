@@ -5,9 +5,8 @@
 #define MAX_PAYLOAD_LEN 1024
 
 struct message {
-    //int type;      // Type of message (e.g. 0 = login, 1 = logout, 2 = send message)
-    int length;    // Length of payload in bytes
-    char payload[MAX_PAYLOAD_LEN];  // Payload data
+    int length; //Length of header
+    char payload[MAX_PAYLOAD_LEN];
 };
 void create_socket(int *sockfd);
 void bind_socket(int sockfd);
