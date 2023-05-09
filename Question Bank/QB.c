@@ -96,12 +96,13 @@ void handle_connection(int sockfd) {
     socklen_t client_len = sizeof(client_addr);
     int fail = 0;
     int connfd;
-
+    printf("im here before accept()\n");
     // Accept the connection
     if ((connfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len)) < 0) {
         perror("accept failed");
         exit(EXIT_FAILURE);
     }
+    printf("Accepted.\n");
 
     // Read the message and size
     struct message msg;
@@ -111,26 +112,47 @@ void handle_connection(int sockfd) {
         exit(EXIT_FAILURE);
     }
 
-    int expected_checksum = calculate_checksum((char*)&msg, sizeof(msg) - sizeof(int));
-    if (expected_checksum != msg.type) {
-        printf("Invalid message checksum\n");
-        send(connfd, "CHECKSUM FAILED", strlen("CHECKSUM FAILED"), 0);
-        fail++; // keeps track of failed message
-    }
+    // int expected_checksum = calculate_checksum((char*)&msg, sizeof(msg) - sizeof(int));
+    // if (expected_checksum != msg.type) {
+    //     printf("Invalid message checksum\n");
+    //     send(connfd, "CHECKSUM FAILED", strlen("CHECKSUM FAILED"), 0);
+    //     fail++; // keeps track of failed message
+    // }
     // Print the message payload
-    printf("Received message of type %d, length %d: %s\n", msg.type, msg.length, msg.payload);
+    //printf("Received message of type %d, length %d: %s\n", msg.type, msg.length, msg.payload);
+
+    printf("\nReceived message: %s\n", msg.payload);
+
 
     // Basic ACK, needs to acknowledge received and failed messages
     char ack_msg[BUF_SIZE];
-    sprintf(ack_msg, "ACK for: '%s'", msg.payload);
+    sprintf(ack_msg, "QB ACK");
     if (send(connfd, ack_msg, strlen(ack_msg), 0) < 0) {
         perror("send failed");
         exit(EXIT_FAILURE);
     }
 
-    close(connfd); // Close the connection
 }
 
 void close_connection(int connfd) {
     close(connfd);
+}
+
+int main(void){
+    int sockfd;
+
+    create_socket(&sockfd);
+
+    bind_socket(sockfd);
+
+    // Listen for incoming connections and handle them
+    while (1) {
+        listen_for_connections(sockfd);
+        handle_connection(sockfd);
+    }
+    
+    // Close the socket
+    close_connection(sockfd);
+
+    return 0;
 }

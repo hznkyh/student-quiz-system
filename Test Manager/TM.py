@@ -3,7 +3,7 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import webbrowser # for opening browser
 
-QB_HOST = 'localhost'
+QB_HOST = '10.135.173.5'
 QB_PORT = 9001
 
 
@@ -15,7 +15,7 @@ QB_PORT = 9001
 # path = cwd + "/" + file_name
 # url = "file://" + path
 
-webbrowser.open_new('http://localhost:9000')  # open in new window
+#webbrowser.open_new('http://localhost:9000')  # open in new window
 
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
@@ -68,8 +68,28 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
         elif button == "Submit":
             # Send the data to the QB server using UDP
-            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-                s.sendto(message_data, (QB_HOST, QB_PORT))
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_address = (QB_HOST, QB_PORT)
+            try:
+                sock.connect(server_address)
+                print("Connection successful!")
+            except socket.error as e:
+                print(f"Error connecting to server: {e}")
+                exit(1)
+
+            sock.sendto(message_data, server_address)
+            data = sock.recv(1024)
+            msg = str(data,'utf-8')
+            print(f"Received response: {msg}")
+
+            
+            # print("sent msg to:")
+            # print(QB_HOST)
+            # print(QB_PORT)
+
+            # data = s.recv(1024)
+            # print(f"Received response: {data}")
+
 
             # Send a response to the client
             self.send_response(200)

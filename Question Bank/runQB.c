@@ -11,10 +11,11 @@ int main(void){
     bind_socket(sockfd);
 
     // Listen for incoming connections
-    listen_for_connections(sockfd);
+
 
     // Accept incoming connections and handle them
     while (1) {
+        listen_for_connections(sockfd);
         handle_connection(sockfd);
     }
     
