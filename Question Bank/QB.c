@@ -8,6 +8,7 @@
 #include <ifaddrs.h>
 #include <netdb.h>
 
+
 int calculate_checksum(char* buf, int len) {
     int sum = 0;
     for (int i = 0; i < len; i++) {
@@ -96,41 +97,76 @@ void handle_connection(int sockfd) {
     socklen_t client_len = sizeof(client_addr);
     int fail = 0;
     int connfd;
-
+    printf("* Ready to accept()\n");
     // Accept the connection
     if ((connfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len)) < 0) {
         perror("accept failed");
         exit(EXIT_FAILURE);
     }
+    printf("* Transmission accepted\n");
 
     // Read the message and size
     struct message msg;
-    int len = read(connfd, &msg, sizeof(msg));
-    if (len < 0) {
-        perror("read failed");
-        exit(EXIT_FAILURE);
-    }
+    ssize_t n;
+    int payload_len;
 
-    int expected_checksum = calculate_checksum((char*)&msg, sizeof(msg) - sizeof(int));
-    if (expected_checksum != msg.type) {
-        printf("Invalid message checksum\n");
-        send(connfd, "CHECKSUM FAILED", strlen("CHECKSUM FAILED"), 0);
-        fail++; // keeps track of failed message
+    //Receive the Message header
+    n = recv(connfd, &msg, sizeof(msg), 0);
+        if (n <= 0) {
+            perror("recv");
+            exit(1);
+        }
+    msg.length = ntohl(msg.length);
+
+    printf("Received message of length %d: '%s' \n", msg.length, msg.payload);
+
+    char *source = msg.payload;
+    char header[msg.length];
+    for (int i = 0; i < msg.length; i++) {
+        strncat(header, &source[i], 1);
     }
-    // Print the message payload
-    printf("Received message of type %d, length %d: %s\n", msg.type, msg.length, msg.payload);
+    char *newPayload = msg.payload+msg.length;
+    
+    printf("HEADER: %s\nPAYLOAD: %s\n",header, newPayload);
+
+
+    // if (msg.length > MAX_PAYLOAD_LEN){
+    //     char* nack = "Payload too long\n";
+    //     send(connfd, nack, strlen(nack), 0);
+    //     fprintf(stderr, "Payload too long\n");
+    //     printf("%d | %d \n",msg.length,MAX_PAYLOAD_LEN);
+    //     exit(1);
+    // }
 
     // Basic ACK, needs to acknowledge received and failed messages
     char ack_msg[BUF_SIZE];
-    sprintf(ack_msg, "ACK for: '%s'", msg.payload);
+    sprintf(ack_msg, "QB ACK");
     if (send(connfd, ack_msg, strlen(ack_msg), 0) < 0) {
         perror("send failed");
         exit(EXIT_FAILURE);
     }
 
-    close(connfd); // Close the connection
 }
 
 void close_connection(int connfd) {
     close(connfd);
+}
+
+int main(void){
+    int sockfd;
+
+    create_socket(&sockfd);
+
+    bind_socket(sockfd);
+
+    // Listen for incoming connections and handle them
+    while (1) {
+        listen_for_connections(sockfd);
+        handle_connection(sockfd);
+    }
+    
+    // Close the socket
+    close_connection(sockfd);
+
+    return 0;
 }
