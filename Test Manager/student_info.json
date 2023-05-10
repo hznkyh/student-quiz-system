@@ -1,0 +1,17 @@
+{
+    "1": {
+        "name": "Alice",
+        "password": "pass1",
+        "grade": 0
+    },
+    "2": {
+        "name": "Bob",
+        "password": "pass2",
+        "grade": 0
+    },
+    "3": {
+        "name": "Caleb",
+        "password": "pass3",
+        "grade": 0
+    }
+}
