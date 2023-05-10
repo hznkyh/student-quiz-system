@@ -128,15 +128,14 @@ void handle_connection(int sockfd) {
     char *newPayload = msg.payload+msg.length;
     
     printf("HEADER: %s\nPAYLOAD: %s\n",header, newPayload);
-
-
-    // if (msg.length > MAX_PAYLOAD_LEN){
-    //     char* nack = "Payload too long\n";
-    //     send(connfd, nack, strlen(nack), 0);
-    //     fprintf(stderr, "Payload too long\n");
-    //     printf("%d | %d \n",msg.length,MAX_PAYLOAD_LEN);
-    //     exit(1);
-    // }
+    
+    char* question;
+    
+    if ( strcmp(header, "questions")){
+        question = getQuestions(newPayload);
+        
+    }
+    
 
     // Basic ACK, needs to acknowledge received and failed messages
     char ack_msg[BUF_SIZE];
@@ -146,6 +145,20 @@ void handle_connection(int sockfd) {
         exit(EXIT_FAILURE);
     }
 
+}
+
+// The parameter is a list of questions that they can't be served because
+// the student has already been served it.
+char* getQuestions(char *unacceptableQuestions){
+    if(unacceptableQuestions == NULL){
+        //if we can pick any question then pick a random one.
+
+    }
+    else
+    {
+        //else pick a valid question.
+
+    }
 }
 
 void close_connection(int connfd) {

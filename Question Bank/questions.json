@@ -1,6 +1,10 @@
 {
-    "1": {
+    "Q1": {
         "question": "What is the largest ocean in the world?",
-        "password": "Pacific Ocean"
+        "password": "a"
+    },
+    "Q2": {
+        "question": "What is the largest planet in the solar system?",
+        "password": "c"
     }
 }
