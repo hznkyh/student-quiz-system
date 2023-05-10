@@ -103,18 +103,12 @@ void handle_connection(int sockfd) {
         perror("accept failed");
         exit(EXIT_FAILURE);
     }
-    printf(" * Transmission accepted\n");
+    printf("* Transmission accepted\n");
 
     // Read the message and size
     struct message msg;
     ssize_t n;
     int payload_len;
-
-    // int len = read(connfd, &msg, sizeof(msg));
-    // if (len < 0) {
-    //     perror("read failed");
-    //     exit(EXIT_FAILURE);
-    // }
 
     //Receive the Message header
     n = recv(connfd, &msg, sizeof(msg), 0);
@@ -129,7 +123,6 @@ void handle_connection(int sockfd) {
     char *source = msg.payload;
     char header[msg.length];
     for (int i = 0; i < msg.length; i++) {
-        printf("-> %c\n",source[i]);
         strncat(header, &source[i], 1);
     }
     char *newPayload = msg.payload+msg.length;
@@ -144,29 +137,6 @@ void handle_connection(int sockfd) {
     //     printf("%d | %d \n",msg.length,MAX_PAYLOAD_LEN);
     //     exit(1);
     // }
-
-    // char payload[msg.length];
-    // // Receive the payload data
-    // n = recv(connfd, payload, msg.length, 0);
-    // if (n <= 0) {
-    //     perror("** ERORR Reading Payload **");
-    //     exit(1);
-    // }
-
-    // Copy the payload data to the message struct
-    //memcpy(msg.payload, payload, msg.length);
-
-    // int expected_checksum = calculate_checksum((char*)&msg, sizeof(msg) - sizeof(int));
-    // if (expected_checksum != msg.type) {
-    //     printf("Invalid message checksum\n");
-    //     send(connfd, "CHECKSUM FAILED", strlen("CHECKSUM FAILED"), 0);
-    //     fail++; // keeps track of failed message
-    // }
-    // Print the message payload
-    //printf("Received message of type %d, length %d: %s\n", msg.type, msg.length, msg.payload);
-
-    //printf("\nRECEIVED: %s\n", msg.payload);
-
 
     // Basic ACK, needs to acknowledge received and failed messages
     char ack_msg[BUF_SIZE];
