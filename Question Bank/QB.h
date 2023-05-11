@@ -36,4 +36,5 @@ void get_local_ip(char *ip, int size);
 Question* read_questions_file(void);
 int* generate_questions_numbers(void);
 void send_questions(Question* questions, int sockfd);
+int mark_MC_Question(int question_id, char *student_answer);
 #endif

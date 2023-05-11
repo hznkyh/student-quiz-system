@@ -119,9 +119,12 @@ void handle_connection(int sockfd) {
             exit(1);
         }
     msg.length = ntohl(msg.length);
+    //msg.payload[strlen(msg.payload)-3] = '\0'; //Shorter messages seem to have issues of adding random characters. 
+                                                //Couldn't figure out why, minimum msg length has to be 12 character to be accurate
+
 
     printf("Received message of length %d: '%s' \n", msg.length, msg.payload);
-
+    
     char *source = msg.payload;
     char header[msg.length];
     for (int i = 0; i < msg.length; i++) {
@@ -130,29 +133,30 @@ void handle_connection(int sockfd) {
     memmove(header, header+1, strlen(header)); //removes the non-printable STX control character.
     char *newPayload = msg.payload+msg.length;
     
-    printf("HEADER: '%s'\nPAYLOAD: '%s'\n",header, newPayload);
-    
-    // Basic ACK, needs to acknowledge received and failed messages
-    char ack_msg[BUF_SIZE];
-    sprintf(ack_msg, "QB ACK\n");
-    if (send(connfd, ack_msg, strlen(ack_msg), 0) < 0) {
-        perror("send failed");
-        exit(EXIT_FAILURE);
-    }
+    printf("HEADER: '%s' | PAYLOAD: '%s'\n",header, newPayload);
 
     Question* questions;
     
-    if (strcmp(header, "question") == 0){
-        printf("TM requested Questions...\n");
+    if (strcmp(header, "questions") == 0){
+        printf("TM requested questions...\n");
         questions = read_questions_file();
         send_questions(questions, connfd);
     }else if(strcmp(header, "mc_answer") == 0){
-        //return mark_MC_Question()
-    
-    }
-    else{
+        char *qID;
+        char *qAnswer;
+        qID = strtok(newPayload, "=");
+        qAnswer = strtok(newPayload, "=");
+        int correct = mark_MC_Question(atol(qID), qAnswer);
+        char c_value = correct ? 'T' : 'F'; //Have to do this because sending a 0 or 1 over a socket doesn't work.
+       if (send(connfd, &c_value, sizeof(c_value), 0) < 0) {
+            perror("Result send failed");
+            exit(EXIT_FAILURE);
+        }else {
+            printf("Result sent to QB ('%c')\n",c_value);
+        }
+    }else
         printf("ERROR: Header '%s' not recognised.\n",header);
-    }
+        
 
 }
 
@@ -185,7 +189,7 @@ int* generate_questions_numbers() {
         }
     }
     //This is the random numbers generated that will be used as the question IDs we access.
-    printf("NUMBERS: %d | %d | %d | %d | %d\n", question_numbers[0], question_numbers[1], question_numbers[2], question_numbers[3], question_numbers[4]);
+    printf("Q IDs to send: %d | %d | %d | %d | %d\n", question_numbers[0], question_numbers[1], question_numbers[2], question_numbers[3], question_numbers[4]);
 
     // Dynamically allocate an array and copy the contents of the question_numbers array to it
     int* random_numbers = malloc(sizeof(int) * NUM_QUESTIONS);
@@ -258,6 +262,7 @@ Question* read_questions_file(){
 }
 
 int mark_MC_Question(int question_id, char *student_answer){
+    printf("Marking MC Answer\n");
     char *filename = "answers.txt";
 
     FILE* fp = fopen(filename, "r");
@@ -266,12 +271,16 @@ int mark_MC_Question(int question_id, char *student_answer){
         return 0;
     }
     int current_id;
-    char *current_answer;
+    char* current_answer = malloc(128 * sizeof(char));
+    if (current_answer == NULL) {
+        
+    return 0;
+}
 
     int i = 0;
     char line[MAX_LINE_LENGTH];
     while (fgets(line, sizeof(line), fp) && i < NUM_QUESTIONS) {
-        if (sscanf(line, "%d,%64[^,\n]", &current_id, current_answer) != 2) {
+        if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
             continue;
         }
@@ -280,6 +289,7 @@ int mark_MC_Question(int question_id, char *student_answer){
             break;
         }
     }
+    
     if(strcmp(current_answer, student_answer) == 0){
         return 1;
     }
@@ -290,16 +300,14 @@ int mark_MC_Question(int question_id, char *student_answer){
 
 void send_questions(Question* questions, int sockfd){
     printf("Sending Questions...\n");
-    // Determine the total size needed for the buffer
+
     int buffer_size = 0;
     for (int i = 0; i < NUM_QUESTIONS; i++) {
         if (questions[i].question[0] != '\0') {
-            buffer_size += strlen(questions[i].question) + 3; // Add 3 for quotes and comma
+            buffer_size += strlen(questions[i].question);
         }
     }
-    buffer_size += 2; // Add 2 for square brackets
     
-    // Allocate memory for the buffer
     char* buffer = malloc(buffer_size);
     if (buffer == NULL) {
         perror("malloc");
@@ -326,14 +334,10 @@ void send_questions(Question* questions, int sockfd){
     if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
         perror("send failed");
         exit(EXIT_FAILURE);
-    }else {
-    {
-    //printf("Questions sent to TM\n");
-    printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
-
-    ///// SHOULD WE NOW IMPLEMENT ACKS AND NACKS HERE TO ENSURE IT WAS DELIVERED AND SEE IF WE NEED TO RESEND? //////
     }
-    }
+    
+    printf("Questions sent to TM\n");
+    //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory
     free(buffer);
