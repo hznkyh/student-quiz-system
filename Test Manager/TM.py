@@ -21,13 +21,13 @@ QB_PORT = 9001
 
 ip = input("Enter IP address: ")
 QB_HOST = ip
-webbrowser.open_new('http://localhost:9000')  # open in new window
+webbrowser.open_new('http://localhost:9000') # open in new window
 def connect_to_server(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (host, port)
     try:
         sock.connect(server_address)
-        print("Connection successful!")
+        #print("Connection successful!")
     except socket.error as e:
         print(f"Error connecting to server: {e}")
         exit(1)
@@ -127,19 +127,21 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             
             sock = connect_to_server(QB_HOST, QB_PORT)
             server_address = (QB_HOST, QB_PORT)
-            
 
-            header = "question" ##### THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO #####
+            header = "mc_answer" ##### THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO #####
             header_len = len(header)
-            
             # Pack the header length as a 4-byte integer in network byte order
             header_len_bytes = struct.pack("!I", header_len)
-            data = header_len_bytes + header.encode() + message_data
+            message = message[0][1:]
+            data = header_len_bytes + header.encode() + message.encode()
 
             sock.sendto(data, server_address) #TCP Should be reliable so don't think we need a check on this.
             response = sock.recv(1024) #Awaits a response.
             msg = str(response,'utf-8')
-            print(f"Received response: {msg}")
+            if (msg == 'T'):
+                print(f"Received response: '{msg}', answer was CORRECT")
+            else:
+                print(f"Received response: '{msg}', answer was INCORRECT")
 
             # Send a response to the client
             self.send_response(200)
@@ -147,6 +149,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             response_message = "Message sent to QB.c server: {}".format(message)
             self.wfile.write(bytes(response_message, "utf8"))
+            
 
 
 #################################################
