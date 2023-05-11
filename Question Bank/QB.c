@@ -276,8 +276,7 @@ int mark_MC_Question(int question_id, char *student_answer){
         printf("yeah f this\n");
         return 0;
     }
-    printf("-> qID: %d\n",question_id);
-    printf("-> SA: %s\n",student_answer);
+
     int i = 0;
     char line[MAX_LINE_LENGTH];
     while (fgets(line, sizeof(line), fp)) {
