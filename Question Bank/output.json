@@ -1,0 +1,38 @@
+{
+        "1": {
+                "question": "What is the capital of France?",
+                "option_a": "Paris",
+                "option_b": "London",
+                "option_c": "Madrid",
+                "option_d": "Berlin"
+        },
+        "2": {
+                "question": "What is the largest ocean in the world?",
+                "option_a": "Pacific Ocean",
+                "option_b": "Atlantic Ocean",
+                "option_c": "Indian Ocean",
+                "option_d": "Southern Ocean"
+        },
+        "3": 
+                {
+                "question": "What is the largest planet in the solar system?",
+                "option_a": "Venus",
+                "option_b": "Mars",
+                "option_c": "Jupiter",
+                "option_d": "Saturn"
+        },
+        "4": {
+                "question": "What is the largest mammal in the world?",
+                "option_a": "Elephant",
+                "option_b": "Blue whale",
+                "option_c": "Giraffe",
+                "option_d": "Hippopotamus"
+        },
+        "5": {
+                "question": "What is the chemical symbol for gold?",
+                "option_a": "Au",
+                "option_b": "Ag",
+                "option_c": "Cu",
+                "option_d": "Fe"
+        }
+}
