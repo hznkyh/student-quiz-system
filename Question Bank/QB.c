@@ -145,7 +145,7 @@ void handle_connection(int sockfd) {
         char *qID;
         char *qAnswer;
         qID = strtok(newPayload, "=");
-        qAnswer = strtok(newPayload, "=");
+        qAnswer = strtok(NULL, "=");
         int correct = mark_MC_Question(atol(qID), qAnswer);
         char c_value = correct ? 'T' : 'F'; //Have to do this because sending a 0 or 1 over a socket doesn't work.
        if (send(connfd, &c_value, sizeof(c_value), 0) < 0) {
@@ -273,13 +273,14 @@ int mark_MC_Question(int question_id, char *student_answer){
     int current_id;
     char* current_answer = malloc(128 * sizeof(char));
     if (current_answer == NULL) {
-        
-    return 0;
-}
-
+        printf("yeah f this\n");
+        return 0;
+    }
+    printf("-> qID: %d\n",question_id);
+    printf("-> SA: %s\n",student_answer);
     int i = 0;
     char line[MAX_LINE_LENGTH];
-    while (fgets(line, sizeof(line), fp) && i < NUM_QUESTIONS) {
+    while (fgets(line, sizeof(line), fp)) {
         if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
             continue;
