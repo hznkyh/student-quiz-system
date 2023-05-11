@@ -97,17 +97,13 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
             send_response = True
             if json_data['action'] == 'next':
-                print("sending next question")
                 response = active_tests[username].nextQuestion()
-                print(response)
             elif json_data['action'] == 'back':
                 response = active_tests[username].nextQuestion()
             elif json_data['action'] == 'info':
                 username = json_data['username']
                 response = self.generate_student_info(username)
-                print(response)
             elif json_data['action'] == 'submit':
-                print(json_data)
                 if active_tests[username].getAnswer(active_tests[username], json_data["current_question"],
                                                     json_data["answer"]):
                     response = "correct"
