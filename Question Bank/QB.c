@@ -226,10 +226,13 @@ Question* read_questions_file(){
     while (fgets(line, sizeof(line), fp) && i < NUM_QUESTIONS) {
         int id;
         char question[256];
-        char answer[256];
+        char option_a[OPTION_SIZE];
+        char option_b[OPTION_SIZE];
+        char option_c[OPTION_SIZE];
+        char option_d[OPTION_SIZE];
 
         // Parse the line into question ID, question text, and answer
-        if (sscanf(line, "%d,%255[^,],%255[^,\n]", &id, question, answer) != 3) {
+        if (sscanf(line, "%d,%255[^,],%24[^,],%24[^,],%24[^,],%24[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
             continue;
         }
@@ -238,7 +241,10 @@ Question* read_questions_file(){
         if (inArray(id, question_numbers, NUM_QUESTIONS)) {
             questions[i].id = id;
             strcpy(questions[i].question, question);
-            strcpy(questions[i].answer, answer);
+            strcpy(questions[i].option_a, option_a);
+            strcpy(questions[i].option_b, option_b);
+            strcpy(questions[i].option_c, option_c);
+            strcpy(questions[i].option_d, option_d);
             i++;
         }
     }
@@ -269,20 +275,20 @@ void send_questions(Question* questions, int sockfd){
         exit(EXIT_FAILURE);
     }
     
-    // Construct the Python code to create a list of strings from the questions
-    sprintf(buffer, "[");
-    for (int i = 0; i < NUM_QUESTIONS; i++)
-    {
+    // Construct a JSON style output to send to the TM
+    sprintf(buffer, "{");
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
         if (questions[i].question[0] != '\0') {
-            sprintf(buffer + strlen(buffer), "'%s'", questions[i].question);
-            if (i < NUM_QUESTIONS - 1 && questions[i + 1].question[0] != '\0')
-            {
-                sprintf(buffer + strlen(buffer), ",");
-            }
+            sprintf(buffer + strlen(buffer), "\"%d\": {", questions[i].id);
+            sprintf(buffer + strlen(buffer), "\"question\": \"%s\",", questions[i].question);
+            sprintf(buffer + strlen(buffer), "\"option_a\": \"%s\",", questions[i].option_a);
+            sprintf(buffer + strlen(buffer), "\"option_b\": \"%s\",", questions[i].option_b);
+            sprintf(buffer + strlen(buffer), "\"option_c\": \"%s\",", questions[i].option_c);
+            sprintf(buffer + strlen(buffer), "\"option_d\": \"%s\"", questions[i].option_d);
+            sprintf(buffer + strlen(buffer), "},");
         }
-        
     }
-    sprintf(buffer + strlen(buffer), "]");
+    sprintf(buffer + strlen(buffer) - 1, "}");
     
 
     // Send the Python code to the server

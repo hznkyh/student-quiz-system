@@ -5,6 +5,7 @@
 #define MAX_PAYLOAD_LEN 1024
 #define MAX_LINE_LENGTH 1024
 #define NUM_QUESTIONS 5
+#define OPTION_SIZE 24
 
 struct message {
     int length; //Length of header
@@ -14,7 +15,10 @@ struct message {
 typedef struct {
     int id;
     char question[256];
-    char answer[256];
+    char option_a[OPTION_SIZE];
+    char option_b[OPTION_SIZE];
+    char option_c[OPTION_SIZE];
+    char option_d[OPTION_SIZE];
 } Question;
 
 
