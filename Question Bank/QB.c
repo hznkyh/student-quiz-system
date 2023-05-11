@@ -142,15 +142,15 @@ void handle_connection(int sockfd) {
 
     Question* questions;
     
-    char questionRequest[] = "question";
-    char answerRequest[] = "answer";
-    if (strcmp(header, questionRequest) == 0) {
-        printf("Question request...\n");
+    if (strcmp(header, "question") == 0){
+        printf("TM requested Questions...\n");
         questions = read_questions_file();
         send_questions(questions, connfd);
-    }else
-    {
-        printf("COMING SOON (MARK QUESTION)\n");
+    }else if(strcmp(header, "answer") == 0){
+        printf("Marking Questions feature not built yet\n");
+    }
+    else{
+        printf("ERROR: Header '%s' not recognised.\n",header);
     }
 
 }
@@ -183,6 +183,7 @@ int* generate_questions_numbers() {
             num_used++;
         }
     }
+    //This is the random numbers generated that will be used as the question IDs we access.
     printf("NUMBERS: %d | %d | %d | %d | %d\n", question_numbers[0], question_numbers[1], question_numbers[2], question_numbers[3], question_numbers[4]);
 
     // Dynamically allocate an array and copy the contents of the question_numbers array to it
@@ -203,7 +204,6 @@ int inArray(int val, int arr[], int size) {
 }
 
 Question* read_questions_file(){
-    printf("Inside read_questions_file()\n");
     char *filename = "questions.txt";
 
     FILE* fp = fopen(filename, "r");
@@ -247,17 +247,12 @@ Question* read_questions_file(){
     fclose(fp);
     free(question_numbers);
 
-    for(int i = 0; i < NUM_QUESTIONS; i++){
-        printf("Q %i: %s\n",i,questions[i].question);
-    }
-
     return questions;
 }
 
 
 void send_questions(Question* questions, int sockfd){
-    printf("Inside send_questions()\n");
-    
+    printf("Sending Questions...\n");
     // Determine the total size needed for the buffer
     int buffer_size = 0;
     for (int i = 0; i < NUM_QUESTIONS; i++) {
@@ -284,7 +279,6 @@ void send_questions(Question* questions, int sockfd){
             {
                 sprintf(buffer + strlen(buffer), ",");
             }
-        printf("Q: %s\n",questions[i].question);
         }
         
     }
@@ -297,16 +291,16 @@ void send_questions(Question* questions, int sockfd){
         exit(EXIT_FAILURE);
     }else {
     {
-     printf("QUESTIONS SENT TO TM\n%s\n",buffer);
+    printf("Questions sent to TM\n");
+    //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
+
+    ///// SHOULD WE NOW IMPLEMENT ACKS AND NACKS HERE TO ENSURE IT WAS DELIVERED AND SEE IF WE NEED TO RESEND? //////
     }
     }
     
     // Free the buffer memory
     free(buffer);
 }
-
-
-
 
 void close_connection(int connfd) {
     close(connfd);
