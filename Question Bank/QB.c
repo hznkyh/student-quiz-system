@@ -7,7 +7,9 @@
 #include <unistd.h>
 #include <ifaddrs.h>
 #include <netdb.h>
+#include <time.h>
 
+//gcc QB.c -o QB 
 
 int calculate_checksum(char* buf, int len) {
     int sum = 0;
@@ -125,41 +127,186 @@ void handle_connection(int sockfd) {
     for (int i = 0; i < msg.length; i++) {
         strncat(header, &source[i], 1);
     }
+    memmove(header, header+1, strlen(header)); //removes the non-printable STX control character.
     char *newPayload = msg.payload+msg.length;
     
-    printf("HEADER: %s\nPAYLOAD: %s\n",header, newPayload);
+    printf("HEADER: '%s'\nPAYLOAD: '%s'\n",header, newPayload);
     
-    char* question;
-    
-    if ( strcmp(header, "questions")){
-        question = getQuestions(newPayload);
-        
-    }
-    
-
     // Basic ACK, needs to acknowledge received and failed messages
     char ack_msg[BUF_SIZE];
-    sprintf(ack_msg, "QB ACK");
+    sprintf(ack_msg, "QB ACK\n");
     if (send(connfd, ack_msg, strlen(ack_msg), 0) < 0) {
         perror("send failed");
         exit(EXIT_FAILURE);
     }
 
-}
-
-// The parameter is a list of questions that they can't be served because
-// the student has already been served it.
-char* getQuestions(char *unacceptableQuestions){
-    if(unacceptableQuestions == NULL){
-        //if we can pick any question then pick a random one.
-
-    }
-    else
+    Question* questions;
+    
+    char questionRequest[] = "question";
+    char answerRequest[] = "answer";
+    if (strcmp(header, questionRequest) == 0) {
+        printf("Question request...\n");
+        questions = read_questions_file();
+        send_questions(questions, connfd);
+    }else
     {
-        //else pick a valid question.
-
+        printf("COMING SOON (MARK QUESTION)\n");
     }
+
 }
+
+//Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
+int* generate_questions_numbers() {
+    int question_numbers[NUM_QUESTIONS];
+    int num_used = 0; //Keeps track of the number of question numbers we've added to the array.
+    int min = 1; 
+    int max = 5; //The number of questions we have
+    int range = max - min + 1;
+
+    srand(time(NULL));
+
+    while (num_used < NUM_QUESTIONS) {
+        // Generate a random number within the range
+        int questionNumber = (rand() % range) + min;
+
+        // Check if the number is already used
+        int i;
+        for (i = 0; i < num_used; i++) {
+            if (questionNumber == question_numbers[i]) {
+                break;
+            }
+        }
+
+        // If the number is not used, add it to the list
+        if (i == num_used) {
+            question_numbers[num_used] = questionNumber;
+            num_used++;
+        }
+    }
+    printf("NUMBERS: %d | %d | %d | %d | %d\n", question_numbers[0], question_numbers[1], question_numbers[2], question_numbers[3], question_numbers[4]);
+
+    // Dynamically allocate an array and copy the contents of the question_numbers array to it
+    int* random_numbers = malloc(sizeof(int) * NUM_QUESTIONS);
+    memcpy(random_numbers, question_numbers, sizeof(int) * NUM_QUESTIONS);
+
+    return random_numbers;
+}
+
+//Used to check if question number is in the array holding the question numbers we want. Accessed in read_questions_file().
+int inArray(int val, int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == val) {
+            return 1; // found
+        }
+    }
+    return 0; // not found
+}
+
+Question* read_questions_file(){
+    printf("Inside read_questions_file()\n");
+    char *filename = "questions.txt";
+
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL) { 
+        perror("Error opening file");
+        return NULL;
+    }
+    int *question_numbers = generate_questions_numbers();
+    Question *questions = malloc(NUM_QUESTIONS * sizeof(Question));
+    
+    if (questions == NULL) {
+        perror("Error allocating memory");
+        fclose(fp);
+        return NULL;
+    }
+
+    // Read each question from the file and store it in the array
+    int i = 0;
+    char line[MAX_LINE_LENGTH];
+    while (fgets(line, sizeof(line), fp) && i < NUM_QUESTIONS) {
+        int id;
+        char question[256];
+        char answer[256];
+
+        // Parse the line into question ID, question text, and answer
+        if (sscanf(line, "%d,%255[^,],%255[^,\n]", &id, question, answer) != 3) {
+            printf("Failed to parse line %d in file %s\n", i+1, filename);
+            continue;
+        }
+
+        // Check if the current question ID is in the list of question_numbers we want.
+        if (inArray(id, question_numbers, NUM_QUESTIONS)) {
+            questions[i].id = id;
+            strcpy(questions[i].question, question);
+            strcpy(questions[i].answer, answer);
+            i++;
+        }
+    }
+
+    // Close the file and free the memory used for the random numbers
+    fclose(fp);
+    free(question_numbers);
+
+    for(int i = 0; i < NUM_QUESTIONS; i++){
+        printf("Q %i: %s\n",i,questions[i].question);
+    }
+
+    return questions;
+}
+
+
+void send_questions(Question* questions, int sockfd){
+    printf("Inside send_questions()\n");
+    
+    // Determine the total size needed for the buffer
+    int buffer_size = 0;
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
+        if (questions[i].question[0] != '\0') {
+            buffer_size += strlen(questions[i].question) + 3; // Add 3 for quotes and comma
+        }
+    }
+    buffer_size += 2; // Add 2 for square brackets
+    
+    // Allocate memory for the buffer
+    char* buffer = malloc(buffer_size);
+    if (buffer == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    
+    // Construct the Python code to create a list of strings from the questions
+    sprintf(buffer, "[");
+    for (int i = 0; i < NUM_QUESTIONS; i++)
+    {
+        if (questions[i].question[0] != '\0') {
+            sprintf(buffer + strlen(buffer), "'%s'", questions[i].question);
+            if (i < NUM_QUESTIONS - 1 && questions[i + 1].question[0] != '\0')
+            {
+                sprintf(buffer + strlen(buffer), ",");
+            }
+        printf("Q: %s\n",questions[i].question);
+        }
+        
+    }
+    sprintf(buffer + strlen(buffer), "]");
+    
+
+    // Send the Python code to the server
+    if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
+        perror("send failed");
+        exit(EXIT_FAILURE);
+    }else {
+    {
+     printf("QUESTIONS SENT TO TM\n%s\n",buffer);
+    }
+    }
+    
+    // Free the buffer memory
+    free(buffer);
+}
+
+
+
 
 void close_connection(int connfd) {
     close(connfd);
