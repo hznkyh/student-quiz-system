@@ -32,7 +32,7 @@ def main():
 
 
 #################################################
-# Dealing with networking with the QB
+# Dealing with networking with the Browser
 #################################################
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
