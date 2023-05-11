@@ -129,7 +129,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             server_address = (QB_HOST, QB_PORT)
             
 
-            header = "answer"
+            header = "question" ##### THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO #####
             header_len = len(header)
             
             # Pack the header length as a 4-byte integer in network byte order

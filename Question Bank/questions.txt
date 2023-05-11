@@ -1,0 +1,6 @@
+1,What is the capital of France?,a
+2,What is the largest ocean in the world?,a
+3,What is the largest planet in the solar system?,c
+4,What is the largest mammal in the world?,b
+5,What is the chemical symbol for gold?,Au
+6,What is the capital of Spain?,Madrid
