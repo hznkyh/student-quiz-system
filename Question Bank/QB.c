@@ -146,8 +146,9 @@ void handle_connection(int sockfd) {
         printf("TM requested Questions...\n");
         questions = read_questions_file();
         send_questions(questions, connfd);
-    }else if(strcmp(header, "answer") == 0){
-        printf("Marking Questions feature not built yet\n");
+    }else if(strcmp(header, "mc_answer") == 0){
+        //return mark_MC_Question()
+    
     }
     else{
         printf("ERROR: Header '%s' not recognised.\n",header);
@@ -256,6 +257,36 @@ Question* read_questions_file(){
     return questions;
 }
 
+int mark_MC_Question(int question_id, char *student_answer){
+    char *filename = "answers.txt";
+
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL) { 
+        perror("Error opening file");
+        return 0;
+    }
+    int current_id;
+    char *current_answer;
+
+    int i = 0;
+    char line[MAX_LINE_LENGTH];
+    while (fgets(line, sizeof(line), fp) && i < NUM_QUESTIONS) {
+        if (sscanf(line, "%d,%64[^,\n]", &current_id, current_answer) != 2) {
+            printf("Failed to parse line %d in file %s\n", i+1, filename);
+            continue;
+        }
+
+        if (current_id == question_id){
+            break;
+        }
+    }
+    if(strcmp(current_answer, student_answer) == 0){
+        return 1;
+    }
+   
+    return 0;
+
+}
 
 void send_questions(Question* questions, int sockfd){
     printf("Sending Questions...\n");

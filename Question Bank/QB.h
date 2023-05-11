@@ -21,6 +21,11 @@ typedef struct {
     char option_d[OPTION_SIZE];
 } Question;
 
+typedef struct {
+    int id;
+    char answer[64];
+}Answer;
+
 
 void create_socket(int *sockfd);
 void bind_socket(int sockfd);
