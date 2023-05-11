@@ -1,0 +1,28 @@
+{
+    "1": {
+        "name": "Alice",
+        "password": "pass1",
+        "grade": 51,
+        "active_test": false,
+        "test": {
+
+        }
+    },
+    "2": {
+        "name": "Bob",
+        "password": "pass2",
+        "grade": 63,
+        "active_test": false,
+        "test": {
+
+        }
+    },
+    "3": {
+        "name": "Caleb",
+        "password": "pass3",
+        "grade": 456,
+        "active_test": false,
+        "test": {
+        }
+    }
+}

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <!-- <script src="test.js" type="text/javascript"></script> -->
+
+    <head>
+        <title>Multiple Choice Questions</title>
+    </head>
+
+    <body style="margin:2em">
+        <div style="margin-bottom:1em;border:1px solid black;padding:1em;">
+            <h1 style="margin:0px;"> Student Information</h1>
+            <div style="padding-left: 1em;">
+                <p> Student username: <span id="username"></span></p>
+                <p> Student name: <span id="name">User not logged in</span></p>
+                <p> Grade: <span id="grade" >0</span>/30 </p> 
+            </div>
+        </div>
+
+        <div style="border:1px solid black;padding:1em;">
+            <h1 style="margin:0px;">Test instructions</h1>
+            <ul style="margin:0.5em 0em;">
+                <li> Pick the best answer for each question from the options below. </li>
+                <li> First attempt at any question is correct, receive 3 marks </li>
+                <li> 2 marks if second attempt is correct, and so on. </li>
+                <li> Once attempted all questions (either correctly or after 3 attempts each). Answer may no longer be submitted. </li>
+            </ul>
+        </div>
+
+        <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
+        <div style="background-color: aliceblue;border: 1px solid black">
+            <div style="padding:1em">
+                <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
+                 <!-- Question to be generated -->
+                <form>
+                    <input type="radio" name="question" id="a" value="a"> 
+                    <label> </label> <label id="label a"></label><br>
+                    <input type="radio" name="question" id="b" value="b"> 
+                    <label> </label> <label id="label b"></label><br>
+                    <input type="radio" name="question" id="c" value="c"> 
+                    <label> </label> <label id="label c"></label><br>
+                    <input type="radio" name="question" id="d" value="d"> 
+                    <label> </label> <label id="label d"></label><br>
+                </form> 
+            </div>
+        </div>
+
+        <div id="buttons-container" style="margin:1em;">
+            <button id="back-button" onclick="previousQuestion()" style="float:left;padding: 0.5em;"> Back </button>
+            <button id="next-button" onclick="nextQuestion()" style="padding: 0.5em;"> Next </button>
+            <button id="submit-button" onclick="submitQuestion()" style="float:right;padding: 0.5em;"> Submit </button>
+        </div>
+
+        <div id = "result"> </div> 
+    </body>
+
+    <script type="text/javascript">
+        function Start(status) {
+            console.log(status);
+        }
+        
+        var current_question = 0;
+
+        //Populate the page when first opened
+        window.onload = function() {
+            var cookie = document.cookie;
+            var name = cookie.split("=")[1];
+            if (name == undefined || name == "") {
+                name = "User not logged in";
+            }
+
+            // Update name
+            document.getElementById("username").innerText = name;
+
+            // Update grade
+            sendAjaxRequest('info', current_question);
+
+            //loads in the first question when the page starts
+            current_question += 1;
+            sendAjaxRequest('next', current_question);
+        }
+        
+        function getChecked() {
+          if (document.getElementById('a').checked) {
+            return "a";
+          } else if(document.getElementById('b').checked) {
+            return "b";
+          } else if(document.getElementById('c').checked) {
+            return "c";
+          } else if(document.getElementById('d').checked) {
+            return "d";
+          }
+        }
+        
+        function nextQuestion() {
+            var username = document.cookie.split("=")[1];
+            current_question += 1;
+            if (current_question <= 10){
+                document.getElementById("result").innerHTML = "Next question." + current_question;
+                sendAjaxRequest('next', current_question);
+            }else {
+                current_question = 10;
+                document.getElementById("result").innerHTML = "This is the last question.";
+            }
+        }
+        
+        function previousQuestion() {
+            var username = document.cookie.split("=")[1];
+            current_question -= 1;
+            if (current_question > 0) {
+                document.getElementById("result").innerHTML = "Previous question";    
+                sendAjaxRequest('back', current_question);
+            } else {
+                current_question = 1;
+                document.getElementById("result").innerHTML = "Can't go back more";
+            }
+        }
+        
+        function submitQuestion() {
+            var answer = getChecked();
+            // Send request to check answer
+            sendAjaxRequest('submit', current_question, answer);
+        }
+        
+        function sendAjaxRequest(action, current_question, answer) {
+            var username = document.cookie.split("=")[1]; // important
+            to_send = {action: action, current_question: current_question, username: username, answer: answer}
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/');
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const response = xhr.responseText;
+                    updateChecked(response);
+                    if (action == 'next'|| action == 'back') {
+                        updateHTML(response);
+                    } 
+                    else if (action == 'info') {
+                        updateInfo(response);
+                    }
+                    else if (action == 'submit') {
+                        updateChecked(response);
+                    }       
+                } else {
+                    console.error(xhr.statusText);
+                }
+            };
+
+            xhr.send(JSON.stringify(to_send));
+        }
+        
+        function updateHTML(response) {
+            response_object = JSON.parse(response);
+        
+            number = response_object["question_number"];
+            question = response_object["question"];
+            option_a = response_object["options"]["option_a"];
+            option_b = response_object["options"]["option_b"];
+            option_c = response_object["options"]["option_c"];
+            option_d = response_object["options"]["option_d"];
+        
+        
+            console.log("updating question");
+        
+            document.getElementById("question number").innerHTML = "Question " + current_question;
+            document.getElementById("question").innerHTML = question;
+        
+            document.getElementById("label a").innerHTML = option_a
+            document.getElementById("label b").innerHTML = option_b
+            document.getElementById("label c").innerHTML = option_c
+            document.getElementById("label d").innerHTML = option_d
+        }
+
+        function updateChecked(response) {
+            if (response == "correct") {
+                document.getElementById("result").innerText = "Correct";
+            } else {
+                document.getElementById("result").innerText = "Incorrect";
+            }
+        }
+
+        function updateInfo(response) {
+            response_object = JSON.parse(response);
+            document.getElementById("grade").innerText = response_object["grade"];
+            document.getElementById("name").innerText = response_object["name"];
+        }
+    </script>
+</html>
