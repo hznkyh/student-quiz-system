@@ -4,3 +4,24 @@
 4,What is the largest mammal in the world?,Elephant,Blue whale,Giraffe,Hippopotamus
 5,What is the chemical symbol for gold?,Au,Ag,Cu,Fe
 6,What is the capital of Spain?,Madrid,Barcelona,Valencia,Seville
+7,What is the tallest mountain in the world?,Mount Everest,K2,Kangchenjunga,Makalu
+8,What is the largest country by land area?,Russia,Canada,China,United States
+9,What is the capital of Australia?,Canberra,Sydney,Melbourne,Brisbane
+10,What is the largest desert in the world?,Sahara Desert,Gobi Desert,Kalahari Desert,Antarctic Desert
+11,What is the chemical symbol for oxygen?,O,N,C,H
+12,What is the largest moon in the solar system?,Ganymede,Titan,Callisto,Io
+13,What is the currency of Japan?,Japanese yen,Chinese yuan,Indian rupee,Euro
+14,What is the national animal of Canada?,Beaver,Moose,Polar bear,Caribou
+15,What is the largest waterfall in the world?,Angel Falls,Niagara Falls,Victoria Falls,Iguazu Falls
+16,What is the smallest country in the world by land area?,Vatican City,Monaco,Nauru,Tuvalu
+17,What is the chemical symbol for silver?,Ag,Au,Cu,Pb
+18,What is the capital of Brazil?,Brasília,Rio de Janeiro,São Paulo,Buenos Aires
+19,What is the largest lake in Africa?,Lake Victoria,Lake Tanganyika,Lake Malawi,Lake Turkana
+20,What is the national flower of India?,Lotus,Rose,Tulip,Sunflower
+21,What is the largest bird in the world?,Ostrich,Emu,Condor,Albatross
+22,What is the tallest tree species in the world?,Coast Redwood,Mountain Ash,Douglas Fir,Giant Sequoia
+23,What is the currency of the United Kingdom?,British pound,Euro,US dollar,Japanese yen
+24,What is the national sport of Canada?,Ice hockey,Lacrosse,Soccer,Cricket
+25,What is the largest city in the United States by population?,New York City,Los Angeles,Chicago,Houston
+26,What is the chemical symbol for calcium?,Ca,Co,Cu,Cr
+27,What is the capital of South Africa?,Pretoria,Johannesburg,Cape Town,Durban
