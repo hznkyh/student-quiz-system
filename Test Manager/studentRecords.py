@@ -68,7 +68,17 @@ def getGrade(student_id):
 def setGrade(student_id, new_grade):
     json_data = readRecords()
     json_data[student_id]["grade"] = new_grade
+    json_object = json.dumps(json_data, indent=4)
 
+    with open(JSON_FILENAME, "w") as file:
+        file.write(json_object)
+
+def getTestData(student_id):
+    return readRecords()[student_id]["test"]
+
+def setTestData(student_id, test_data):
+    json_data = readRecords()
+    json_data[student_id]["test"] = test_data
     json_object = json.dumps(json_data, indent=4)
 
     with open(JSON_FILENAME, "w") as file:

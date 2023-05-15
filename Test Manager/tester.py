@@ -2,6 +2,7 @@ import random
 import json
 import socket
 import struct
+import studentRecords as records
 
 # each test can be assigned a session id 
 # would allow concurrently running sessions to be distinguished
@@ -10,12 +11,14 @@ session_ids = []
 QB_PORT = 9001
 
 class Test:
-    def __init__(self, student_id, question_bank_ip, resume_state=False, num_questions=10):
+    def __init__(self, student_id, question_bank_ip, resume_state=False, num_questions=5):
         if not resume_state:
             self.QB_IP = question_bank_ip
             self.student_id = student_id
             self.questions = []  # store each question as a json file
-            self.question_counter = 0
+            self.question_counter = -1
+
+            self.questions = self.get_question_dict()
 
             # create a session id to keep track of the test
             if len(session_ids) == 0:
@@ -23,10 +26,11 @@ class Test:
             else:
                 self.session_id = session_ids[-1] + 1
 
-            for i in range(num_questions):
-                # retrieve all the questions before the user begins the test
-                # questions could be sent back to QB to be marked individually though
-                self.questions.append(self.generate_question_html(i))
+            # puts all the questions into a json folder
+            test_data = {}
+            for index, question in enumerate(self.questions):
+                test_data[index] = question
+            records.setTestData(self.student_id, test_data)
 
         else:  # if state is to be resumed
             # read file
@@ -34,63 +38,112 @@ class Test:
 
     # For when the next question button is pressed
     def nextQuestion(self):
-        if self.question_counter > self.getNumQuestions() - 1:
-            return False
+        if self.question_counter >= self.getNumQuestions() - 1:
+            return json.dumps({"message": "can't go forward anymore"})
 
         self.question_counter += 1
-        return self.questions[self.question_counter]
 
-    """
-    def generate_question_html(self, question_number, username):
-        # TODO: grab question from based on username
-        temp_dict = {
-            "question_number": question_number,
-            "question": "WHat is this ____" + str(random.randint(0, 100)),
-            "options": {
-                "option_a": "test a" + str(random.randint(0, 100)),
-                "option_b": "test b" + str(random.randint(0, 100)),
-                "option_c": "test c" + str(random.randint(0, 100)),
-                "option_d": "test d" + str(random.randint(0, 100))
-            }
-        }
-
-        temp_json = json.dumps(temp_dict)
-
-        return temp_json
-    """
+        # turns the dict into a json file (str)
+        return json.dumps(self.questions[self.question_counter])
 
     # For when the previous question button is pressed
     def previousQuestion(self):
         if self.question_counter == 0:
-            return False
+            return json.dumps({"message": "can't go back anymore"})
 
         self.question_counter -= 1
-        return self.questions[self.question_counter]
+
+        # turns the dict into a json file (str)
+        return json.dumps(self.questions[self.question_counter])
 
     # returns the number of questions in the test session
     def getNumQuestions(self):
         return len(self.questions)
 
+    def getCurrentQuestionNum(self):
+        return self.question_counter
+
     # save the state of the current question to a file
     def saveState(self):
         pass
 
-
-    def generate_question_html(self, question_number):
+    def generate_question_dict(self, question_number):
+        remaining_attempts = 3
+        question_id = random.randint(0, 1000)
         temp_dict = {
-            "question_number": question_number,
+            "question_id": str(question_id),
+            "question_number": str(question_number),
             "question": "WHat is this ____" + str(random.randint(0, 100)),
+            "remaining_attempts": str(remaining_attempts),
             "options": {
                 "option_a": "test a" + str(random.randint(0, 100)),
                 "option_b": "test b" + str(random.randint(0, 100)),
                 "option_c": "test c" + str(random.randint(0, 100)),
                 "option_d": "test d" + str(random.randint(0, 100))
-            }
+            },
+            "message": ""
         }
 
-        temp_json = json.dumps(temp_dict)
+        return temp_dict
 
-        return temp_json
+    def get_question_dict(self):
+        sock = connect_to_server(self.QB_IP, QB_PORT)
+        server_address = (self.QB_IP, QB_PORT)
+
+        header = "questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        header_len = len(header)
+        # Pack the header length as a 4-byte integer in network byte order
+        header_len_bytes = struct.pack("!I", header_len)
+
+        message = "2"
+        data = header_len_bytes + header.encode() + message.encode()
+
+        sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
+        response = sock.recv(1024)  # Awaits a response.
+        message = str(response, 'utf-8')
+
+        dict = json.loads(message)
+        temp_questions_list = []
+
+        for key in dict.keys():
+            remaining_attempts = 3
+            question_id = random.randint(0, 1000)
+            temp_dict = {
+                "question_id": str(key),
+                "question_number": str(key),
+                "question": dict[key]["question"],
+                "remaining_attempts": str(remaining_attempts),
+                "options": {
+                    "option_a": dict[key]["option_a"],
+                    "option_b": dict[key]["option_b"],
+                    "option_c": dict[key]["option_c"],
+                    "option_d": dict[key]["option_d"]
+                },
+                "message": ""
+            }
+
+            temp_questions_list.append(temp_dict)
+        return temp_questions_list
+
+    def format_question(self, question_number, question_id, ):
+        remaining_attempts = 3
+        question_id = random.randint(0, 1000)
+        temp_dict = {
+            "question_id": str(question_id),
+            "question_number": str(question_number),
+            "question": "WHat is this ____" + str(random.randint(0, 100)),
+            "remaining_attempts": str(remaining_attempts),
+            "options": {
+                "option_a": "test a" + str(random.randint(0, 100)),
+                "option_b": "test b" + str(random.randint(0, 100)),
+                "option_c": "test c" + str(random.randint(0, 100)),
+                "option_d": "test d" + str(random.randint(0, 100))
+            },
+            "message": ""
+        }
+
+        return temp_dict
+
 
     def getAnswer(self, question_bank, question_id, answer):
         sock = connect_to_server(self.QB_IP, QB_PORT)
@@ -114,14 +167,12 @@ class Test:
 
         return
 
-
-
 def connect_to_server(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = (host, port)
     try:
         sock.connect(server_address)
-        # print("Connection successful!")
+        print("Connection successful!")
     except socket.error as e:
         print(f"Error connecting to server: {e}")
         exit(1)

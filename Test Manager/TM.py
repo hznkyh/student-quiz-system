@@ -98,13 +98,21 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             send_response = True
             if json_data['action'] == 'next':
                 response = active_tests[username].nextQuestion()
+
             elif json_data['action'] == 'back':
-                response = active_tests[username].nextQuestion()
+                response = active_tests[username].previousQuestion()
+
             elif json_data['action'] == 'info':
                 username = json_data['username']
                 response = self.generate_student_info(username)
+
+            elif json_data["action"] == 'test_info':
+                username = json_data['username']
+                response = json.dumps({"num_questions": active_tests[username].getNumQuestions()})
+
+
             elif json_data['action'] == 'submit':
-                if active_tests[username].getAnswer(active_tests[username], json_data["current_question"],
+                if active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),
                                                     json_data["answer"]):
                     response = "correct"
                 else:
@@ -117,6 +125,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
+                print(response)
                 self.wfile.write(bytes(response, 'utf-8'))
 
     def generate_student_info(self, student_id):
@@ -137,14 +146,8 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 def processLogin(student_id):
     print("processing login")
     print("created test object for student_id {}".format(student_id))
-    test_obj = tester.Test(student_id, QB_HOST, resume_state=False, num_questions=10)
+    test_obj = tester.Test(student_id, QB_HOST, resume_state=False, num_questions=5)
     active_tests[student_id] = test_obj
-
-
-def get_question(question_bank):
-    # TODO link with QB
-    question = question_bank.get_question()
-    return question
 
 
 if __name__ == '__main__':

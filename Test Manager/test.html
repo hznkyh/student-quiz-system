@@ -27,6 +27,7 @@
         </div>
 
         <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
+        <h3 id="remaining attempts"></h3>
         <div style="background-color: aliceblue;border: 1px solid black">
             <div style="padding:1em">
                 <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
@@ -54,11 +55,8 @@
     </body>
 
     <script type="text/javascript">
-        function Start(status) {
-            console.log(status);
-        }
-        
         var current_question = 0;
+        var num_questions = 0; 
 
         //Populate the page when first opened
         window.onload = function() {
@@ -71,12 +69,14 @@
             // Update name
             document.getElementById("username").innerText = name;
 
+            // Get test info
+            sendAjaxRequest('test_info');
+
             // Update grade
-            sendAjaxRequest('info', current_question);
+            sendAjaxRequest('info');
 
             //loads in the first question when the page starts
-            current_question += 1;
-            sendAjaxRequest('next', current_question);
+            sendAjaxRequest('next');
         }
         
         function getChecked() {
@@ -90,40 +90,42 @@
             return "d";
           }
         }
+
         
         function nextQuestion() {
             var username = document.cookie.split("=")[1];
-            current_question += 1;
-            if (current_question <= 10){
-                document.getElementById("result").innerHTML = "Next question." + current_question;
-                sendAjaxRequest('next', current_question);
-            }else {
-                current_question = 10;
-                document.getElementById("result").innerHTML = "This is the last question.";
-            }
+            sendAjaxRequest('next', current_question);
+
+            //if (current_question <= num_questions){
+            //    document.getElementById("result").innerHTML = "Next question." + current_question;
+            //    sendAjaxRequest('next', current_question);
+            //}else {
+            //    current_question = num_questions;
+            //    document.getElementById("result").innerHTML = "This is the last question.";
+            //}
         }
         
         function previousQuestion() {
             var username = document.cookie.split("=")[1];
-            current_question -= 1;
-            if (current_question > 0) {
-                document.getElementById("result").innerHTML = "Previous question";    
-                sendAjaxRequest('back', current_question);
-            } else {
-                current_question = 1;
-                document.getElementById("result").innerHTML = "Can't go back more";
-            }
+            sendAjaxRequest('back');
+            //current_question -= 1;
+            //if (current_question > 0) {
+            //    document.getElementById("result").innerHTML = "Previous question";    
+            //    sendAjaxRequest('back');
+            //} else {
+            //    document.getElementById("result").innerHTML = "Can't go back more";
+            //}
         }
         
         function submitQuestion() {
             var answer = getChecked();
             // Send request to check answer
-            sendAjaxRequest('submit', current_question, answer);
+            sendAjaxRequest('submit', answer);
         }
         
-        function sendAjaxRequest(action, current_question, answer) {
+        function sendAjaxRequest(action, answer) {
             var username = document.cookie.split("=")[1]; // important
-            to_send = {action: action, current_question: current_question, username: username, answer: answer}
+            to_send = {action: action, username: username, answer: answer}
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/');
@@ -140,35 +142,54 @@
                     }
                     else if (action == 'submit') {
                         updateChecked(response);
+                    }
+                    else if (action == "test_info") {
+                        response_object = JSON.parse(response);
+                        num_questions = response_object["num_questions"]
                     }       
                 } else {
                     console.error(xhr.statusText);
                 }
             };
-
             xhr.send(JSON.stringify(to_send));
         }
         
         function updateHTML(response) {
+
+            // turns the response into a json object
             response_object = JSON.parse(response);
-        
-            number = response_object["question_number"];
-            question = response_object["question"];
-            option_a = response_object["options"]["option_a"];
-            option_b = response_object["options"]["option_b"];
-            option_c = response_object["options"]["option_c"];
-            option_d = response_object["options"]["option_d"];
-        
-        
-            console.log("updating question");
-        
-            document.getElementById("question number").innerHTML = "Question " + current_question;
-            document.getElementById("question").innerHTML = question;
-        
-            document.getElementById("label a").innerHTML = option_a
-            document.getElementById("label b").innerHTML = option_b
-            document.getElementById("label c").innerHTML = option_c
-            document.getElementById("label d").innerHTML = option_d
+            
+            if (response_object["message"] == "") {
+                // gets the data from the json file passed across 
+                current_question = response_object["question_number"];
+                question = response_object["question"];
+                remaining_attempts = response_object["remaining_attempts"];
+                option_a = response_object["options"]["option_a"];
+                option_b = response_object["options"]["option_b"];
+                option_c = response_object["options"]["option_c"];
+                option_d = response_object["options"]["option_d"];
+                        
+                document.getElementById("question number").innerHTML = "Question " + current_question;
+                document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
+                document.getElementById("question").innerHTML = question;
+            
+                // updates text for each of the radio buttons
+                document.getElementById("label a").innerHTML = option_a
+                document.getElementById("label b").innerHTML = option_b
+                document.getElementById("label c").innerHTML = option_c
+                document.getElementById("label d").innerHTML = option_d
+
+                // ressets radio buttons
+                document.getElementById('a').checked = false;
+                document.getElementById('b').checked = false;
+                document.getElementById('c').checked = false;
+                document.getElementById('d').checked = false;
+
+
+            } else {
+                // prints a message at the bottom
+                document.getElementById("result").innerText = response_object["message"];
+            }
         }
 
         function updateChecked(response) {
