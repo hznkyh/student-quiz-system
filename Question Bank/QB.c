@@ -250,7 +250,7 @@ Question* read_questions_file(){
             strcpy(questions[i].option_b, option_b);
             strcpy(questions[i].option_c, option_c);
             strcpy(questions[i].option_d, option_d);
-            printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
+            //printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
             i++;
         }
     }
@@ -258,6 +258,7 @@ Question* read_questions_file(){
     // Close the file and free the memory used for the random numbers
     fclose(fp);
     free(question_numbers);
+    free(questions);
 
     return questions;
 }
@@ -292,9 +293,10 @@ int mark_MC_Question(int question_id, char *student_answer){
     }
     
     if(strcmp(current_answer, student_answer) == 0){
+        free(current_answer);
         return 1;
     }
-   
+    free(current_answer);
     return 0;
 
 }
@@ -326,7 +328,7 @@ void send_questions(Question* questions, int sockfd){
             sprintf(buffer + strlen(buffer), "\"option_c\": \"%s\",", questions[i].option_c);
             sprintf(buffer + strlen(buffer), "\"option_d\": \"%s\"", questions[i].option_d);
             sprintf(buffer + strlen(buffer), "},");
-            printf("Q: %s",buffer);
+            //printf("Q: %s",buffer);
         }
     }
     sprintf(buffer + strlen(buffer) - 1, "}");
@@ -335,6 +337,7 @@ void send_questions(Question* questions, int sockfd){
     // Send the Python code to the server
     if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
         perror("send failed");
+        free(buffer);
         exit(EXIT_FAILURE);
     }
     

@@ -123,7 +123,6 @@ class Test:
             }
             i+=1
             temp_questions_list.append(temp_dict)
-        print(f"LIST: {temp_questions_list}")
         return temp_questions_list
 
     def format_question(self, question_number, question_id, ):
@@ -163,10 +162,10 @@ class Test:
         msg = str(response, 'utf-8')
         if (msg == 'T'):
             print(f"Received response: '{msg}', answer was CORRECT")
+            return True
         else:
             print(f"Received response: '{msg}', answer was INCORRECT")
-
-        return
+            return False
 
 def getQuestionID(questions_list, current_question_number):
         for question in questions_list:

@@ -112,11 +112,12 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
 
             elif json_data['action'] == 'submit':
-                if active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),
-                                                    json_data["answer"]):
+                if (active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),json_data["answer"])):
                     response = "correct"
+                    send_response = True
                 else:
                     response = "incorrect"
+                    send_response = False
             else:
                 send_response = False
                 response = 0

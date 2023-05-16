@@ -195,8 +195,11 @@
         function updateChecked(response) {
             if (response == "correct") {
                 document.getElementById("result").innerText = "Correct";
-            } else {
+            }else if (response == "incorrect") {
                 document.getElementById("result").innerText = "Incorrect";
+            }
+            else {
+                document.getElementById("result").innerText = "";
             }
         }
 
