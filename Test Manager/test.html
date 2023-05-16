@@ -81,13 +81,13 @@
         
         function getChecked() {
           if (document.getElementById('a').checked) {
-            return "a";
+            return document.getElementById('label a').innerHTML; //Was return "a" but we need the actual answer not the option
           } else if(document.getElementById('b').checked) {
-            return "b";
+            return document.getElementById('label b').innerHTML;
           } else if(document.getElementById('c').checked) {
-            return "c";
+            return document.getElementById('label c').innerHTML;
           } else if(document.getElementById('d').checked) {
-            return "d";
+            return document.getElementById('label d').innerHTML;
           }
         }
 

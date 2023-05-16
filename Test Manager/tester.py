@@ -104,13 +104,13 @@ class Test:
 
         dict = json.loads(message)
         temp_questions_list = []
-
+        i=1
         for key in dict.keys():
             remaining_attempts = 3
             question_id = random.randint(0, 1000)
             temp_dict = {
                 "question_id": str(key),
-                "question_number": str(key),
+                "question_number": str(i),
                 "question": dict[key]["question"],
                 "remaining_attempts": str(remaining_attempts),
                 "options": {
@@ -121,8 +121,9 @@ class Test:
                 },
                 "message": ""
             }
-
+            i+=1
             temp_questions_list.append(temp_dict)
+        print(f"LIST: {temp_questions_list}")
         return temp_questions_list
 
     def format_question(self, question_number, question_id, ):
@@ -145,7 +146,7 @@ class Test:
         return temp_dict
 
 
-    def getAnswer(self, question_bank, question_id, answer):
+    def getAnswer(self, question_bank, question_number, answer):
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
 
@@ -153,8 +154,8 @@ class Test:
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
-
-        message = "{}={}".format(question_id, answer)
+        questionID = getQuestionID(question_bank.questions, question_number+1)
+        message = "{}={}".format(questionID, answer) #The 'question_id' being sent here is just the question number, not the ID
         data = header_len_bytes + header.encode() + message.encode()
 
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
@@ -166,6 +167,15 @@ class Test:
             print(f"Received response: '{msg}', answer was INCORRECT")
 
         return
+
+def getQuestionID(questions_list, current_question_number):
+        for question in questions_list:
+            question_id = question["question_id"]
+            question_number = question['question_number']
+            if int(question_number) == int(current_question_number):
+                return question_id
+                
+
 
 def connect_to_server(host, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
