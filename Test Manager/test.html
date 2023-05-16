@@ -4,6 +4,28 @@
 
     <head>
         <title>Multiple Choice Questions</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
+        <style>
+            #code-editor {
+              width: 600px;
+              height: 300px;
+              margin-bottom: 20px;
+            }
+          </style>
+          <script>
+            window.addEventListener('DOMContentLoaded', (event) => {
+              // Initialize the Ace Editor
+              var editor = ace.edit("code-editor");
+              editor.setTheme("ace/theme/twilight");
+              editor.session.setMode("ace/mode/c_cpp");
+      
+              // Update the hidden input field with the code from the editor
+              var codeInput = document.getElementById("code-input");
+              editor.getSession().on("change", function () {
+                codeInput.value = editor.getValue();
+              });
+            });
+          </script>
     </head>
 
     <body style="margin:2em">
@@ -12,7 +34,7 @@
             <div style="padding-left: 1em;">
                 <p> Student username: <span id="username"></span></p>
                 <p> Student name: <span id="name">User not logged in</span></p>
-                <p> Grade: <span id="grade" >0</span>/30 </p> 
+                <p> Grade: <span id="grade" >0</span>/20 </p> 
             </div>
         </div>
 
@@ -29,7 +51,7 @@
         <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
         <h3 id="remaining attempts"></h3>
         <div style="background-color: aliceblue;border: 1px solid black">
-            <div style="padding:1em">
+            <div id = 'question-box' style="padding:1em">
                 <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
                  <!-- Question to be generated -->
                 <form>
@@ -133,7 +155,6 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     const response = xhr.responseText;
-                    updateChecked(response);
                     if (action == 'next'|| action == 'back') {
                         updateHTML(response);
                     } 
@@ -142,11 +163,16 @@
                     }
                     else if (action == 'submit') {
                         updateChecked(response);
+                        updateInfo(response);
                     }
                     else if (action == "test_info") {
                         response_object = JSON.parse(response);
                         num_questions = response_object["num_questions"]
-                    }       
+                    }   
+                    else if (action == "attempts"){
+                        console.log(response);
+                        updateAttempts(response);
+                    }
                 } else {
                     console.error(xhr.statusText);
                 }
@@ -164,6 +190,8 @@
                 current_question = response_object["question_number"];
                 question = response_object["question"];
                 remaining_attempts = response_object["remaining_attempts"];
+                console.log(question)
+                console.log(remaining_attempts);
                 option_a = response_object["options"]["option_a"];
                 option_b = response_object["options"]["option_b"];
                 option_c = response_object["options"]["option_c"];
@@ -190,13 +218,27 @@
                 // prints a message at the bottom
                 document.getElementById("result").innerText = response_object["message"];
             }
+
+            // For editor
+        //     document.getElementById("question-box").innerHTML = `<form method="POST" action="http://localhost:9000/">
+        //                                                             <h2>Question 6:</h2>
+        //                                                             <p>Write a C program to calculate the factorial of a given number:</p>
+        //                                                             <div id="code-editor"></div>
+        //                                                             <textarea id="code-input" name="q6" style="display: none;"></textarea>
+
+        //                                                             <input type="submit" name="Submit" value="Submit">
+        //                                                         </form>`;
         }
 
         function updateChecked(response) {
             if (response == "correct") {
                 document.getElementById("result").innerText = "Correct";
+                sendAjaxRequest('info');
+                sendAjaxRequest('attempts')
+                
             }else if (response == "incorrect") {
                 document.getElementById("result").innerText = "Incorrect";
+                sendAjaxRequest('attempts')
             }
             else {
                 document.getElementById("result").innerText = "";
@@ -207,6 +249,10 @@
             response_object = JSON.parse(response);
             document.getElementById("grade").innerText = response_object["grade"];
             document.getElementById("name").innerText = response_object["name"];
+        }
+
+        function updateAttempts(response) {
+            document.getElementById("remaining attempts").innerText = "Remaining attempts: " + response;
         }
     </script>
 </html>

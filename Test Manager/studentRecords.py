@@ -84,6 +84,19 @@ def setTestData(student_id, test_data):
     with open(JSON_FILENAME, "w") as file:
         file.write(json_object)
 
+def remaining_attempts(student_id, question_num):
+    json_data = readRecords()
+    number = str(question_num)
+    return json_data[student_id]["test"][number]["remaining_attempts"]
+
+def set_remaining_attempts(student_id, question_num, remaining_attempts):
+    json_data = readRecords()
+    number = str(question_num)
+    json_data[student_id]["test"][number]["remaining_attempts"] = remaining_attempts
+    json_object = json.dumps(json_data, indent=4)
+
+    with open(JSON_FILENAME, "w") as file:
+        file.write(json_object)
 
 # resets all grades
 def resetGrades():

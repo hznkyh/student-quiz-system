@@ -36,6 +36,10 @@ class Test:
             # read file
             pass
 
+    # For refreshing the current question
+    def getCurrentQuestion(self):
+        return json.dumps(self.questions[self.question_counter])
+    
     # For when the next question button is pressed
     def nextQuestion(self):
         # if self.question_counter >= self.getNumQuestions() - 1:
