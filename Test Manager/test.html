@@ -1,47 +1,212 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Multiple Choice Questions</title>
-  </head>
-  <body>
-    <h1>Multiple Choice Questions</h1>
-    <form method="POST" action="http://localhost:9000/">
-      <h2>Question 1:</h2>
-      <p>What is the capital of France?</p>
-      <label><input type="radio" name="q1" value="a">a) Paris</label><br>
-      <label><input type="radio" name="q1" value="b">b) London</label><br>
-      <label><input type="radio" name="q1" value="c">c) Madrid</label><br>
-      <label><input type="radio" name="q1" value="d">d) Berlin</label><br>
+    <!-- <script src="test.js" type="text/javascript"></script> -->
 
-      <h2>Question 2:</h2>
-      <p>What is the largest ocean in the world?</p>
-      <label><input type="radio" name="q2" value="a">a) Pacific Ocean</label><br>
-      <label><input type="radio" name="q2" value="b">b) Atlantic Ocean</label><br>
-      <label><input type="radio" name="q2" value="c">c) Indian Ocean</label><br>
-      <label><input type="radio" name="q2" value="d">d) Southern Ocean</label><br>
+    <head>
+        <title>Multiple Choice Questions</title>
+    </head>
 
-      <h2>Question 3:</h2>
-      <p>What is the largest planet in the solar system?</p>
-      <label><input type="radio" name="q3" value="a">a) Venus</label><br>
-      <label><input type="radio" name="q3" value="b">b) Mars</label><br>
-      <label><input type="radio" name="q3" value="c">c) Jupiter</label><br>
-      <label><input type="radio" name="q3" value="d">d) Saturn</label><br>
+    <body style="margin:2em">
+        <div style="margin-bottom:1em;border:1px solid black;padding:1em;">
+            <h1 style="margin:0px;"> Student Information</h1>
+            <div style="padding-left: 1em;">
+                <p> Student username: <span id="username"></span></p>
+                <p> Student name: <span id="name">User not logged in</span></p>
+                <p> Grade: <span id="grade" >0</span>/30 </p> 
+            </div>
+        </div>
 
-      <h2>Question 4:</h2>
-      <p>What is the largest mammal in the world?</p>
-      <label><input type="radio" name="q4" value="a">a) Elephant</label><br>
-      <label><input type="radio" name="q4" value="b">b) Blue whale</label><br>
-      <label><input type="radio" name="q4" value="c">c) Giraffe</label><br>
-      <label><input type="radio" name="q4" value="d">d) Hippopotamus</label><br>
+        <div style="border:1px solid black;padding:1em;">
+            <h1 style="margin:0px;">Test instructions</h1>
+            <ul style="margin:0.5em 0em;">
+                <li> Pick the best answer for each question from the options below. </li>
+                <li> First attempt at any question is correct, receive 3 marks </li>
+                <li> 2 marks if second attempt is correct, and so on. </li>
+                <li> Once attempted all questions (either correctly or after 3 attempts each). Answer may no longer be submitted. </li>
+            </ul>
+        </div>
 
-      <h2>Question 5:</h2>
-      <p>What is the chemical symbol for gold?</p>
-      <label><input type="radio" name="q5" value="a">a) Au</label><br>
-      <label><input type="radio" name="q5" value="b">b) Ag</label><br>
-      <label><input type="radio" name="q5" value="c">c) Cu</label><br>
-      <label><input type="radio" name="q5" value="d">d) Fe</label><br>
+        <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
+        <h3 id="remaining attempts"></h3>
+        <div style="background-color: aliceblue;border: 1px solid black">
+            <div style="padding:1em">
+                <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
+                 <!-- Question to be generated -->
+                <form>
+                    <input type="radio" name="question" id="a" value="a"> 
+                    <label> </label> <label id="label a"></label><br>
+                    <input type="radio" name="question" id="b" value="b"> 
+                    <label> </label> <label id="label b"></label><br>
+                    <input type="radio" name="question" id="c" value="c"> 
+                    <label> </label> <label id="label c"></label><br>
+                    <input type="radio" name="question" id="d" value="d"> 
+                    <label> </label> <label id="label d"></label><br>
+                </form> 
+            </div>
+        </div>
 
-      <input type="submit" name="Submit" value="Submit">
-    </form>
-  </body>
+        <div id="buttons-container" style="margin:1em;">
+            <button id="back-button" onclick="previousQuestion()" style="float:left;padding: 0.5em;"> Back </button>
+            <button id="next-button" onclick="nextQuestion()" style="padding: 0.5em;"> Next </button>
+            <button id="submit-button" onclick="submitQuestion()" style="float:right;padding: 0.5em;"> Submit </button>
+        </div>
+
+        <div id = "result"> </div> 
+    </body>
+
+    <script type="text/javascript">
+        var current_question = 0;
+        var num_questions = 0; 
+
+        //Populate the page when first opened
+        window.onload = function() {
+            var cookie = document.cookie;
+            var name = cookie.split("=")[1];
+            if (name == undefined || name == "") {
+                name = "User not logged in";
+            }
+
+            // Update name
+            document.getElementById("username").innerText = name;
+
+            // Get test info
+            sendAjaxRequest('test_info');
+
+            // Update grade
+            sendAjaxRequest('info');
+
+            //loads in the first question when the page starts
+            sendAjaxRequest('next');
+        }
+        
+        function getChecked() {
+          if (document.getElementById('a').checked) {
+            return document.getElementById('label a').innerHTML; //Was return "a" but we need the actual answer not the option
+          } else if(document.getElementById('b').checked) {
+            return document.getElementById('label b').innerHTML;
+          } else if(document.getElementById('c').checked) {
+            return document.getElementById('label c').innerHTML;
+          } else if(document.getElementById('d').checked) {
+            return document.getElementById('label d').innerHTML;
+          }
+        }
+
+        
+        function nextQuestion() {
+            var username = document.cookie.split("=")[1];
+            sendAjaxRequest('next', current_question);
+
+            //if (current_question <= num_questions){
+            //    document.getElementById("result").innerHTML = "Next question." + current_question;
+            //    sendAjaxRequest('next', current_question);
+            //}else {
+            //    current_question = num_questions;
+            //    document.getElementById("result").innerHTML = "This is the last question.";
+            //}
+        }
+        
+        function previousQuestion() {
+            var username = document.cookie.split("=")[1];
+            sendAjaxRequest('back');
+            //current_question -= 1;
+            //if (current_question > 0) {
+            //    document.getElementById("result").innerHTML = "Previous question";    
+            //    sendAjaxRequest('back');
+            //} else {
+            //    document.getElementById("result").innerHTML = "Can't go back more";
+            //}
+        }
+        
+        function submitQuestion() {
+            var answer = getChecked();
+            // Send request to check answer
+            sendAjaxRequest('submit', answer);
+        }
+        
+        function sendAjaxRequest(action, answer) {
+            var username = document.cookie.split("=")[1]; // important
+            to_send = {action: action, username: username, answer: answer}
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', '/');
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    const response = xhr.responseText;
+                    updateChecked(response);
+                    if (action == 'next'|| action == 'back') {
+                        updateHTML(response);
+                    } 
+                    else if (action == 'info') {
+                        updateInfo(response);
+                    }
+                    else if (action == 'submit') {
+                        updateChecked(response);
+                    }
+                    else if (action == "test_info") {
+                        response_object = JSON.parse(response);
+                        num_questions = response_object["num_questions"]
+                    }       
+                } else {
+                    console.error(xhr.statusText);
+                }
+            };
+            xhr.send(JSON.stringify(to_send));
+        }
+        
+        function updateHTML(response) {
+
+            // turns the response into a json object
+            response_object = JSON.parse(response);
+            
+            if (response_object["message"] == "") {
+                // gets the data from the json file passed across 
+                current_question = response_object["question_number"];
+                question = response_object["question"];
+                remaining_attempts = response_object["remaining_attempts"];
+                option_a = response_object["options"]["option_a"];
+                option_b = response_object["options"]["option_b"];
+                option_c = response_object["options"]["option_c"];
+                option_d = response_object["options"]["option_d"];
+                        
+                document.getElementById("question number").innerHTML = "Question " + current_question;
+                document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
+                document.getElementById("question").innerHTML = question;
+            
+                // updates text for each of the radio buttons
+                document.getElementById("label a").innerHTML = option_a
+                document.getElementById("label b").innerHTML = option_b
+                document.getElementById("label c").innerHTML = option_c
+                document.getElementById("label d").innerHTML = option_d
+
+                // ressets radio buttons
+                document.getElementById('a').checked = false;
+                document.getElementById('b').checked = false;
+                document.getElementById('c').checked = false;
+                document.getElementById('d').checked = false;
+
+
+            } else {
+                // prints a message at the bottom
+                document.getElementById("result").innerText = response_object["message"];
+            }
+        }
+
+        function updateChecked(response) {
+            if (response == "correct") {
+                document.getElementById("result").innerText = "Correct";
+            }else if (response == "incorrect") {
+                document.getElementById("result").innerText = "Incorrect";
+            }
+            else {
+                document.getElementById("result").innerText = "";
+            }
+        }
+
+        function updateInfo(response) {
+            response_object = JSON.parse(response);
+            document.getElementById("grade").innerText = response_object["grade"];
+            document.getElementById("name").innerText = response_object["name"];
+        }
+    </script>
 </html>

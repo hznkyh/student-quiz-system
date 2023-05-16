@@ -6,6 +6,7 @@
 #define MAX_LINE_LENGTH 1024
 #define NUM_QUESTIONS 5
 #define OPTION_SIZE 24
+#define NUM_OF_AVAILABLE_QUESTIONS 27 //This is the total number of questions in the question set to pick from.
 
 struct message {
     int length; //Length of header

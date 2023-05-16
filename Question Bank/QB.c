@@ -112,6 +112,7 @@ void handle_connection(int sockfd) {
     ssize_t n;
     int payload_len;
 
+    memset(msg.payload, 0, sizeof(msg.payload));
     //Receive the Message header
     n = recv(connfd, &msg, sizeof(msg), 0);
         if (n <= 0) {
@@ -156,7 +157,6 @@ void handle_connection(int sockfd) {
         }
     }else
         printf("ERROR: Header '%s' not recognised.\n",header);
-        
 
 }
 
@@ -165,7 +165,7 @@ int* generate_questions_numbers() {
     int question_numbers[NUM_QUESTIONS];
     int num_used = 0; //Keeps track of the number of question numbers we've added to the array.
     int min = 1; 
-    int max = 5; //The number of questions we have
+    int max = 27; //The number of questions we have
     int range = max - min + 1;
 
     srand(time(NULL));
@@ -243,13 +243,14 @@ Question* read_questions_file(){
         }
 
         // Check if the current question ID is in the list of question_numbers we want.
-        if (inArray(id, question_numbers, NUM_QUESTIONS)) {
+        if (inArray(id, question_numbers, NUM_OF_AVAILABLE_QUESTIONS)) {
             questions[i].id = id;
             strcpy(questions[i].question, question);
             strcpy(questions[i].option_a, option_a);
             strcpy(questions[i].option_b, option_b);
             strcpy(questions[i].option_c, option_c);
             strcpy(questions[i].option_d, option_d);
+            //printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
             i++;
         }
     }
@@ -258,6 +259,7 @@ Question* read_questions_file(){
     fclose(fp);
     free(question_numbers);
 
+    printf("Questions generated.\n");
     return questions;
 }
 
@@ -291,9 +293,10 @@ int mark_MC_Question(int question_id, char *student_answer){
     }
     
     if(strcmp(current_answer, student_answer) == 0){
+        free(current_answer);
         return 1;
     }
-   
+    free(current_answer);
     return 0;
 
 }
@@ -325,6 +328,7 @@ void send_questions(Question* questions, int sockfd){
             sprintf(buffer + strlen(buffer), "\"option_c\": \"%s\",", questions[i].option_c);
             sprintf(buffer + strlen(buffer), "\"option_d\": \"%s\"", questions[i].option_d);
             sprintf(buffer + strlen(buffer), "},");
+            //printf("Q: %s",buffer);
         }
     }
     sprintf(buffer + strlen(buffer) - 1, "}");
@@ -333,6 +337,7 @@ void send_questions(Question* questions, int sockfd){
     // Send the Python code to the server
     if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
         perror("send failed");
+        free(buffer);
         exit(EXIT_FAILURE);
     }
     
@@ -341,6 +346,7 @@ void send_questions(Question* questions, int sockfd){
     
     // Free the buffer memory
     free(buffer);
+    free(questions);
 }
 
 void close_connection(int connfd) {
