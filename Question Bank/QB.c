@@ -112,6 +112,7 @@ void handle_connection(int sockfd) {
     ssize_t n;
     int payload_len;
 
+    memset(msg.payload, 0, sizeof(msg.payload));
     //Receive the Message header
     n = recv(connfd, &msg, sizeof(msg), 0);
         if (n <= 0) {
@@ -156,7 +157,6 @@ void handle_connection(int sockfd) {
         }
     }else
         printf("ERROR: Header '%s' not recognised.\n",header);
-        
 
 }
 
