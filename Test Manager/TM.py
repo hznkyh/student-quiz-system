@@ -118,43 +118,50 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 #Retrieve the remaining attempts for the current question
                 question_num = active_tests[username].getCurrentQuestionNum()
                 attempts = int(records.remaining_attempts(username, question_num))
+                
 
-                #If attempts is 0, send the answer
-                if attempts == 0:
-                    # TODO: send answer
-                    response = "Answer"
+                if (active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),json_data["answer"])):
+                    response = "correct"
+                    #Update grade
+                    grade = int(records.getGrade(username))
+                    records.setGrade(username, grade + attempts)
+                    #Set remaining attempts to 0
+                    records.set_remaining_attempts(username, question_num, "0")
                     send_response = True
-
                 else:
-                    if (active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),json_data["answer"])):
-                        response = "correct"
-                        #Update grade
-                        grade = int(records.getGrade(username))
-                        records.setGrade(username, grade + attempts)
-                        #Set remaining attempts to 0
-                        records.set_remaining_attempts(username, question_num, "0")
-                        send_response = True
+                    #If there are no remaining attempts
+                    if attempts == 1:
+                        # TODO make call to QB for correct answer
+                        correct_answer = "<answer from QB goes here>"
+                        response = "No more attempts left. The correct answer was {}".format(correct_answer)
+                        send_response = False
+                        records.set_remaining_attempts(username, question_num, str(attempts - 1))
+
+                    elif attempts == 0:
+                        # if the user has already been told they have no more remaining attempts
+                        # TODO make call to QB for correct answer
+                        correct_answer = "<answer from QB goes here>"
+                        response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(correct_answer)
+
                     else:
-                        #If there are no remaining attempts
-                        if attempts == 1:
-                            # TODO: send answer
-                            response = "Answer"
-                            send_response = False
                         #If there are remaining attempts, decrement the attempts and send the response
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
                         response = "incorrect"
                         send_response = False
+
             else:
                 send_response = False
                 response = 0
 
             # Whats is this if statement for?
-            if send_response or send_response==False:
-                self.send_response(200)
-                self.send_header('Content-type', 'text/html')
-                self.end_headers()
-                print(response)
-                self.wfile.write(bytes(response, 'utf-8'))
+            #if send_response or send_response==False:
+
+            print("response: {}".format(response))
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            print(response)
+            self.wfile.write(bytes(response, 'utf-8'))
 
     def generate_student_info(self, student_id):
         if student_id in records.readRecords():

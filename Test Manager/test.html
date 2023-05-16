@@ -117,6 +117,8 @@
         function nextQuestion() {
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('next', current_question);
+            sendAjaxRequest('attempts')
+
 
             //if (current_question <= num_questions){
             //    document.getElementById("result").innerHTML = "Next question." + current_question;
@@ -130,6 +132,8 @@
         function previousQuestion() {
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('back');
+            sendAjaxRequest('attempts')
+
             //current_question -= 1;
             //if (current_question > 0) {
             //    document.getElementById("result").innerHTML = "Previous question";    
@@ -241,7 +245,8 @@
                 sendAjaxRequest('attempts')
             }
             else {
-                document.getElementById("result").innerText = "";
+                document.getElementById("result").innerText = response;
+                sendAjaxRequest('attempts')
             }
         }
 
