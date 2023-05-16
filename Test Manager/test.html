@@ -133,7 +133,6 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     const response = xhr.responseText;
-                    updateChecked(response);
                     if (action == 'next'|| action == 'back') {
                         updateHTML(response);
                     } 
@@ -147,7 +146,11 @@
                     else if (action == "test_info") {
                         response_object = JSON.parse(response);
                         num_questions = response_object["num_questions"]
-                    }       
+                    }   
+                    else if (action == "attempts"){
+                        console.log(response);
+                        updateAttempts(response);
+                    }
                 } else {
                     console.error(xhr.statusText);
                 }
@@ -165,6 +168,8 @@
                 current_question = response_object["question_number"];
                 question = response_object["question"];
                 remaining_attempts = response_object["remaining_attempts"];
+                console.log(question)
+                console.log(remaining_attempts);
                 option_a = response_object["options"]["option_a"];
                 option_b = response_object["options"]["option_b"];
                 option_c = response_object["options"]["option_c"];
@@ -196,8 +201,12 @@
         function updateChecked(response) {
             if (response == "correct") {
                 document.getElementById("result").innerText = "Correct";
+                sendAjaxRequest('info');
+                sendAjaxRequest('attempts')
+                
             }else if (response == "incorrect") {
                 document.getElementById("result").innerText = "Incorrect";
+                sendAjaxRequest('attempts')
             }
             else {
                 document.getElementById("result").innerText = "";
@@ -208,6 +217,10 @@
             response_object = JSON.parse(response);
             document.getElementById("grade").innerText = response_object["grade"];
             document.getElementById("name").innerText = response_object["name"];
+        }
+
+        function updateAttempts(response) {
+            document.getElementById("remaining attempts").innerText = "Remaining attempts: " + response;
         }
     </script>
 </html>

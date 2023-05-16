@@ -103,27 +103,52 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 response = active_tests[username].previousQuestion()
 
             elif json_data['action'] == 'info':
-                username = json_data['username']
                 response = self.generate_student_info(username)
 
             elif json_data["action"] == 'test_info':
-                username = json_data['username']
                 response = json.dumps({"num_questions": active_tests[username].getNumQuestions()})
-
+            
+            #Send latest attempts
+            elif json_data['action'] == 'attempts':
+                question_num = active_tests[username].getCurrentQuestionNum()
+                response = records.remaining_attempts(username, question_num)
+                send_response = False
 
             elif json_data['action'] == 'submit':
-                if (active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),json_data["answer"])):
-                    response = "correct"
-                    records.setGrade(username, 10)
+                #Retrieve the remaining attempts for the current question
+                question_num = active_tests[username].getCurrentQuestionNum()
+                attempts = int(records.remaining_attempts(username, question_num))
+
+                #If attempts is 0, send the answer
+                if attempts == 0:
+                    # TODO: send answer
+                    response = "Answer"
                     send_response = True
+
                 else:
-                    print("HERE IT'S INCORRECT...")
-                    response = "incorrect"
-                    send_response = False
+                    if (active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),json_data["answer"])):
+                        response = "correct"
+                        #Update grade
+                        grade = int(records.getGrade(username))
+                        records.setGrade(username, grade + attempts)
+                        #Set remaining attempts to 0
+                        records.set_remaining_attempts(username, question_num, "0")
+                        send_response = True
+                    else:
+                        #If there are no remaining attempts
+                        if attempts == 1:
+                            # TODO: send answer
+                            response = "Answer"
+                            send_response = False
+                        #If there are remaining attempts, decrement the attempts and send the response
+                        records.set_remaining_attempts(username, question_num, str(attempts - 1))
+                        response = "incorrect"
+                        send_response = False
             else:
                 send_response = False
                 response = 0
 
+            # Whats is this if statement for?
             if send_response or send_response==False:
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
