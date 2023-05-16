@@ -114,6 +114,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             elif json_data['action'] == 'submit':
                 if (active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),json_data["answer"])):
                     response = "correct"
+                    records.setGrade(username, 10)
                     send_response = True
                 else:
                     print("HERE IT'S INCORRECT...")
