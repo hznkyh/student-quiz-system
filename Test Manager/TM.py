@@ -116,13 +116,14 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     response = "correct"
                     send_response = True
                 else:
+                    print("HERE IT'S INCORRECT...")
                     response = "incorrect"
                     send_response = False
             else:
                 send_response = False
                 response = 0
 
-            if send_response:
+            if send_response or send_response==False:
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()

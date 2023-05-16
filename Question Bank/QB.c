@@ -258,8 +258,8 @@ Question* read_questions_file(){
     // Close the file and free the memory used for the random numbers
     fclose(fp);
     free(question_numbers);
-    free(questions);
 
+    printf("Questions generated.\n");
     return questions;
 }
 
@@ -346,6 +346,7 @@ void send_questions(Question* questions, int sockfd){
     
     // Free the buffer memory
     free(buffer);
+    free(questions);
 }
 
 void close_connection(int connfd) {

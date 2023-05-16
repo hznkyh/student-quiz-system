@@ -38,20 +38,20 @@ class Test:
 
     # For when the next question button is pressed
     def nextQuestion(self):
-        if self.question_counter >= self.getNumQuestions() - 1:
-            return json.dumps({"message": "can't go forward anymore"})
-
-        self.question_counter += 1
+        # if self.question_counter >= self.getNumQuestions() - 1:
+        #     return json.dumps({"message": "can't go forward anymore"})
+        if self.question_counter < self.getNumQuestions() - 1:
+            self.question_counter += 1
 
         # turns the dict into a json file (str)
         return json.dumps(self.questions[self.question_counter])
 
     # For when the previous question button is pressed
     def previousQuestion(self):
-        if self.question_counter == 0:
-            return json.dumps({"message": "can't go back anymore"})
-
-        self.question_counter -= 1
+        # if self.question_counter == 0:
+        #     return json.dumps({"message": "can't go back anymore"})
+        if self.question_counter != 0:
+            self.question_counter -= 1
 
         # turns the dict into a json file (str)
         return json.dumps(self.questions[self.question_counter])
