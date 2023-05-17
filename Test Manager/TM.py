@@ -141,7 +141,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     elif attempts == 0:
                         # if the user has already been told they have no more remaining attempts
                         # TODO make call to QB for correct answer
-                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username].getCurrentQuestionNum())
+                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum())
                         response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(correct_answer)
 
                     else:
