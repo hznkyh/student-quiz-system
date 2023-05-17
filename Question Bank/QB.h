@@ -2,10 +2,10 @@
 #define QB_H
 
 #define BUF_SIZE 1024
-#define MAX_PAYLOAD_LEN 1024
-#define MAX_LINE_LENGTH 1024
+#define MAX_PAYLOAD_LEN 2048    
+#define MAX_LINE_LENGTH 2048
 #define NUM_QUESTIONS 5
-#define OPTION_SIZE 24
+#define OPTION_SIZE 255
 #define NUM_OF_AVAILABLE_QUESTIONS 27 //This is the total number of questions in the question set to pick from.
 
 struct message {

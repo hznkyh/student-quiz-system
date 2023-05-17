@@ -1,27 +1,25 @@
-1,Paris
-2,Pacific Ocean
-3,Jupiter
-4,Blue Whale
-5,Au
-6,Madrid
-7,Mount Everest
-8,Russia
-9,Canberra
-10,Sahara Desert
-11,O
-12,Ganymede
-13,Japanese yen
-14,Beaver
-15,Angel Falls
-16,Vatican City
-17,Ag
-18,Brasília
-19,Lake Victoria
-20,Lotus
-21,Ostrich
-22,Coast Redwood
-23,British pound
-24,Ice hockey
-25,New York City
-26,Ca
-27,Pretoria
+1,A programming language
+2,Python 3.9
+3,Loop
+4,def
+5,#
+6,11
+7,Pandas
+8,Returns the length of a string
+9,my_variable
+10,Hello, world!
+11,To conditionally execute code
+12,break
+13,Adds an element to a list
+14,Imports a module
+15,Handling exceptions
+16,datetime
+17,8
+18,To generate a sequence of numbers
+19,open('data.txt')
+20,Removes leading and trailing whitespace
+21,==
+22,th
+23,Functions for generating random numbers
+24,To do nothing
+25,Splits a string into a list of substrings

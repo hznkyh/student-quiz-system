@@ -1,0 +1,27 @@
+1,Paris
+2,Pacific Ocean
+3,Jupiter
+4,Blue Whale
+5,Au
+6,Madrid
+7,Mount Everest
+8,Russia
+9,Canberra
+10,Sahara Desert
+11,O
+12,Ganymede
+13,Japanese yen
+14,Beaver
+15,Angel Falls
+16,Vatican City
+17,Ag
+18,Brasília
+19,Lake Victoria
+20,Lotus
+21,Ostrich
+22,Coast Redwood
+23,British pound
+24,Ice hockey
+25,New York City
+26,Ca
+27,Pretoria
