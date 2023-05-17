@@ -1,27 +1,25 @@
-1,What is the capital of France?,Paris,London,Madrid,Berlin
-2,What is the largest ocean in the world?,Pacific Ocean,Atlantic Ocean,Indian Ocean,Southern Ocean
-3,What is the largest planet in the solar system?,Venus,Mars,Jupiter,Saturn
-4,What is the largest mammal in the world?,Elephant,Blue Whale,Giraffe,Hippopotamus
-5,What is the chemical symbol for gold?,Au,Ag,Cu,Fe
-6,What is the capital of Spain?,Madrid,Barcelona,Valencia,Seville
-7,What is the tallest mountain in the world?,Mount Everest,K2,Kangchenjunga,Makalu
-8,What is the largest country by land area?,Russia,Canada,China,United States
-9,What is the capital of Australia?,Canberra,Sydney,Melbourne,Brisbane
-10,What is the largest desert in the world?,Sahara Desert,Gobi Desert,Kalahari Desert,Antarctic Desert
-11,What is the chemical symbol for oxygen?,O,N,C,H
-12,What is the largest moon in the solar system?,Ganymede,Titan,Callisto,Io
-13,What is the currency of Japan?,Japanese yen,Chinese yuan,Indian rupee,Euro
-14,What is the national animal of Canada?,Beaver,Moose,Polar bear,Caribou
-15,What is the largest waterfall in the world?,Angel Falls,Niagara Falls,Victoria Falls,Iguazu Falls
-16,What is the smallest country in the world by land area?,Vatican City,Monaco,Nauru,Tuvalu
-17,What is the chemical symbol for silver?,Ag,Au,Cu,Pb
-18,What is the capital of Brazil?,Brasília,Rio de Janeiro,São Paulo,Buenos Aires
-19,What is the largest lake in Africa?,Lake Victoria,Lake Tanganyika,Lake Malawi,Lake Turkana
-20,What is the national flower of India?,Lotus,Rose,Tulip,Sunflower
-21,What is the largest bird in the world?,Ostrich,Emu,Condor,Albatross
-22,What is the tallest tree species in the world?,Coast Redwood,Mountain Ash,Douglas Fir,Giant Sequoia
-23,What is the currency of the United Kingdom?,British pound,Euro,US dollar,Japanese yen
-24,What is the national sport of Canada?,Ice hockey,Lacrosse,Soccer,Cricket
-25,What is the largest city in the United States by population?,New York City,Los Angeles,Chicago,Houston
-26,What is the chemical symbol for calcium?,Ca,Co,Cu,Cr
-27,What is the capital of South Africa?,Pretoria,Johannesburg,Cape Town,Durban
+1,What is Python?,A programming language,A snake,A bird,A type of food
+2,What is the latest stable version of Python as of September 2021?,Python 3.9,Python 2.7,Python 3.6,Python 4.0
+3,Which of the following is NOT a Python data type?,Integer,List,Dictionary,Loop
+4,What is the keyword used to define a function in Python?,def,fun,function,class
+5,What symbol is used for single-line comments in Python?,#,//,/*,**
+6,What is the result of the expression 5 + 2 * 3 in Python?,11,17,9,21
+7,Which library in Python is commonly used for data analysis and manipulation?,Pandas,NumPy,Matplotlib,SciPy
+8,What does the 'len()' function do in Python?,Returns the length of a string,Calculates the logarithm,Converts a number to a string,Generates a random number
+9,Which of the following is a valid variable name in Python?,my_variable,2ndVariable,variable_name,True
+10,What is the output of the following code snippet? print('Hello, ' + 'world!')?,Hello, world!,Hello,world!,Hello ,world!,Helloworld!
+11,What is the purpose of the 'if' statement in Python?,To conditionally execute code,To define a loop,To import modules,To perform mathematical operations
+12,Which keyword is used to exit a loop prematurely in Python?,break,continue,exit,return
+13,What does the 'append()' method do in Python?,Adds an element to a list,Removes an element from a list,Sorts a list in ascending order,Counts the occurrences of an element in a list
+14,What does the 'import' keyword do in Python?,Imports a module,Defines a function,Prints a message to the console,Calculates a mathematical expression
+15,What does the 'try' and 'except' block in Python help with?,Handling exceptions,Defining variables,Performing file I/O operations,Creating classes
+16,Which module in Python is used to work with dates and times?,datetime,math,time,calendar
+17,What is the output of the following code snippet? print(2 ** 3),8,5,2,6
+18,What is the purpose of the 'range()' function in Python?,To generate a sequence of numbers,To round a floating-point number,To reverse a string,To calculate the factorial of a number
+19,What is the correct way to open a file named 'data.txt' in Python?,open('data.txt'),read('data.txt'),write('data.txt'),close('data.txt')
+20,What does the 'strip()' method do for strings in Python?,Removes leading and trailing whitespace,Converts a string to uppercase,Reverses the order of characters in a string,Checks if a substring is present in a string
+21,Which operator is used to check if two values are equal in Python?,==,=,!=,<=
+22,What is the output of the following code snippet? print('Python'[2:4]),th,no,Py,tho
+23,What does the 'random' module in Python provide?,Functions for generating random numbers,Functions for sorting lists,Functions for performing mathematical calculations,Functions for reading and writing files
+24,What is the purpose of the 'pass' statement in Python?,To do nothing,To break out of a loop,To raise an exception,To import a module
+25,What does the 'split()' method do for strings in Python?,Splits a string into a list of substrings,Joins multiple strings into one,Replaces a substring with another,Converts a string to a numeric value

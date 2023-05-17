@@ -110,9 +110,8 @@ class Test:
         data = header_len_bytes + header.encode() + message.encode()
 
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(1024)  # Awaits a response.
+        response = sock.recv(2048)  # Awaits a response.
         message = str(response, 'utf-8')
-
         dict = json.loads(message)
         temp_questions_list = []
         i=1

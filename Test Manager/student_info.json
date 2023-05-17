@@ -75,71 +75,71 @@
     "2": {
         "name": "Bob",
         "password": "pass2",
-        "grade": 0,
-        "active_test": false,
+        "grade": 3,
+        "active_test": true,
         "test": {
             "0": {
                 "question_id": "1",
                 "question_number": "1",
-                "question": "What is the capital of France?",
-                "remaining_attempts": "3",
+                "question": "What is Python?",
+                "remaining_attempts": "0",
                 "options": {
-                    "option_a": "Paris",
-                    "option_b": "London",
-                    "option_c": "Madrid",
-                    "option_d": "Berlin"
+                    "option_a": "A programming language",
+                    "option_b": "A snake",
+                    "option_c": "A bird",
+                    "option_d": "A type of food"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "2",
+                "question_id": "3",
                 "question_number": "2",
-                "question": "What is the largest ocean in the world?",
-                "remaining_attempts": "3",
+                "question": "Which of the following is NOT a Python data type?",
+                "remaining_attempts": "0",
                 "options": {
-                    "option_a": "Pacific Ocean",
-                    "option_b": "Atlantic Ocean",
-                    "option_c": "Indian Ocean",
-                    "option_d": "Southern Ocean"
+                    "option_a": "Integer",
+                    "option_b": "List",
+                    "option_c": "Dictionary",
+                    "option_d": "Loop"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "3",
+                "question_id": "11",
                 "question_number": "3",
-                "question": "What is the largest planet in the solar system?",
+                "question": "What is the purpose of the 'if' statement in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Venus",
-                    "option_b": "Mars",
-                    "option_c": "Jupiter",
-                    "option_d": "Saturn"
+                    "option_a": "To conditionally execute code",
+                    "option_b": "To define a loop",
+                    "option_c": "To import modules",
+                    "option_d": "To perform mathematical operations"
                 },
                 "message": ""
             },
             "3": {
-                "question_id": "4",
+                "question_id": "13",
                 "question_number": "4",
-                "question": "What is the largest mammal in the world?",
+                "question": "What does the 'append()' method do in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Elephant",
-                    "option_b": "Blue whale",
-                    "option_c": "Giraffe",
-                    "option_d": "Hippopotamus"
+                    "option_a": "Adds an element to a list",
+                    "option_b": "Removes an element from a list",
+                    "option_c": "Sorts a list in ascending order",
+                    "option_d": "Counts the occurrences of an element in a list"
                 },
                 "message": ""
             },
             "4": {
-                "question_id": "5",
+                "question_id": "14",
                 "question_number": "5",
-                "question": "What is the chemical symbol for gold?",
+                "question": "What does the 'import' keyword do in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Au",
-                    "option_b": "Ag",
-                    "option_c": "Cu",
-                    "option_d": "Fe"
+                    "option_a": "Imports a module",
+                    "option_b": "Defines a function",
+                    "option_c": "Prints a message to the console",
+                    "option_d": "Calculates a mathematical expression"
                 },
                 "message": ""
             }

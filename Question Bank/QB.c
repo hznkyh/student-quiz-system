@@ -296,8 +296,9 @@ Question* read_questions_file(){
         char option_d[OPTION_SIZE];
 
         // Parse the line into question ID, question text, and answer
-        if (sscanf(line, "%d,%255[^,],%24[^,],%24[^,],%24[^,],%24[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
+        if (sscanf(line, "%d,%255[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
+            //printf("LINE:line)
             continue;
         }
 
@@ -309,7 +310,8 @@ Question* read_questions_file(){
             strcpy(questions[i].option_b, option_b);
             strcpy(questions[i].option_c, option_c);
             strcpy(questions[i].option_d, option_d);
-            //printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
+            printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
+            printf("a:'%s' \nb:'%s'\nc:'%s'\nd:'%s'\n",questions[i].option_a,questions[i].option_b,questions[i].option_c,questions[i].option_d);
             i++;
         }
     }
@@ -395,6 +397,7 @@ void send_questions(Question* questions, int sockfd){
     }
     if (strlen(buffer) > 0) {
         sprintf(buffer + strlen(buffer) - 1, "}");
+        printf("BUFFER: %s",buffer);
     }
 
     
