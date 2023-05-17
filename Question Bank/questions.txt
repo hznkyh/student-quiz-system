@@ -23,3 +23,4 @@
 23,What does the 'random' module in Python provide?,Functions for generating random numbers,Functions for sorting lists,Functions for performing mathematical calculations,Functions for reading and writing files
 24,What is the purpose of the 'pass' statement in Python?,To do nothing,To break out of a loop,To raise an exception,To import a module
 25,What does the 'split()' method do for strings in Python?,Splits a string into a list of substrings,Joins multiple strings into one,Replaces a substring with another,Converts a string to a numeric value
+26,"PY Challenge" Create a python function called def two_jams(a,b) which returns the sum of a and b

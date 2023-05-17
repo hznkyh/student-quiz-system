@@ -3,70 +3,70 @@
         "name": "Alice",
         "password": "pass1",
         "grade": 65,
-        "active_test": false,
+        "active_test": true,
         "test": {
             "0": {
                 "question_id": "4",
                 "question_number": "1",
-                "question": "What is the largest mammal in the world?",
+                "question": "What is the keyword used to define a function in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Elephant",
-                    "option_b": "Blue Whale",
-                    "option_c": "Giraffe",
-                    "option_d": "Hippopotamus"
+                    "option_a": "def",
+                    "option_b": "fun",
+                    "option_c": "function",
+                    "option_d": "class"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "8",
+                "question_id": "5",
                 "question_number": "2",
-                "question": "What is the largest country by land area?",
+                "question": "What symbol is used for single-line comments in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Russia",
-                    "option_b": "Canada",
-                    "option_c": "China",
-                    "option_d": "United States"
+                    "option_a": "#",
+                    "option_b": "//",
+                    "option_c": "/*",
+                    "option_d": "**"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "10",
+                "question_id": "8",
                 "question_number": "3",
-                "question": "What is the largest desert in the world?",
+                "question": "What does the 'len()' function do in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Sahara Desert",
-                    "option_b": "Gobi Desert",
-                    "option_c": "Kalahari Desert",
-                    "option_d": "Antarctic Desert"
+                    "option_a": "Returns the length of a string",
+                    "option_b": "Calculates the logarithm",
+                    "option_c": "Converts a number to a string",
+                    "option_d": "Generates a random number"
                 },
                 "message": ""
             },
             "3": {
-                "question_id": "17",
+                "question_id": "10",
                 "question_number": "4",
-                "question": "What is the chemical symbol for silver?",
+                "question": "What is the output of the following code snippet? print('Hello",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Ag",
-                    "option_b": "Au",
-                    "option_c": "Cu",
-                    "option_d": "Pb"
+                    "option_a": " ' + 'world!')?",
+                    "option_b": "Hello",
+                    "option_c": " world!",
+                    "option_d": "Hello"
                 },
                 "message": ""
             },
             "4": {
-                "question_id": "26",
+                "question_id": "23",
                 "question_number": "5",
-                "question": "What is the chemical symbol for calcium?",
+                "question": "What does the 'random' module in Python provide?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Ca",
-                    "option_b": "Co",
-                    "option_c": "Cu",
-                    "option_d": "Cr"
+                    "option_a": "Functions for generating random numbers",
+                    "option_b": "Functions for sorting lists",
+                    "option_c": "Functions for performing mathematical calculations",
+                    "option_d": "Functions for reading and writing files"
                 },
                 "message": ""
             }
@@ -79,23 +79,10 @@
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "1",
-                "question_number": "1",
-                "question": "What is Python?",
-                "remaining_attempts": "0",
-                "options": {
-                    "option_a": "A programming language",
-                    "option_b": "A snake",
-                    "option_c": "A bird",
-                    "option_d": "A type of food"
-                },
-                "message": ""
-            },
-            "1": {
                 "question_id": "3",
-                "question_number": "2",
+                "question_number": "1",
                 "question": "Which of the following is NOT a Python data type?",
-                "remaining_attempts": "0",
+                "remaining_attempts": "3",
                 "options": {
                     "option_a": "Integer",
                     "option_b": "List",
@@ -104,42 +91,16 @@
                 },
                 "message": ""
             },
-            "2": {
-                "question_id": "11",
-                "question_number": "3",
-                "question": "What is the purpose of the 'if' statement in Python?",
+            "1": {
+                "question_id": "4",
+                "question_number": "2",
+                "question": "What is the keyword used to define a function in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "To conditionally execute code",
-                    "option_b": "To define a loop",
-                    "option_c": "To import modules",
-                    "option_d": "To perform mathematical operations"
-                },
-                "message": ""
-            },
-            "3": {
-                "question_id": "13",
-                "question_number": "4",
-                "question": "What does the 'append()' method do in Python?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Adds an element to a list",
-                    "option_b": "Removes an element from a list",
-                    "option_c": "Sorts a list in ascending order",
-                    "option_d": "Counts the occurrences of an element in a list"
-                },
-                "message": ""
-            },
-            "4": {
-                "question_id": "14",
-                "question_number": "5",
-                "question": "What does the 'import' keyword do in Python?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Imports a module",
-                    "option_b": "Defines a function",
-                    "option_c": "Prints a message to the console",
-                    "option_d": "Calculates a mathematical expression"
+                    "option_a": "def",
+                    "option_b": "fun",
+                    "option_c": "function",
+                    "option_d": "class"
                 },
                 "message": ""
             }

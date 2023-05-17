@@ -59,6 +59,8 @@ void get_local_ip(char *ip, int size) {
     }
 }
 
+
+// Create Socket
 void create_socket(int *sockfd) {
     if ((*sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("socket creation failed");
@@ -66,6 +68,7 @@ void create_socket(int *sockfd) {
     }
 }
 
+// Bind Socket
 void bind_socket(int sockfd) {
     struct sockaddr_in server_addr;
     char ip[NI_MAXHOST];

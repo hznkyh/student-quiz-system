@@ -6,7 +6,7 @@
 #define MAX_LINE_LENGTH 2048
 #define NUM_QUESTIONS 5
 #define OPTION_SIZE 255
-#define NUM_OF_AVAILABLE_QUESTIONS 27 //This is the total number of questions in the question set to pick from.
+#define NUM_OF_AVAILABLE_QUESTIONS 25 //This is the total number of questions in the question set to pick from.
 
 struct message {
     int length; //Length of header
@@ -15,7 +15,7 @@ struct message {
 
 typedef struct {
     int id;
-    char question[256];
+    char question[BUF_SIZE]; // either needs to be unsigned, malloc or change the size
     char option_a[OPTION_SIZE];
     char option_b[OPTION_SIZE];
     char option_c[OPTION_SIZE];

@@ -14,17 +14,17 @@
           </style>
           <script>
             window.addEventListener('DOMContentLoaded', (event) => {
-              // Initialize the Ace Editor
-              var editor = ace.edit("code-editor");
-              editor.setTheme("ace/theme/twilight");
-              editor.session.setMode("ace/mode/c_cpp");
-      
-              // Update the hidden input field with the code from the editor
-              var codeInput = document.getElementById("code-input");
-              editor.getSession().on("change", function () {
-                codeInput.value = editor.getValue();
-              });
+            // Initialize the Ace Editor
+            var editor = ace.edit("code-editor");
+            editor.setTheme("ace/theme/twilight");
+            editor.session.setMode("ace/mode/python"); // Change mode to Python
+
+            // Update the hidden input field with the code from the editor
+            var codeInput = document.getElementById("code-input");
+            editor.getSession().on("change", function () {
+              codeInput.value = editor.getValue();
             });
+          });;
           </script>
     </head>
 
@@ -240,18 +240,24 @@
                 document.getElementById("question number").innerHTML = "Question " + current_question +  "/5";
                 document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
                 document.getElementById("question").innerHTML = question;
-            
-                // updates text for each of the radio buttons
-                document.getElementById("label a").innerHTML = option_a
-                document.getElementById("label b").innerHTML = option_b
-                document.getElementById("label c").innerHTML = option_c
-                document.getElementById("label d").innerHTML = option_d
 
-                // ressets radio buttons
-                document.getElementById('a').checked = false;
-                document.getElementById('b').checked = false;
-                document.getElementById('c').checked = false;
-                document.getElementById('d').checked = false;
+                var question = document.getElementById("question").innerHTML;
+                if (question.includes("PY")) {
+
+                } else {
+                   // updates text for each of the radio buttons
+                  document.getElementById("label a").innerHTML = option_a
+                  document.getElementById("label b").innerHTML = option_b
+                  document.getElementById("label c").innerHTML = option_c
+                  document.getElementById("label d").innerHTML = option_d
+
+                  // ressets radio buttons
+                  document.getElementById('a').checked = false;
+                  document.getElementById('b').checked = false;
+                  document.getElementById('c').checked = false;
+                  document.getElementById('d').checked = false;
+                }
+               
 
 
             } else {
