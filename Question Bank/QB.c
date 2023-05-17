@@ -347,7 +347,6 @@ int mark_MC_Question(int question_id, char *student_answer) {
         }
         
         printf("Comparison: '%s' == '%s' ?", current_answer, student_answer);
-        free(current_answer);
     } else {
         printf("Question ID %d not found in file %s\n", question_id, filename);
     }
