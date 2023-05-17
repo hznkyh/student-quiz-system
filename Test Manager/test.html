@@ -161,6 +161,7 @@
                     const response = xhr.responseText;
                     if (action == 'next'|| action == 'back') {
                         updateHTML(response);
+                        document.getElementById("result").innerText = "";
                     } 
                     else if (action == 'info') {
                         updateInfo(response);
