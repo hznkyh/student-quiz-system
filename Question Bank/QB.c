@@ -128,6 +128,7 @@ void handle_connection(int sockfd) {
         strncat(header, &source[i], 1);
     }
     //memmove(header, header+1, strlen(header)); //removes the non-printable STX control character.
+    removeNewline(header); 
     char *newPayload = msg.payload+msg.length;
     
     printf("MESSAGE RECEIVED: '%s'",msg.payload);
@@ -152,7 +153,7 @@ void handle_connection(int sockfd) {
         }else {
             printf("Result sent to QB ('%c')\n",c_value);
         }
-    }if (strcmp(header, "sendAnswer") == 0){
+    }else if (strcmp(header, "sendAnswer") == 0){
         char *answer = retreiveAnswer(newPayload);
         if (send(connfd, answer, strlen(answer), 0) < 0) {
             perror("Result send failed");
@@ -163,6 +164,14 @@ void handle_connection(int sockfd) {
         printf("ERROR: Header '%s' not recognised.\n",header);
     }
 
+}
+
+void removeNewline(char* str) {
+    size_t newlinePos = strcspn(str, "\n");  // Find the position of the newline character
+
+    if (str[newlinePos] == '\n') {  // If a newline character is found
+        str[newlinePos] = '\0';     // Replace it with a null terminator
+    }
 }
 
 char* retreiveAnswer(char *qID){
@@ -384,7 +393,10 @@ void send_questions(Question* questions, int sockfd){
             //printf("Q: %s",buffer);
         }
     }
-    sprintf(buffer + strlen(buffer) - 1, "}");
+    if (strlen(buffer) > 0) {
+        sprintf(buffer + strlen(buffer) - 1, "}");
+    }
+
     
 
     // Send the Python code to the server

@@ -39,4 +39,5 @@ int* generate_questions_numbers(void);
 void send_questions(Question* questions, int sockfd);
 int mark_MC_Question(int question_id, char *student_answer);
 char *retreiveAnswer(char *question_id);
+void removeNewline(char* str);
 #endif
