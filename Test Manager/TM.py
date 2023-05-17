@@ -107,32 +107,37 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
             elif json_data["action"] == 'test_info':
                 response = json.dumps({"num_questions": active_tests[username].getNumQuestions()})
-            
-            #Send latest attempts
+
+            # Send latest attempts
             elif json_data['action'] == 'attempts':
                 question_num = active_tests[username].getCurrentQuestionNum()
                 response = records.remaining_attempts(username, question_num)
                 send_response = False
 
+            elif json_data['action'] == 'finished':
+                print("FINISHED TEST")
+                response = "Test Submitted"
+
             elif json_data['action'] == 'submit':
-                #Retrieve the remaining attempts for the current question
+                # Retrieve the remaining attempts for the current question
                 question_num = active_tests[username].getCurrentQuestionNum()
                 attempts = int(records.remaining_attempts(username, question_num))
-                
 
-                if (active_tests[username].getAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum(),json_data["answer"])):
+                if (active_tests[username].getAnswer(active_tests[username],
+                                                     active_tests[username].getCurrentQuestionNum(),
+                                                     json_data["answer"])):
                     response = "correct"
-                    #Update grade
+                    # Update grade
                     grade = int(records.getGrade(username))
                     records.setGrade(username, grade + attempts)
-                    #Set remaining attempts to 0
+                    # Set remaining attempts to 0
                     records.set_remaining_attempts(username, question_num, "0")
                     send_response = True
                 else:
-                    #If there are no remaining attempts
+                    # If there are no remaining attempts
                     if attempts == 1:
-                        # TODO make call to QB for correct answer
-                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum())
+                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[
+                            username].getCurrentQuestionNum())
                         response = "No more attempts left. The correct answer was {}".format(correct_answer)
                         print(response)
                         send_response = False
@@ -140,12 +145,13 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
                     elif attempts == 0:
                         # if the user has already been told they have no more remaining attempts
-                        # TODO make call to QB for correct answer
-                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum())
-                        response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(correct_answer)
+                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[
+                            username].getCurrentQuestionNum())
+                        response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(
+                            correct_answer)
 
                     else:
-                        #If there are remaining attempts, decrement the attempts and send the response
+                        # If there are remaining attempts, decrement the attempts and send the response
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
                         response = "incorrect"
                         send_response = False
@@ -155,7 +161,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 response = 0
 
             # Whats is this if statement for?
-            #if send_response or send_response==False:
+            # if send_response or send_response==False:
 
             print("response: {}".format(response))
             self.send_response(200)
