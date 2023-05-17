@@ -70,6 +70,8 @@
         <div id="buttons-container" style="margin:1em;">
             <button id="back-button" onclick="previousQuestion()" style="float:left;padding: 0.5em;"> Back </button>
             <button id="next-button" onclick="nextQuestion()" style="padding: 0.5em;"> Next </button>
+            <button id="finish-button" onclick="finishTest()" style="float:right;padding: 0.5em 0.5em 0.5em 0.5em;text-color:red;font-weight: bold;"> Finish Test </button>
+
             <button id="submit-button" onclick="submitQuestion()" style="float:right;padding: 0.5em;"> Submit </button>
         </div>
 
@@ -148,6 +150,34 @@
             // Send request to check answer
             sendAjaxRequest('submit', answer);
         }
+
+        function finishTest() {
+            sendAjaxRequest('finished');
+            //placeholder
+            score = 65.4;
+
+            document.getElementById('back-button').style.visibility = 'hidden';
+            document.getElementById('next-button').style.visibility = 'hidden';
+            document.getElementById('submit-button').style.visibility = 'hidden';
+            document.getElementById('finish-button').style.visibility = 'hidden';
+
+
+
+            document.getElementById("question number").innerHTML = "Test Completed";
+            document.getElementById("question").innerHTML = "";
+        
+            // updates text for each of the radio buttons
+            document.getElementById("label a").innerHTML = ""
+            document.getElementById("label b").innerHTML = ""
+            document.getElementById("label c").innerHTML = ""
+            document.getElementById("label d").innerHTML = ""
+            // ressets radio buttons
+            document.getElementById('a').checked = false;
+            document.getElementById('b').checked = false;
+            document.getElementById('c').checked = false;
+            document.getElementById('d').checked = false;
+
+        }
         
         function sendAjaxRequest(action, answer) {
             var username = document.cookie.split("=")[1]; // important
@@ -177,6 +207,11 @@
                     else if (action == "attempts"){
                         console.log(response);
                         updateAttempts(response);
+                    }
+                    else if (action == "finished") {
+                        console.log(response)
+                        document.getElementById('remaining attempts').innerHTML = "Total score: " + response + "%"
+
                     }
                 } else {
                     console.error(xhr.statusText);

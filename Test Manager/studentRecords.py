@@ -98,6 +98,23 @@ def set_remaining_attempts(student_id, question_num, remaining_attempts):
     with open(JSON_FILENAME, "w") as file:
         file.write(json_object)
 
+def getActiveState(student_id):
+    json_data = readRecords()
+    if json_data[student_id]["active_test"]:
+        return True
+    else:
+        return False
+
+def setTestActiveState(student_id, active=True):
+    json_data = readRecords()
+    json_data[student_id]["active_test"] = active
+    json_object = json.dumps(json_data, indent=4)
+
+    with open(JSON_FILENAME, "w") as file:
+        file.write(json_object)
+
+
+
 # resets all grades
 def resetGrades():
     json_data = readRecords()
