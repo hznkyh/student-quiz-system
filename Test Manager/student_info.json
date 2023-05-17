@@ -3,74 +3,7 @@
         "name": "Alice",
         "password": "pass1",
         "grade": 3,
-        "active_test": true,
-        "test": {
-            "0": {
-                "question_id": "2",
-                "question_number": "1",
-                "question": "What is the latest stable version of Python as of September 2021?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Python 3.9",
-                    "option_b": "Python 2.7",
-                    "option_c": "Python 3.6",
-                    "option_d": "Python 4.0"
-                },
-                "message": ""
-            },
-            "1": {
-                "question_id": "4",
-                "question_number": "2",
-                "question": "What is the keyword used to define a function in Python?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "def",
-                    "option_b": "fun",
-                    "option_c": "function",
-                    "option_d": "class"
-                },
-                "message": ""
-            },
-            "2": {
-                "question_id": "5",
-                "question_number": "3",
-                "question": "What symbol is used for single-line comments in Python?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "#",
-                    "option_b": "//",
-                    "option_c": "/*",
-                    "option_d": "**"
-                },
-                "message": ""
-            },
-            "3": {
-                "question_id": "10",
-                "question_number": "4",
-                "question": "What is the output of the following code snippet? print('Hello",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": " ' + 'world!')?",
-                    "option_b": "Hello",
-                    "option_c": " world!",
-                    "option_d": "Hello"
-                },
-                "message": ""
-            },
-            "4": {
-                "question_id": "13",
-                "question_number": "5",
-                "question": "What does the 'append()' method do in Python?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Adds an element to a list",
-                    "option_b": "Removes an element from a list",
-                    "option_c": "Sorts a list in ascending order",
-                    "option_d": "Counts the occurrences of an element in a list"
-                },
-                "message": ""
-            }
-        }
+        "active_test": false
     },
     "2": {
         "name": "Bob",
