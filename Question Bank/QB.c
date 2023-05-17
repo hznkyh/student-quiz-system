@@ -397,7 +397,6 @@ void send_questions(Question* questions, int sockfd){
     }
     if (strlen(buffer) > 0) {
         sprintf(buffer + strlen(buffer) - 1, "}");
-        printf("BUFFER: %s",buffer);
     }
 
     
