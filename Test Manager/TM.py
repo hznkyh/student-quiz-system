@@ -132,15 +132,16 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     #If there are no remaining attempts
                     if attempts == 1:
                         # TODO make call to QB for correct answer
-                        correct_answer = "<answer from QB goes here>"
+                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[username].getCurrentQuestionNum())
                         response = "No more attempts left. The correct answer was {}".format(correct_answer)
+                        print(response)
                         send_response = False
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
 
                     elif attempts == 0:
                         # if the user has already been told they have no more remaining attempts
                         # TODO make call to QB for correct answer
-                        correct_answer = "<answer from QB goes here>"
+                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username].getCurrentQuestionNum())
                         response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(correct_answer)
 
                     else:

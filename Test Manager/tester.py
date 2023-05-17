@@ -170,6 +170,23 @@ class Test:
         else:
             print(f"Received response: '{msg}', answer was INCORRECT")
             return False
+    
+    def getCorrectAnswer(self, question_bank, question_number):
+        sock = connect_to_server(self.QB_IP, QB_PORT)
+        server_address = (self.QB_IP, QB_PORT)
+
+        header = "sendAnswer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        header_len = len(header)
+        questionID = getQuestionID(question_bank.questions, question_number+1)
+        # Pack the header length as a 4-byte integer in network byte order
+        header_len_bytes = struct.pack("!I", header_len)
+        data = header_len_bytes + header.encode() + str(questionID).encode()
+
+        sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
+        response = sock.recv(1024)  # Awaits a response.
+        answer = str(response, 'utf-8')
+        return answer
+
 
 def getQuestionID(questions_list, current_question_number):
         for question in questions_list:

@@ -8,6 +8,7 @@
 #include <ifaddrs.h>
 #include <netdb.h>
 #include <time.h>
+#include <stdbool.h>
 
 //gcc QB.c -o QB 
 
@@ -97,7 +98,6 @@ void listen_for_connections(int sockfd) {
 void handle_connection(int sockfd) {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
-    int fail = 0;
     int connfd;
     printf("* Ready to accept()\n");
     // Accept the connection
@@ -110,13 +110,12 @@ void handle_connection(int sockfd) {
     // Read the message and size
     struct message msg;
     ssize_t n;
-    int payload_len;
 
     memset(msg.payload, 0, sizeof(msg.payload));
     //Receive the Message header
     n = recv(connfd, &msg, sizeof(msg), 0);
         if (n <= 0) {
-            perror("recv");
+            perror("recv error");
             exit(1);
         }
     msg.length = ntohl(msg.length);
@@ -131,6 +130,7 @@ void handle_connection(int sockfd) {
     //memmove(header, header+1, strlen(header)); //removes the non-printable STX control character.
     char *newPayload = msg.payload+msg.length;
     
+    printf("MESSAGE RECEIVED: '%s'",msg.payload);
     printf("HEADER: '%s' | PAYLOAD: '%s'\n",header, newPayload);
 
     Question* questions;
@@ -152,8 +152,61 @@ void handle_connection(int sockfd) {
         }else {
             printf("Result sent to QB ('%c')\n",c_value);
         }
-    }else
+    }if (strcmp(header, "sendAnswer") == 0){
+        char *answer = retreiveAnswer(newPayload);
+        if (send(connfd, answer, strlen(answer), 0) < 0) {
+            perror("Result send failed");
+            exit(EXIT_FAILURE);
+        }
+        printf("Answer sent to TM: '%s'",answer);
+    }else{
         printf("ERROR: Header '%s' not recognised.\n",header);
+    }
+
+}
+
+char* retreiveAnswer(char *qID){
+    printf("Getting Answer...\n");
+    int wanted_id = atol(qID);
+    char *answer;
+    char *filename = "answers.txt";
+
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL) { 
+        perror("Error opening file");
+        return 0;
+    }
+    int current_id;
+    char* current_answer = malloc(128 * sizeof(char));
+    if (current_answer == NULL) {
+        return 0;
+    }
+
+    int i = 0;
+    char line[MAX_LINE_LENGTH];
+    bool found_id = false;
+
+    while (fgets(line, sizeof(line), fp)) {
+        if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
+            printf("Failed to parse line %d in file %s\n", i+1, filename);
+            continue;
+        }
+
+        if (current_id == wanted_id){
+            printf("%s\n",line);
+            printf("Answer found: '%s'\n",current_answer);
+            answer = current_answer;
+            found_id = true;
+            break; // Exit the loop since the desired ID has been found
+        }
+    }
+
+    if (!found_id) {
+        printf("Desired ID not found in file %s\n", filename);
+        return 0;
+    }else{
+        return answer;
+    }
 
 }
 
@@ -260,7 +313,7 @@ Question* read_questions_file(){
     return questions;
 }
 
-int mark_MC_Question(int question_id, char *student_answer){
+int mark_MC_Question(int question_id, char *student_answer) {
     printf("Marking MC Answer\n");
     char *filename = "answers.txt";
 
@@ -269,33 +322,37 @@ int mark_MC_Question(int question_id, char *student_answer){
         perror("Error opening file");
         return 0;
     }
+    
     int current_id;
-    char* current_answer = malloc(128 * sizeof(char));
-    if (current_answer == NULL) {
-        printf("yeah f this\n");
-        return 0;
-    }
-
-    int i = 0;
     char line[MAX_LINE_LENGTH];
+    char* current_answer = NULL; // Initialize to NULL
+    
+    int i = 0;
     while (fgets(line, sizeof(line), fp)) {
-        if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
+        if (sscanf(line, "%d,%128[^,\n]", &current_id, line) != 2) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
             continue;
         }
 
-        if (current_id == question_id){
+        if (current_id == question_id) {
+            current_answer = strdup(line); // Allocate memory and copy the line
             break;
         }
     }
-    
-    if(strcmp(current_answer, student_answer) == 0){
-        free(current_answer);
-        return 1;
-    }
-    free(current_answer);
-    return 0;
 
+    if (current_answer != NULL) {
+        if (strcmp(current_answer, student_answer) == 0) {
+            free(current_answer);
+            return 1;
+        }
+        
+        printf("Comparison: '%s' == '%s' ?", current_answer, student_answer);
+        free(current_answer);
+    } else {
+        printf("Question ID %d not found in file %s\n", question_id, filename);
+    }
+
+    return 0;
 }
 
 void send_questions(Question* questions, int sockfd){
