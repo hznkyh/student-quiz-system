@@ -411,7 +411,7 @@ void send_questions(Question* questions, int sockfd){
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
 
-    free(buffer);
+    //     free(buffer);
 
 
     if (questions != NULL){
