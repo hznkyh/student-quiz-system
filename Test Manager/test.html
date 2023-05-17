@@ -32,7 +32,7 @@
         <div style="margin-bottom:1em;border:1px solid black;padding:1em;">
             <h1 style="margin:0px;"> Student Information</h1>
             <div style="padding-left: 1em;">
-                <p> Student username: <span id="username"></span></p>
+                <p> Student ID: <span id="username"></span></p>
                 <p> Student name: <span id="name">User not logged in</span></p>
                 <p> Grade: <span id="grade" >0</span>/20 </p> 
             </div>
@@ -202,7 +202,7 @@
                 option_c = response_object["options"]["option_c"];
                 option_d = response_object["options"]["option_d"];
                         
-                document.getElementById("question number").innerHTML = "Question " + current_question;
+                document.getElementById("question number").innerHTML = "Question " + current_question +  "/5";
                 document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
                 document.getElementById("question").innerHTML = question;
             
