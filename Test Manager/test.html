@@ -153,7 +153,6 @@
 
         function finishTest() {
             sendAjaxRequest('finished');
-
             //placeholder
             score = 65.4;
 
@@ -165,7 +164,6 @@
 
 
             document.getElementById("question number").innerHTML = "Test Completed";
-            document.getElementById('remaining attempts').innerHTML = "Total score: " + score + "%"
             document.getElementById("question").innerHTML = "";
         
             // updates text for each of the radio buttons
@@ -212,6 +210,8 @@
                     }
                     else if (action == "finished") {
                         console.log(response)
+                        document.getElementById('remaining attempts').innerHTML = "Total score: " + response + "%"
+
                     }
                 } else {
                     console.error(xhr.statusText);

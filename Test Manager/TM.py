@@ -116,7 +116,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
             elif json_data['action'] == 'finished':
                 print("FINISHED TEST")
-                response = "Test Submitted"
+                response = str(records.getGrade(username)/0.15)
 
             elif json_data['action'] == 'submit':
                 # Retrieve the remaining attempts for the current question
