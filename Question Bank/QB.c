@@ -352,8 +352,7 @@ int mark_MC_Question(int question_id, char *student_answer) {
     }
 
     if (current_answer != NULL) {
-        if (strcmp(current_answer, student_answer) == 0) {
-            free(current_answer);
+        if (strcmp(current_answer, student_answer) == 0) {  
             return 1;
         }
         
@@ -404,7 +403,7 @@ void send_questions(Question* questions, int sockfd){
     // Send the Python code to the server
     if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
         perror("send failed");
-        free(buffer);
+        //free(buffer);
         exit(EXIT_FAILURE);
     }
     
@@ -412,8 +411,11 @@ void send_questions(Question* questions, int sockfd){
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory
-    free(buffer);
-    free(questions);
+    //free(buffer);
+    if (questions != NULL){
+        free(questions);
+    }
+
 }
 
 void close_connection(int connfd) {
