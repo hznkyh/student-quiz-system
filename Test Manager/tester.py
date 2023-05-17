@@ -12,19 +12,22 @@ QB_PORT = 9001
 
 class Test:
     def __init__(self, student_id, question_bank_ip, resume_state=False, num_questions=5):
-        if not resume_state:
-            self.QB_IP = question_bank_ip
-            self.student_id = student_id
-            self.questions = []  # store each question as a json file
-            self.question_counter = -1
 
+        existing_test = records.getActiveState(student_id)
+
+        self.QB_IP = question_bank_ip
+        self.student_id = student_id
+        self.questions = []  # store each question as a json file
+        self.question_counter = -1
+
+        # create a session id to keep track of the test
+        if len(session_ids) == 0:
+            self.session_id = 0
+        else:
+            self.session_id = session_ids[-1] + 1
+
+        if not existing_test: # if the user has not previously started a test
             self.questions = self.get_question_dict()
-
-            # create a session id to keep track of the test
-            if len(session_ids) == 0:
-                self.session_id = 0
-            else:
-                self.session_id = session_ids[-1] + 1
 
             # puts all the questions into a json folder
             test_data = {}
@@ -32,9 +35,13 @@ class Test:
                 test_data[index] = question
             records.setTestData(self.student_id, test_data)
 
-        else:  # if state is to be resumed
-            # read file
-            pass
+            records.setTestActiveState(student_id, active=True)
+
+        else:  # if state is to be resumed i.e. the user is halfway through a test
+            test_data = records.getTestData(student_id)
+            for key in test_data.keys():
+                self.questions.append(test_data[key])
+
 
     # For refreshing the current question
     def getCurrentQuestion(self):
