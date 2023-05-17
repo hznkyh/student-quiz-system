@@ -367,12 +367,13 @@ int mark_MC_Question(int question_id, char *student_answer) {
 void send_questions(Question* questions, int sockfd){
     printf("Sending Questions...\n");
 
-    int buffer_size = 0;
+    int buffer_size = 2060;
     for (int i = 0; i < NUM_QUESTIONS; i++) {
         if (questions[i].question[0] != '\0') {
             buffer_size += strlen(questions[i].question);
         }
     }
+    
     
     char* buffer = malloc(buffer_size);
     if (buffer == NULL) {
@@ -411,7 +412,7 @@ void send_questions(Question* questions, int sockfd){
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory
-    //free(buffer);
+    // free(buffer);
     if (questions != NULL){
         free(questions);
     }

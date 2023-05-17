@@ -2,124 +2,64 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 65,
-        "active_test": false,
-        "test": {
-            "0": {
-                "question_id": "4",
-                "question_number": "1",
-                "question": "What is the largest mammal in the world?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Elephant",
-                    "option_b": "Blue Whale",
-                    "option_c": "Giraffe",
-                    "option_d": "Hippopotamus"
-                },
-                "message": ""
-            },
-            "1": {
-                "question_id": "8",
-                "question_number": "2",
-                "question": "What is the largest country by land area?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Russia",
-                    "option_b": "Canada",
-                    "option_c": "China",
-                    "option_d": "United States"
-                },
-                "message": ""
-            },
-            "2": {
-                "question_id": "10",
-                "question_number": "3",
-                "question": "What is the largest desert in the world?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Sahara Desert",
-                    "option_b": "Gobi Desert",
-                    "option_c": "Kalahari Desert",
-                    "option_d": "Antarctic Desert"
-                },
-                "message": ""
-            },
-            "3": {
-                "question_id": "17",
-                "question_number": "4",
-                "question": "What is the chemical symbol for silver?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Ag",
-                    "option_b": "Au",
-                    "option_c": "Cu",
-                    "option_d": "Pb"
-                },
-                "message": ""
-            },
-            "4": {
-                "question_id": "26",
-                "question_number": "5",
-                "question": "What is the chemical symbol for calcium?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Ca",
-                    "option_b": "Co",
-                    "option_c": "Cu",
-                    "option_d": "Cr"
-                },
-                "message": ""
-            }
-        }
-    },
-    "2": {
-        "name": "Bob",
-        "password": "pass2",
         "grade": 3,
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "1",
+                "question_id": "2",
                 "question_number": "1",
-                "question": "What is Python?",
-                "remaining_attempts": "0",
+                "question": "What is the latest stable version of Python as of September 2021?",
+                "remaining_attempts": "3",
                 "options": {
-                    "option_a": "A programming language",
-                    "option_b": "A snake",
-                    "option_c": "A bird",
-                    "option_d": "A type of food"
+                    "option_a": "Python 3.9",
+                    "option_b": "Python 2.7",
+                    "option_c": "Python 3.6",
+                    "option_d": "Python 4.0"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "3",
+                "question_id": "4",
                 "question_number": "2",
-                "question": "Which of the following is NOT a Python data type?",
-                "remaining_attempts": "0",
+                "question": "What is the keyword used to define a function in Python?",
+                "remaining_attempts": "3",
                 "options": {
-                    "option_a": "Integer",
-                    "option_b": "List",
-                    "option_c": "Dictionary",
-                    "option_d": "Loop"
+                    "option_a": "def",
+                    "option_b": "fun",
+                    "option_c": "function",
+                    "option_d": "class"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "11",
+                "question_id": "5",
                 "question_number": "3",
-                "question": "What is the purpose of the 'if' statement in Python?",
+                "question": "What symbol is used for single-line comments in Python?",
                 "remaining_attempts": "3",
                 "options": {
-                    "option_a": "To conditionally execute code",
-                    "option_b": "To define a loop",
-                    "option_c": "To import modules",
-                    "option_d": "To perform mathematical operations"
+                    "option_a": "#",
+                    "option_b": "//",
+                    "option_c": "/*",
+                    "option_d": "**"
                 },
                 "message": ""
             },
             "3": {
-                "question_id": "13",
+                "question_id": "10",
                 "question_number": "4",
+                "question": "What is the output of the following code snippet? print('Hello",
+                "remaining_attempts": "3",
+                "options": {
+                    "option_a": " ' + 'world!')?",
+                    "option_b": "Hello",
+                    "option_c": " world!",
+                    "option_d": "Hello"
+                },
+                "message": ""
+            },
+            "4": {
+                "question_id": "13",
+                "question_number": "5",
                 "question": "What does the 'append()' method do in Python?",
                 "remaining_attempts": "3",
                 "options": {
@@ -129,93 +69,19 @@
                     "option_d": "Counts the occurrences of an element in a list"
                 },
                 "message": ""
-            },
-            "4": {
-                "question_id": "14",
-                "question_number": "5",
-                "question": "What does the 'import' keyword do in Python?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Imports a module",
-                    "option_b": "Defines a function",
-                    "option_c": "Prints a message to the console",
-                    "option_d": "Calculates a mathematical expression"
-                },
-                "message": ""
             }
         }
+    },
+    "2": {
+        "name": "Bob",
+        "password": "pass2",
+        "grade": 3,
+        "active_test": false
     },
     "3": {
         "name": "Caleb",
         "password": "pass3",
         "grade": 0,
-        "active_test": false,
-        "test": {
-            "0": {
-                "question_id": "1",
-                "question_number": "1",
-                "question": "What is the capital of France?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Paris",
-                    "option_b": "London",
-                    "option_c": "Madrid",
-                    "option_d": "Berlin"
-                },
-                "message": ""
-            },
-            "1": {
-                "question_id": "2",
-                "question_number": "2",
-                "question": "What is the largest ocean in the world?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Pacific Ocean",
-                    "option_b": "Atlantic Ocean",
-                    "option_c": "Indian Ocean",
-                    "option_d": "Southern Ocean"
-                },
-                "message": ""
-            },
-            "2": {
-                "question_id": "3",
-                "question_number": "3",
-                "question": "What is the largest planet in the solar system?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Venus",
-                    "option_b": "Mars",
-                    "option_c": "Jupiter",
-                    "option_d": "Saturn"
-                },
-                "message": ""
-            },
-            "3": {
-                "question_id": "4",
-                "question_number": "4",
-                "question": "What is the largest mammal in the world?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Elephant",
-                    "option_b": "Blue whale",
-                    "option_c": "Giraffe",
-                    "option_d": "Hippopotamus"
-                },
-                "message": ""
-            },
-            "4": {
-                "question_id": "5",
-                "question_number": "5",
-                "question": "What is the chemical symbol for gold?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Au",
-                    "option_b": "Ag",
-                    "option_c": "Cu",
-                    "option_d": "Fe"
-                },
-                "message": ""
-            }
-        }
+        "active_test": false
     }
 }
