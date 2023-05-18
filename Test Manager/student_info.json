@@ -2,62 +2,62 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 65,
+        "grade": 80,
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "2",
+                "question_id": "3",
                 "question_number": "1",
-                "question": "What is the latest stable version of Python as of September 2021?",
+                "question": "Which of the following is NOT a Python data type?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "Python 3.9",
-                    "option_b": "Python 2.7",
-                    "option_c": "Python 3.6",
-                    "option_d": "Python 4.0"
+                    "option_a": "Integer",
+                    "option_b": "List",
+                    "option_c": "Dictionary",
+                    "option_d": "Loop"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "6",
+                "question_id": "8",
                 "question_number": "2",
-                "question": "What is the result of the expression 5 + 2 * 3 in Python?",
+                "question": "What does the 'len()' function do in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "11",
-                    "option_b": "17",
-                    "option_c": "9",
-                    "option_d": "21"
+                    "option_a": "Returns the length of a string",
+                    "option_b": "Calculates the logarithm",
+                    "option_c": "Converts a number to a string",
+                    "option_d": "Generates a random number"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "9",
+                "question_id": "14",
                 "question_number": "3",
-                "question": "Which of the following is a valid variable name in Python?",
+                "question": "What does the 'import' keyword do in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "my_variable",
-                    "option_b": "2ndVariable",
-                    "option_c": "variable_name",
-                    "option_d": "True"
+                    "option_a": "Imports a module",
+                    "option_b": "Defines a function",
+                    "option_c": "Prints a message to the console",
+                    "option_d": "Calculates a mathematical expression"
                 },
                 "message": ""
             },
             "3": {
-                "question_id": "2",
+                "question_id": "3",
                 "question_number": "4",
-                "question": "Write a C program to calculate the sum of all numbers in a list.",
+                "question": "Write a C program to check if a number is prime.",
                 "remaining_attempts": "3",
                 "type": "c"
             },
             "4": {
-                "question_id": "9",
+                "question_id": "8",
                 "question_number": "5",
-                "question": "Write a C program to calculate the sum of all numbers in a list.",
+                "question": "Write a C program to sort an array of numbers in ascending order.",
                 "remaining_attempts": "3",
                 "type": "c"
             }

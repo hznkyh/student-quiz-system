@@ -138,14 +138,24 @@ class Test:
             temp_questions_list.append(temp_dict)
         return temp_questions_list
 
-    
     def getAnswer(self, question_bank, question_number, answer):
         # Check question type and perform relevant action
         question_type = question_bank.questions[question_number]["type"]
         if question_type == "mc":
-            return self.getMultipleChoiceAnswer(question_bank, question_number, answer)
-        elif question_type == "tf":
-            return self.getProgAnswer(question_bank, question_number, answer)
+            return self.markMultipleChoiceAnswer(question_bank, question_number, answer)
+        elif question_type == "py" or question_type == "c":
+            return self.markProgAnswer(question_bank, question_number, answer)
+        else:
+            return None  # Handle other question types as needed
+
+
+    def getCorrectAnswer(self, question_bank, question_number, answer):
+        # Check question type and perform relevant action
+        question_type = question_bank.questions[question_number]["type"]
+        if question_type == "mc":
+            return self.getMultipleChoiceAnswer(question_bank, question_number)
+        elif question_type == "py" or question_type == "c":
+            return self.getProgAnswer(question_bank, question_number, question_type)
         else:
             return None  # Handle other question types as needed
     
@@ -154,13 +164,20 @@ class Test:
         server_address = (self.QB_IP, QB_PORT)
         header = "mark_mc_answer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
-        questionID = getQuestionID(question_bank.questions, question_number+1)
+        # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
-        data = header_len_bytes + header.encode() + str(questionID).encode()
+        questionID = getQuestionID(question_bank.questions, question_number+1)
+        message = "{}={}".format(questionID, answer) #The 'question_id' being sent here is just the question number, not the ID
+        data = header_len_bytes + header.encode() + message.encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(2048)  # Awaits a response.
-        answer = str(response, 'utf-8')
-        return answer
+        response = sock.recv(1024)  # Awaits a response.
+        msg = str(response, 'utf-8')
+        if (msg == 'T'):
+            print(f"Received response: '{msg}', answer was CORRECT")
+            return True
+        else:
+            print(f"Received response: '{msg}', answer was INCORRECT")
+            return False
     
     def markProgAnswer(self, question_bank, question_number, answer):
         question_type = question_bank.questions[question_number]["type"]
@@ -176,16 +193,6 @@ class Test:
         answer = str(response, 'utf-8')
         return answer
 
-
-    def getCorrectAnswer(self, question_bank, question_number):
-        # Check question type and perform relevant action
-        question_type = question_bank.questions[question_number]["type"]
-        if question_type == "mc":
-            return self.getMultipleChoiceAnswer(question_bank, question_number)
-        elif question_type == "c" or question_type == "py":
-            return self.getProgAnswer(question_bank, question_number, question_type)
-        else:
-            return None
     
     #Returns the correct answer for a question, used when out of attempts.
     def getMultipleChoiceAnswer(self, question_bank, question_number):

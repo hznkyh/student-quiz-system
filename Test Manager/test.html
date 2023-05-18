@@ -4,28 +4,9 @@
 
     <head>
         <title>Multiple Choice Questions</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
-        <style>
-            #code-editor {
-              width: 600px;
-              height: 300px;
-              margin-bottom: 20px;
-            }
-          </style>
-          <script>
-            window.addEventListener('DOMContentLoaded', (event) => {
-            // Initialize the Ace Editor
-            var editor = ace.edit("code-editor");
-            editor.setTheme("ace/theme/twilight");
-            editor.session.setMode("ace/mode/python"); // Change mode to Python
-
-            // Update the hidden input field with the code from the editor
-            var codeInput = document.getElementById("code-input");
-            editor.getSession().on("change", function () {
-              codeInput.value = editor.getValue();
-            });
-          });;
-          </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/python/python.min.js"></script>
     </head>
 
     <body style="margin:2em">
@@ -50,6 +31,15 @@
 
         <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
         <h3 id="remaining attempts"></h3>
+        <div id="mc-space" style="background-color: aliceblue;border: 1px solid black">
+            <div id="programming-question-box" style="padding:1em;">
+                <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
+                 <!-- Question to be generated -->
+                
+                <textarea id="code" rows="10" cols="50" ></textarea>
+                 
+            </div>
+        </div>
         <div style="background-color: aliceblue;border: 1px solid black">
             <div id = 'question-box' style="padding:1em">
                 <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
@@ -120,29 +110,12 @@
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('next', current_question);
             sendAjaxRequest('attempts')
-
-
-            //if (current_question <= num_questions){
-            //    document.getElementById("result").innerHTML = "Next question." + current_question;
-            //    sendAjaxRequest('next', current_question);
-            //}else {
-            //    current_question = num_questions;
-            //    document.getElementById("result").innerHTML = "This is the last question.";
-            //}
         }
         
         function previousQuestion() {
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('back');
             sendAjaxRequest('attempts')
-
-            //current_question -= 1;
-            //if (current_question > 0) {
-            //    document.getElementById("result").innerHTML = "Previous question";    
-            //    sendAjaxRequest('back');
-            //} else {
-            //    document.getElementById("result").innerHTML = "Can't go back more";
-            //}
         }
         
         function submitQuestion() {
@@ -189,7 +162,6 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     const response = xhr.responseText;
-                    let question = JSON.parse(response);
         
                     if (action == 'next'|| action == 'back') {
                         updateHTML(response);
@@ -248,39 +220,35 @@
                 document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
                 document.getElementById("question").innerHTML = question;
 
-                var question = document.getElementById("question").innerHTML;
-                if (question.includes("PY")) {
-
+                
+                if (response_object["type"] == "c" || response_object["type"] == "py") {
+                    //DO SOMETHING HERE IF IT'S A PROGRAMMING QUESTION.
+                    document.getElementById("code").style.visibility = "visible";
+                    document.getElementById("mc-space").style.visibility = "hidden";
+                    console.log("programming question detected...");
                 } else {
-                   // updates text for each of the radio buttons
-                  document.getElementById("label a").innerHTML = option_a
-                  document.getElementById("label b").innerHTML = option_b
-                  document.getElementById("label c").innerHTML = option_c
-                  document.getElementById("label d").innerHTML = option_d
+                    console.log("THIS IS THE TYPE: " + response_object["type"]);
+                    // updates text for each of the radio buttons
+                    document.getElementById("label a").innerHTML = option_a
+                    document.getElementById("label b").innerHTML = option_b
+                    document.getElementById("label c").innerHTML = option_c
+                    document.getElementById("label d").innerHTML = option_d
 
-                  // ressets radio buttons
-                  document.getElementById('a').checked = false;
-                  document.getElementById('b').checked = false;
-                  document.getElementById('c').checked = false;
-                  document.getElementById('d').checked = false;
+                    // ressets radio buttons
+                    document.getElementById('a').checked = false;
+                    document.getElementById('b').checked = false;
+                    document.getElementById('c').checked = false;
+                    document.getElementById('d').checked = false;
                 }
                
 
 
-            } else {
+            }
+            else {
                 // prints a message at the bottom
                 document.getElementById("result").innerText = response_object["message"];
             }
 
-            // For editor
-        //     document.getElementById("question-box").innerHTML = `<form method="POST" action="http://localhost:9000/">
-        //                                                             <h2>Question 6:</h2>
-        //                                                             <p>Write a C program to calculate the factorial of a given number:</p>
-        //                                                             <div id="code-editor"></div>
-        //                                                             <textarea id="code-input" name="q6" style="display: none;"></textarea>
-
-        //                                                             <input type="submit" name="Submit" value="Submit">
-        //                                                         </form>`;
         }
 
         function updateChecked(response) {
@@ -309,4 +277,41 @@
             document.getElementById("remaining attempts").innerText = "Remaining attempts: " + response;
         }
     </script>
+
+<script>
+    // Initialize CodeMirror
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      lineNumbers: true,
+      mode: "python" // Use "text/x-csrc" mode for C, "python" for Python
+    });
+
+
+    // ####   FOR SYNTAX CHECKKING TO WORK NEED TO DOWNLAOD PYFLAKES    ######
+    // editor.on("change", function() {
+    //   clearTimeout(window.syntaxCheckTimeout);
+    //   window.syntaxCheckTimeout = setTimeout(function() {
+    //     var code = editor.getValue();
+    //     //
+    //     // try {
+    //     //   // Attempt to parse the code to check for syntax errors
+    //     //   var syntaxError = false;
+    //     //   PythonParser.parse(code);
+    //     // } catch (error) {
+    //     //   // If an error occurs, display it to the user
+    //     //   syntaxError = true;
+    //     //   console.error(error);
+    //     // }
+  
+    //     // Do something with the syntax error status (e.g., show an error message)
+    //     if (syntaxError) {
+    //       // Display an error message to the user
+    //       document.getElementById("feedback-message").innerText = "Syntax Error!";
+    //     } else {
+    //       // Clear any existing error message
+    //       xample: document.getElementById("feedback-message").innerText = "";
+    //     }
+    //   }, 500); // Adjust the delay (in milliseconds) as needed
+    // });
+  </script>
+  
 </html>
