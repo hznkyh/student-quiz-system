@@ -569,7 +569,7 @@ Question* read_questions_file(int num_questions, char *filename){
         char option_d[OPTION_SIZE];
 
         // Parse the line into question ID, question text, and answer
-        if (sscanf(line, "%d,%1024[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
+        if (sscanf(line, "%d,%255[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
             //printf("LINE:line)
             continue;

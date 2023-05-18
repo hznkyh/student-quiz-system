@@ -31,7 +31,7 @@
 
         <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
         <h3 id="remaining attempts"></h3>
-        <div style="background-color: aliceblue;border: 1px solid black">
+        <div id="display-div" style="background-color: aliceblue;border: 1px solid black">
             <p id="question" style="margin: 0px;margin-bottom: 0.5em;margin:10px;"></p>
             <div id="programming-question-box" style="padding:0;">
                 <!-- AREA FOR CODING QUESTIONS TO BE ASNWERED-->
@@ -174,6 +174,7 @@
                     if (action == 'next'|| action == 'back') {
                         updateHTML(response);
                         document.getElementById("result").innerText = "";
+                        editor.setValue("");
                     } 
                     else if (action == 'info') {
                         updateInfo(response);
@@ -211,7 +212,7 @@
                 //DO SOMETHING HERE IF IT'S A PROGRAMMING QUESTION.
                 document.getElementById("programming-question-box").style.visibility = "visible";
                 document.getElementById("question-box").style.visibility = "hidden";
-                document.getElementById("programming-question-box").style.height = "60%";
+                document.getElementById("display-div").style.height = "37vh";
                 console.log("programming question detected...");
                 console.log("TYPE: " + response_object["type"]);
 
@@ -224,7 +225,8 @@
 
             } else {
                 console.log("THIS IS THE TYPE: " + response_object["type"]);
-            
+                
+                document.getElementById("display-div").style.height = "auto";
                 document.getElementById("programming-question-box").style.visibility = "hidden";
                 document.getElementById("programming-question-box").style.height = 0;
                 document.getElementById("question-box").style.visibility = "visible";

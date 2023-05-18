@@ -3,7 +3,65 @@
         "name": "Alice",
         "password": "pass1",
         "grade": 0,
-        "active_test": false
+        "active_test": true,
+        "test": {
+            "0": {
+                "question_id": "4",
+                "question_number": "1",
+                "question": "What is the keyword used to define a function in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "def",
+                    "option_b": "fun",
+                    "option_c": "function",
+                    "option_d": "class"
+                },
+                "message": ""
+            },
+            "1": {
+                "question_id": "14",
+                "question_number": "2",
+                "question": "What does the 'import' keyword do in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "Imports a module",
+                    "option_b": "Defines a function",
+                    "option_c": "Prints a message to the console",
+                    "option_d": "Calculates a mathematical expression"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "24",
+                "question_number": "3",
+                "question": "What is the purpose of the 'pass' statement in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "To do nothing",
+                    "option_b": "To break out of a loop",
+                    "option_c": "To raise an exception",
+                    "option_d": "To import a module"
+                },
+                "message": ""
+            },
+            "3": {
+                "question_id": "1",
+                "question_number": "4",
+                "question": "Write a C function to reverse a string and print it to stdout. The function must have prototype: void reverseString(char* str);",
+                "remaining_attempts": "3",
+                "type": "c"
+            },
+            "4": {
+                "question_id": "2",
+                "question_number": "5",
+                "question": "Write a C function to find the length of a string and print it to stdout. The function must have prototype: void stringLength(char* str);",
+                "remaining_attempts": "3",
+                "type": "c"
+            }
+        }
     },
     "2": {
         "name": "Bob",
