@@ -168,6 +168,7 @@ void handle_connection(int sockfd) {
         }
     }else if(strcmp(header, "mark_c_answer") == 0){ //Mark C programming question
         printf("Will mark the C question now...\n");
+        printf("%s\n",newPayload);
 
     }else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
         printf("Will mark the Python question now...\n");

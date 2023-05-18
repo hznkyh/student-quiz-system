@@ -151,7 +151,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 # Retrieve the remaining attempts for the current question
                 question_num = active_tests[username].get_current_questionNum()
                 attempts = int(records.remaining_attempts(username, question_num))
-
+                print(f"SENDING: {json_data['answer']}")
                 # if the student submitted the correct answer
                 if (active_tests[username].get_answer(active_tests[username],
                                                      active_tests[username].get_current_questionNum(),

@@ -2,14 +2,14 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 0,
+        "grade": 12,
         "active_test": true,
         "test": {
             "0": {
                 "question_id": "1",
                 "question_number": "1",
                 "question": "What is Python?",
-                "remaining_attempts": "3",
+                "remaining_attempts": "0",
                 "type": "mc",
                 "options": {
                     "option_a": "A programming language",
@@ -23,7 +23,7 @@
                 "question_id": "5",
                 "question_number": "2",
                 "question": "What symbol is used for single-line comments in Python?",
-                "remaining_attempts": "3",
+                "remaining_attempts": "0",
                 "type": "mc",
                 "options": {
                     "option_a": "#",
@@ -37,7 +37,7 @@
                 "question_id": "6",
                 "question_number": "3",
                 "question": "What is the result of the expression 5 + 2 * 3 in Python?",
-                "remaining_attempts": "3",
+                "remaining_attempts": "0",
                 "type": "mc",
                 "options": {
                     "option_a": "11",
@@ -51,7 +51,7 @@
                 "question_id": "1",
                 "question_number": "4",
                 "question": "Write a C program to calculate the sum of all numbers in an array.",
-                "remaining_attempts": "3",
+                "remaining_attempts": "0",
                 "type": "c"
             },
             "4": {

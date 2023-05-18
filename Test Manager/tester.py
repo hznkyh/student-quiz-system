@@ -142,6 +142,7 @@ class Test:
     def get_answer(self, question_bank, question_number, answer):
         # Check question type and perform relevant action
         question_type = question_bank.questions[question_number]["type"]
+        print(f"Q-Type {question_type}")
         if question_type == "mc":
             return self.mark_multiple_choice_answer(question_bank, question_number, answer)
         elif question_type == "py" or question_type == "c":
@@ -184,15 +185,16 @@ class Test:
         question_type = question_bank.questions[question_number]["type"]
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
-        header = "send_" + question_type + "_answer"
+        header = "mark_" + question_type + "_answer"
         header_len = len(header)
         questionID = get_question_id(question_bank.questions, question_number+1)
+        message = "{}={}".format(questionID, answer)
         header_len_bytes = struct.pack("!I", header_len)
-        data = header_len_bytes + header.encode() + str(questionID).encode()
+        data = header_len_bytes + header.encode() + message.encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(2048)  # Awaits a response.
-        answer = str(response, 'utf-8')
-        return answer
+        #response = sock.recv(2048)  # Awaits a response. #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
+        #answer = str(response, 'utf-8')
+        return "Nothing for now" #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
 
     
     #Returns the correct answer for a question, used when out of attempts.

@@ -117,9 +117,21 @@
         }
         
         function submitQuestion() {
-            var answer = getChecked();
-            // Send request to check answer
-            sendAjaxRequest('submit', answer);
+            var code = editor.getValue().trim();
+            console.log(code)
+            if ((document.getElementById('a').checked) || (document.getElementById('b').checked) || 
+                (document.getElementById('c').checked) || (document.getElementById('d').checked)){
+                    console.log("MC answer submitted...");
+                    var answer = getChecked();
+                    sendAjaxRequest('submit', answer);
+            }else if(code){
+                console.log("Code submitted: " + code);
+                sendAjaxRequest('submit', code);
+            }
+            else{
+                console.log("Nothing to submit...");
+            }
+
         }
 
         function finishTest() {
@@ -167,12 +179,7 @@
                         updateInfo(response);
                     }
                     else if (action == 'submit') {
-                        // if(question["type"] == "py" || question["type"] == "c"){
-                            
-
-                        // }else if (question["type"] == "mc"){
-
-                        // }
+                        
                         updateChecked(response);
                         updateInfo(response);
                     }
@@ -181,11 +188,10 @@
                         num_questions = response_object["num_questions"]
                     }   
                     else if (action == "attempts"){
-                        console.log(response);
+                        
                         updateAttempts(response);
                     }
                     else if (action == "finished") {
-                        console.log(response)
                         document.getElementById('remaining attempts').innerHTML = "Total score: " + response + "%"
 
                     }
