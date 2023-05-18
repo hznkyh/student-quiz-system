@@ -12,6 +12,8 @@
 
 //gcc QB.c -o QB 
 
+
+// @WHAT what is this doing?
 int calculate_checksum(char* buf, int len) {
     int sum = 0;
     for (int i = 0; i < len; i++) {
@@ -58,7 +60,6 @@ void get_local_ip(char *ip, int size) {
         exit(EXIT_FAILURE);
     }
 }
-
 
 // Create Socket
 void create_socket(int *sockfd) {
@@ -107,13 +108,13 @@ void handle_connection(int sockfd) {
     if ((connfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_len)) < 0) {
         perror("accept failed");
         exit(EXIT_FAILURE);
-    }
+    } 
     printf("* Transmission accepted\n");
 
     // Read the message and size
     struct message msg;
     ssize_t n;
-
+    
     memset(msg.payload, 0, sizeof(msg.payload));
     //Receive the Message header
     n = recv(connfd, &msg, sizeof(msg), 0);
@@ -331,7 +332,7 @@ Question* read_questions_file(int num_questions, char *filename){
         char option_d[OPTION_SIZE];
 
         // Parse the line into question ID, question text, and answer
-        if (sscanf(line, "%d,%255[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
+        if (sscanf(line, "%d,%1024[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
             //printf("LINE:line)
             continue;
@@ -524,9 +525,6 @@ void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char 
     if (strlen(buffer) > 0) {
         sprintf(buffer + strlen(buffer) - 1, "}");
     }
-
-    
-
     // Send the Python code to the server
     if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
         perror("send failed");
@@ -539,7 +537,10 @@ void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char 
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory
+<<<<<<< HEAD
     // free(buffer);
+=======
+>>>>>>> 67250a530dbb4670134c129c9b91301768cdfa69
     free(questions);
 }
 

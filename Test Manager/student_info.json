@@ -53,35 +53,9 @@
         "name": "Bob",
         "password": "pass2",
         "grade": 3,
-        "active_test": true,
+        "active_test": false,
         "test": {
-            "0": {
-                "question_id": "3",
-                "question_number": "1",
-                "question": "Which of the following is NOT a Python data type?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Integer",
-                    "option_b": "List",
-                    "option_c": "Dictionary",
-                    "option_d": "Loop"
-                },
-                "message": ""
-            },
-            "1": {
-                "question_id": "4",
-                "question_number": "2",
-                "question": "What is the keyword used to define a function in Python?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "def",
-                    "option_b": "fun",
-                    "option_c": "function",
-                    "option_d": "class"
-                },
-                "message": ""
-            }
-        }
+            
     },
     "3": {
         "name": "Caleb",
