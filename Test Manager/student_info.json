@@ -2,26 +2,12 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 3,
+        "grade": 0,
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "4",
-                "question_number": "1",
-                "question": "What is the keyword used to define a function in Python?",
-                "remaining_attempts": "3",
-                "type": "mc",
-                "options": {
-                    "option_a": "def",
-                    "option_b": "fun",
-                    "option_c": "function",
-                    "option_d": "class"
-                },
-                "message": ""
-            },
-            "1": {
                 "question_id": "8",
-                "question_number": "2",
+                "question_number": "1",
                 "question": "What does the 'len()' function do in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
@@ -33,33 +19,47 @@
                 },
                 "message": ""
             },
-            "2": {
-                "question_id": "14",
-                "question_number": "3",
-                "question": "What does the 'import' keyword do in Python?",
-                "remaining_attempts": "0",
+            "1": {
+                "question_id": "16",
+                "question_number": "2",
+                "question": "Which module in Python is used to work with dates and times?",
+                "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "Imports a module",
-                    "option_b": "Defines a function",
-                    "option_c": "Prints a message to the console",
-                    "option_d": "Calculates a mathematical expression"
+                    "option_a": "datetime",
+                    "option_b": "math",
+                    "option_c": "time",
+                    "option_d": "calendar"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "23",
+                "question_number": "3",
+                "question": "What does the 'random' module in Python provide?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "Functions for generating random numbers",
+                    "option_b": "Functions for sorting lists",
+                    "option_c": "Functions for performing mathematical calculations",
+                    "option_d": "Functions for reading and writing files"
                 },
                 "message": ""
             },
             "3": {
                 "question_id": "1",
                 "question_number": "4",
-                "question": "Write a C function to reverse a string and print it to stdout. The function must have prototype: void reverseString(char* str);",
+                "question": "Write a Python function called def reverse(my_string)",
                 "remaining_attempts": "0",
-                "type": "c"
+                "type": "py"
             },
             "4": {
                 "question_id": "2",
                 "question_number": "5",
-                "question": "Write a C function to find the length of a string and print it to stdout. The function must have prototype: void stringLength(char* str);",
+                "question": "Write a Python function called def string_length(s)",
                 "remaining_attempts": "1",
-                "type": "c"
+                "type": "py"
             }
         }
     },

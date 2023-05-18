@@ -115,7 +115,7 @@ class Test:
         sock = connect_to_server(self.QB_IP, QB_PORT)
         # Randomly choose between requesting C questions and Python Questions
         # selected_question_set = random.choice(["c_questions", "py_questions"])
-        header = "c_questions"#selected_question_set  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        header = "py_questions"#selected_question_set  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
@@ -225,8 +225,8 @@ class Test:
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        #response = sock.recv(2048)  # Awaits a response.
-        #answer = str(response, 'utf-8')
+        response = sock.recv(2048)  # Awaits a response.
+        answer = str(response, 'utf-8')
         return "NOT FOUND"
     
 

@@ -314,8 +314,16 @@ void handle_connection(int sockfd) {
 
                 if (strcmp(outputContent, anotherString) == 0) {
                     printf("Test case passed.\n");
+                    if (send(connfd, "True", strlen("True"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
                 } else {
                     printf("Failed test case.\n");
+                    if (send(connfd, "False", strlen("False"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
                 }
 
                 free(outputContent);
