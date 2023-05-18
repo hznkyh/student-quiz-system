@@ -76,7 +76,6 @@ class Test:
 
 
     def get_question_dict(self):
-        print("HERE")
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
         header = "mc_questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
@@ -111,7 +110,6 @@ class Test:
             i += 1
             temp_questions_list.append(temp_dict)
         
-        print("HERE 2")
         print(temp_questions_list)
         sock = connect_to_server(self.QB_IP, QB_PORT)
         #Randomly choose between requesting C questions and Python Questions
@@ -138,9 +136,6 @@ class Test:
             }
             i += 1
             temp_questions_list.append(temp_dict)
-
-        print("HERE 3")
-
         return temp_questions_list
 
     

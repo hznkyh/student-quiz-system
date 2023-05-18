@@ -13,14 +13,6 @@
 //gcc QB.c -o QB 
 
 
-// @WHAT what is this doing?
-int calculate_checksum(char* buf, int len) {
-    int sum = 0;
-    for (int i = 0; i < len; i++) {
-        sum += buf[i];
-    }
-    return sum;
-}
 
 // Not DHCP, i doubt thats a requirement?
 // based on this https://www.sanfoundry.com/c-program-get-ip-address/
