@@ -13,7 +13,7 @@ QB_PORT = 9001
 class Test:
     def __init__(self, student_id, question_bank_ip):
         # checks the flag for if the student has an active test going on
-        existing_test = records.getActiveState(student_id)
+        existing_test = records.get_active_state(student_id)
 
         self.QB_IP = question_bank_ip
         self.student_id = student_id
@@ -28,18 +28,23 @@ class Test:
 
         if not existing_test:  # if the user has not previously started a test
             self.questions = self.get_question_dict()
-            records.setGrade(student_id, 0)
 
-            # puts all the questions into a json folder
-            test_data = {}
-            for index, question in enumerate(self.questions):
-                test_data[index] = question
-            records.setTestData(self.student_id, test_data)
+            if self.questions != None:
+                records.set_grade(student_id, 0)
 
-            records.setTestActiveState(student_id, active=True)
+                # puts all the questions into a json folder
+                test_data = {}
+                for index, question in enumerate(self.questions):
+                    test_data[index] = question
+                records.set_test_data(self.student_id, test_data)
+
+                records.set_test_active_state(student_id, active=True)
+            else:
+                self.questions = False
+                records.set_test_active_state(student_id, active=False)
 
         else:  # if state is to be resumed i.e. the user is halfway through a test
-            test_data = records.getTestData(student_id)
+            test_data = records.get_test_data(student_id)
             for key in test_data.keys():
                 self.questions.append(test_data[key])
 
@@ -78,6 +83,8 @@ class Test:
 
     def get_question_dict(self):
         sock = connect_to_server(self.QB_IP, QB_PORT)
+        if sock == None:
+            return None
         server_address = (self.QB_IP, QB_PORT)
         header = "mc_questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
@@ -245,5 +252,5 @@ def connect_to_server(host, port):
         print("Connection successful!")
     except socket.error as e:
         print(f"Error connecting to server: {e}")
-        exit(1)
+        return None
     return sock

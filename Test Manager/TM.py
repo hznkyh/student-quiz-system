@@ -69,6 +69,17 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 content = f.read()
 
             self.wfile.write(bytes(content, 'utf-8'))
+        
+        elif self.path == '/error':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+
+            # displays the main test page
+            with open('error.html', 'r') as f:
+                content = f.read()
+
+            self.wfile.write(bytes(content, 'utf-8'))
 
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
@@ -86,13 +97,18 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             password = message[1].split('=')[1]
 
             # Check if the username and password are correct
-            if records.checkLogin(username, password):
-                process_login(username)
-
-                # sends response to update the page to the test pages
-                self.send_response(302)
-                self.send_header('Location', '/test')
-                self.end_headers()
+            if records.check_login(username, password):
+                # print(process_login(username))
+                connection = process_login(username)
+                if connection:
+                    # sends response to update the page to the test pages
+                    self.send_response(302)
+                    self.send_header('Location', '/test')
+                    self.end_headers()
+                else:
+                    self.send_response(302)
+                    self.send_header('Location', '/error')
+                    self.end_headers()
 
             else:
                 # Send a response to the client indicating that the login credentials are incorrect
@@ -143,8 +159,8 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             # test finished
             elif json_data['action'] == 'finished':
                 print("FINISHED TEST")
-                records.setTestActiveState(username, False)
-                response = str(records.getGrade(username) / 0.15)
+                records.set_test_active_state(username, False)
+                response = str(records.get_grade(username) / 0.15)
 
             # submit question
             elif json_data['action'] == 'submit':
@@ -159,8 +175,8 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     response = "correct"
 
                     # Update grade
-                    grade = int(records.getGrade(username))
-                    records.setGrade(username, grade + attempts)
+                    grade = int(records.get_grade(username))
+                    records.set_grade(username, grade + attempts)
 
                     # Set remaining attempts to 0
                     records.set_remaining_attempts(username, question_num, "0")
@@ -201,8 +217,8 @@ def generate_student_info(student_id):
     @param student_id:
     @return: json file if student exists, None otherwise
     """
-    if student_id in records.readRecords():
-        student = records.getStudent(student_id)
+    if student_id in records.read_records():
+        student = records.get_student(student_id)
         name = student['name']
         grade = student['grade']
         temp_dict = {
@@ -222,11 +238,16 @@ def process_login(student_id):
     @return: n/a
     """
     print("Processing login...")
-    print("Created test object for student {}".format(student_id))
+    print("Creating test object for student {}".format(student_id))
     # creates test object
     test_obj = tester.Test(student_id, QB_HOST)
-    # adds text object to active tests dict
-    active_tests[student_id] = test_obj
+    if not test_obj.questions:
+        return False
+    else:
+        print("Created test object for student {}".format(student_id))
+        # adds text object to active tests dict
+        active_tests[student_id] = test_obj
+        return True
 
 
 if __name__ == '__main__':
