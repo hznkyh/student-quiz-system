@@ -1,6 +1,19 @@
 #include <stdio.h>
 
+void stringLength(char* str);
+
 int main() {
-    printf("Hello, world!\n");
-    return 0;
+	char input[] = "Hello, World!";
+	stringLength(input);
+	return 0;
+}
+
+void stringLength(char* str) {
+    int length = 0;
+
+    while (str[length] != '\0') {
+        length++;
+    }
+
+    printf("%d",length);
 }

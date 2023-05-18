@@ -132,6 +132,7 @@ void handle_connection(int sockfd) {
 
     Question* questions;
     
+    //CHECKS THE HEADER TO SEE WHAT IT IS BEING ASKED TO DO
     if (strcmp(header, "mc_questions") == 0){
         int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
         printf("TM requested %d mc questions...\n",numOfQuestions);\
@@ -166,40 +167,80 @@ void handle_connection(int sockfd) {
         }else {
             printf("Result sent to QB ('%c')\n",c_value);
         }
-    }else if(strcmp(header, "mark_c_answer") == 0){ //Mark C programming question
-        printf("Will mark the C question now...\n");
-        char *qID;
+    }
+    else if(strcmp(header, "mark_c_answer") == 0){ //Mark C programming question
+        char* question_id;
         char *user_code;
-        qID = strtok(newPayload, "=");
-        user_code = strtok(NULL, "=");
-        printf("%s",qID);
-        printf("%s\n",user_code);
+        char* delimiter = strchr(newPayload, '='); 
+        // Split the input
+        *delimiter = '\0'; // Null-terminate the string at the delimiter
+        question_id = newPayload;
+        user_code = delimiter + 1;
+        printf("USER CODE:'%s'",user_code);
+        if(atol(question_id) == 1){
+            printf("Will mark the C question one now...(%s)\n",question_id);
+            //WE ADD A MAIN FUNCTION AND stdio.h TO THE USERS FILE SO WE CAN RUN IT AND GET THE EXPECTED OUTPUT.
+            char* insertMain = "#include <stdio.h>\n#include <string.h>\nvoid reverseString(char* str);\n\nint main() {\n\tchar input[] = \"amazing\";\n\treverseString(input);\n\treturn 0;\n}\n\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char* finalCode = (char*)malloc(finalSize);
 
-        // char *modifiedCode = "#include <stdio.h>\n" + user_code;
+            strcpy(finalCode, insertMain);
+            strcat(finalCode, user_code);
+            printf("QID:'%s'\n",question_id);
+            printf("%s\n", finalCode);
 
-        char* userCode = "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, world!\\n\");\n    return 0;\n}";
-        saveUserCode(userCode);
-        compileUserCode();
-        runUserCode();
-        processOutputAndErrors();
+            saveUserCode(finalCode);
+            free(finalCode);
+            compileUserCode();
+            runUserCode();
+            processOutputAndErrors();
+        }
+        else if(atol(question_id)==2){
+            printf("Will mark the C question two now... (%s)\n",question_id);
 
-    }else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
+            //WE ADD A MAIN FUNCTION AND stdio.h TO THE USERS FILE SO WE CAN RUN IT AND GET THE EXPECTED OUTPUT.
+            char* insertMain = "#include <stdio.h>\n\nvoid stringLength(char* str);\n\nint main() {\n\tchar input[] = \"Hello, World!\";\n\tstringLength(input);\n\treturn 0;\n}\n\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char* finalCode = (char*)malloc(finalSize);
+
+            strcpy(finalCode, insertMain);
+            strcat(finalCode, user_code);
+            printf("qid:'%s'\n",question_id);
+            printf("%s\n", finalCode);
+
+            saveUserCode(finalCode);
+            free(finalCode);
+            compileUserCode();
+            runUserCode();
+            processOutputAndErrors();
+        }
+        else{
+            printf("Unknwon Question ID '%s",question_id);
+        }
+        
+
+    }
+    else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
         printf("Will mark the Python question now...\n");
 
-    }else if (strcmp(header, "send_c_answer") == 0){
+    }
+    else if (strcmp(header, "send_c_answer") == 0){
         printf("Will send the C answer now...\n");
     
-    }else if (strcmp(header, "send_py_answer") == 0){
+    }
+    else if (strcmp(header, "send_py_answer") == 0){
         printf("Will send the Python answer now...\n");
     
-    }else if (strcmp(header, "send_mc_answer") == 0){
+    }
+    else if (strcmp(header, "send_mc_answer") == 0){
         char *answer = retreiveAnswer(newPayload);
         if (send(connfd, answer, strlen(answer), 0) < 0) {
             perror("Result send failed");
             exit(EXIT_FAILURE);
         }
         printf("Answer sent to TM: '%s'",answer);
-    }else{
+    }
+    else{
         printf("ERROR: Header '%s' not recognised.\n",header);
     }
 
@@ -236,10 +277,10 @@ void runUserCode() {
 void processOutputAndErrors() {
     FILE* outputFile = fopen("output.txt", "r");
     if (outputFile != NULL) {
-        printf("Program output:\n");
+        printf("Program output:");
         char buffer[256];
         while (fgets(buffer, sizeof(buffer), outputFile) != NULL) {
-            printf("%s", buffer);
+            printf("%s\n", buffer);
         }
         fclose(outputFile);
     } else {

@@ -1,2 +1,2 @@
-1,Write a C program to reverse a string.
-2,Write a C program to find the length of a string.
+1,Write a C function to reverse a string, and print it to stdout. Function must have prototype: void reverseString(char* str);
+2,Write a C function to find the length of a string, and print it to stdout. Function must have prototype: void stringLength(char* str);
