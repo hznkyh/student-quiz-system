@@ -132,7 +132,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     records.setGrade(username, grade + attempts)
                     # Set remaining attempts to 0
                     records.set_remaining_attempts(username, question_num, "0")
-                    send_response = True
                 else:
                     # If there are no remaining attempts
                     if attempts == 1:
@@ -140,7 +139,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                             username].getCurrentQuestionNum())
                         response = "No more attempts left. The correct answer was {}".format(correct_answer)
                         print(response)
-                        send_response = False
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
 
                     elif attempts == 0:
@@ -154,10 +152,8 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                         # If there are remaining attempts, decrement the attempts and send the response
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
                         response = "incorrect"
-                        send_response = False
 
             else:
-                send_response = False
                 response = 0
 
             # Whats is this if statement for?

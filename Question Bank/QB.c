@@ -139,16 +139,33 @@ void handle_connection(int sockfd) {
 
     Question* questions;
     
-    if (strcmp(header, "questions") == 0){
-        printf("TM requested questions...\n");
-        questions = read_questions_file();
-        send_questions(questions, connfd);
-    }else if(strcmp(header, "mc_answer") == 0){
+    if (strcmp(header, "mc_questions") == 0){
+        int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
+        printf("TM requested %d mc questions...\n",numOfQuestions);\
+        questions = read_questions_file(numOfQuestions, "mc_questions.txt");
+        send_questions(questions, connfd, numOfQuestions);
+    
+    }
+    else if (strcmp(header, "c_questions") == 0){
+        int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
+        printf("TM requested %d C programming questions...\n",numOfQuestions);
+        questions = read_p_questions_file(numOfQuestions, "c_questions.txt");
+        send_p_questions(questions, connfd, numOfQuestions, "c");
+    
+    }
+    else if (strcmp(header, "py_questions") == 0){
+        int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
+        printf("TM requested %d C programming questions...\n",numOfQuestions);
+        questions = read_p_questions_file(numOfQuestions, "p_questions.txt");
+        send_p_questions(questions, connfd, numOfQuestions, "py");
+    
+    }
+    else if(strcmp(header, "mark_mc_answer") == 0){
         char *qID;
         char *qAnswer;
         qID = strtok(newPayload, "=");
         qAnswer = strtok(NULL, "=");
-        int correct = mark_MC_Question(atol(qID), qAnswer);
+        int correct = mark_MC_Question(atol(qID), qAnswer, "mc_answers.txt");
         char c_value = correct ? 'T' : 'F'; //Have to do this because sending a 0 or 1 over a socket doesn't work.
        if (send(connfd, &c_value, sizeof(c_value), 0) < 0) {
             perror("Result send failed");
@@ -156,7 +173,19 @@ void handle_connection(int sockfd) {
         }else {
             printf("Result sent to QB ('%c')\n",c_value);
         }
-    }else if (strcmp(header, "sendAnswer") == 0){
+    }else if(strcmp(header, "mark_c_answer") == 0){ //Mark C programming question
+        printf("Will mark the C question now...\n");
+
+    }else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
+        printf("Will mark the Python question now...\n");
+
+    }else if (strcmp(header, "send_c_answer") == 0){
+        printf("Will send the C answer now...\n");
+    
+    }else if (strcmp(header, "send_py_answer") == 0){
+        printf("Will send the Python answer now...\n");
+    
+    }else if (strcmp(header, "send_mc_answer") == 0){
         char *answer = retreiveAnswer(newPayload);
         if (send(connfd, answer, strlen(answer), 0) < 0) {
             perror("Result send failed");
@@ -223,8 +252,8 @@ char* retreiveAnswer(char *qID){
 }
 
 //Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
-int* generate_questions_numbers() {
-    int question_numbers[NUM_QUESTIONS];
+int* generate_questions_numbers(int num_questions) {
+    int question_numbers[num_questions];
     int num_used = 0; //Keeps track of the number of question numbers we've added to the array.
     int min = 1; 
     int max = 27; //The number of questions we have
@@ -232,7 +261,7 @@ int* generate_questions_numbers() {
 
     srand(time(NULL));
 
-    while (num_used < NUM_QUESTIONS) {
+    while (num_used <num_questions) {
         // Generate a random number within the range
         int questionNumber = (rand() % range) + min;
 
@@ -254,8 +283,8 @@ int* generate_questions_numbers() {
     printf("Q IDs to send: %d | %d | %d | %d | %d\n", question_numbers[0], question_numbers[1], question_numbers[2], question_numbers[3], question_numbers[4]);
 
     // Dynamically allocate an array and copy the contents of the question_numbers array to it
-    int* random_numbers = malloc(sizeof(int) * NUM_QUESTIONS);
-    memcpy(random_numbers, question_numbers, sizeof(int) * NUM_QUESTIONS);
+    int* random_numbers = malloc(sizeof(int) *num_questions);
+    memcpy(random_numbers, question_numbers, sizeof(int) * num_questions);
 
     return random_numbers;
 }
@@ -270,16 +299,15 @@ int inArray(int val, int arr[], int size) {
     return 0; // not found
 }
 
-Question* read_questions_file(){
-    char *filename = "questions.txt";
+Question* read_questions_file(int num_questions, char *filename){
 
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) { 
         perror("Error opening file");
         return NULL;
     }
-    int *question_numbers = generate_questions_numbers();
-    Question *questions = malloc(NUM_QUESTIONS * sizeof(Question));
+    int *question_numbers = generate_questions_numbers(num_questions);
+    Question *questions = malloc(num_questions * sizeof(Question));
     
     if (questions == NULL) {
         perror("Error allocating memory");
@@ -290,7 +318,7 @@ Question* read_questions_file(){
     // Read each question from the file and store it in the array
     int i = 0;
     char line[MAX_LINE_LENGTH];
-    while (fgets(line, sizeof(line), fp) && i < NUM_QUESTIONS) {
+    while (fgets(line, sizeof(line), fp) && i < num_questions) {
         int id;
         char question[256];
         char option_a[OPTION_SIZE];
@@ -327,9 +355,54 @@ Question* read_questions_file(){
     return questions;
 }
 
-int mark_MC_Question(int question_id, char *student_answer) {
+Question* read_p_questions_file(int num_questions, char *filename){
+
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL) { 
+        perror("Error opening file");
+        return NULL;
+    }
+    int *question_numbers = generate_questions_numbers(num_questions);
+    Question *questions = malloc(num_questions * sizeof(Question));
+    
+    if (questions == NULL) {
+        perror("Error allocating memory");
+        fclose(fp);
+        return NULL;
+    }
+
+    // Read each question from the file and store it in the array
+    int i = 0;
+    char line[MAX_LINE_LENGTH];
+    while (fgets(line, sizeof(line), fp) && i < num_questions) {
+        int id;
+        char question[256];
+
+        // Parse the line into question ID, question text, and answer
+        if (sscanf(line, "%d,%255[^,\n]", &id, question) != 2) {
+            printf("Failed to parse line %d in file %s\n", i+1, filename);
+            continue;
+        }
+
+        // Check if the current question ID is in the list of question_numbers we want.
+        if (inArray(id, question_numbers, NUM_OF_AVAILABLE_QUESTIONS)) {
+            questions[i].id = id;
+            strcpy(questions[i].question, question);
+            printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
+            i++;
+        }
+    }
+
+    // Close the file and free the memory used for the random numbers
+    fclose(fp);
+    free(question_numbers);
+
+    printf("Questions generated.\n");
+    return questions;
+}
+
+int mark_MC_Question(int question_id, char *student_answer, char *filename) {
     printf("Marking MC Answer\n");
-    char *filename = "answers.txt";
 
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) { 
@@ -368,11 +441,12 @@ int mark_MC_Question(int question_id, char *student_answer) {
     return 0;
 }
 
-void send_questions(Question* questions, int sockfd){
+//The file name provided will either be the mc question set or programming questions.
+void send_questions(Question* questions, int sockfd, int numOfQuestions){
     printf("Sending Questions...\n");
 
-    int buffer_size = 0;
-    for (int i = 0; i < NUM_QUESTIONS; i++) {
+    int buffer_size = 2060;
+    for (int i = 0; i < numOfQuestions; i++) {
         if (questions[i].question[0] != '\0') {
             buffer_size += strlen(questions[i].question);
         }
@@ -386,16 +460,61 @@ void send_questions(Question* questions, int sockfd){
     
     // Construct a JSON style output to send to the TM
     sprintf(buffer, "{");
-    for (int i = 0; i < NUM_QUESTIONS; i++) {
+    for (int i = 0; i < numOfQuestions; i++) {
         if (questions[i].question[0] != '\0') {
             sprintf(buffer + strlen(buffer), "\"%d\": {", questions[i].id);
             sprintf(buffer + strlen(buffer), "\"question\": \"%s\",", questions[i].question);
+            sprintf(buffer + strlen(buffer), "\"type\": \"%s\",", "mc");
             sprintf(buffer + strlen(buffer), "\"option_a\": \"%s\",", questions[i].option_a);
             sprintf(buffer + strlen(buffer), "\"option_b\": \"%s\",", questions[i].option_b);
             sprintf(buffer + strlen(buffer), "\"option_c\": \"%s\",", questions[i].option_c);
             sprintf(buffer + strlen(buffer), "\"option_d\": \"%s\"", questions[i].option_d);
             sprintf(buffer + strlen(buffer), "},");
-            //printf("Q: %s",buffer);
+        }
+    }
+    if (strlen(buffer) > 0) {
+        sprintf(buffer + strlen(buffer) - 1, "}");
+    }
+
+    // Send the Python code to the server
+    if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
+        perror("send failed");
+        //free(buffer);
+        exit(EXIT_FAILURE);
+    }
+    
+    printf("Questions sent to TM\n");
+    //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
+    
+    // Free the buffer memory
+    //free(buffer);
+    free(questions);
+}
+
+void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char *language){
+    printf("Sending Programming Questions...\n");
+
+    int buffer_size = 2060;
+    for (int i = 0; i < numOfQuestions; i++) {
+        if (questions[i].question[0] != '\0') {
+            buffer_size += strlen(questions[i].question);
+        }
+    }
+    
+    char* buffer = malloc(buffer_size);
+    if (buffer == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+    
+    // Construct a JSON style output to send to the TM
+    sprintf(buffer, "{");
+    for (int i = 0; i < numOfQuestions; i++) {
+        if (questions[i].question[0] != '\0') {
+            sprintf(buffer + strlen(buffer), "\"%d\": {", questions[i].id);
+            sprintf(buffer + strlen(buffer), "\"question\": \"%s\",", questions[i].question);
+            sprintf(buffer + strlen(buffer), "\"type\": \"%s\",", language);
+            sprintf(buffer + strlen(buffer), "},");
         }
     }
     if (strlen(buffer) > 0) {
@@ -407,17 +526,18 @@ void send_questions(Question* questions, int sockfd){
     // Send the Python code to the server
     if (send(sockfd, buffer, strlen(buffer), 0) < 0) {
         perror("send failed");
-        free(buffer);
+        //free(buffer);
         exit(EXIT_FAILURE);
     }
     
-    printf("Questions sent to TM\n");
+    printf("Programming Questions sent to TM\n");
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory
-    free(buffer);
+    // free(buffer);
     free(questions);
 }
+
 
 void close_connection(int connfd) {
     close(connfd);

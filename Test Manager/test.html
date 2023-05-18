@@ -70,7 +70,7 @@
         <div id="buttons-container" style="margin:1em;">
             <button id="back-button" onclick="previousQuestion()" style="float:left;padding: 0.5em;"> Back </button>
             <button id="next-button" onclick="nextQuestion()" style="padding: 0.5em;"> Next </button>
-            <button id="finish-button" onclick="finishTest()" style="float:right;padding: 0.5em 0.5em 0.5em 0.5em;text-color:red;font-weight: bold;"> Finish Test </button>
+            <button id="finish-button" onclick="finishTest()" style="float:right;padding: 0.5em 0.5em 0.5em 0.5em;color:red;font-weight:bold;"> Finish Test </button>
 
             <button id="submit-button" onclick="submitQuestion()" style="float:right;padding: 0.5em;"> Submit </button>
         </div>
@@ -189,6 +189,8 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     const response = xhr.responseText;
+                    let question = JSON.parse(response);
+        
                     if (action == 'next'|| action == 'back') {
                         updateHTML(response);
                         document.getElementById("result").innerText = "";
@@ -197,6 +199,11 @@
                         updateInfo(response);
                     }
                     else if (action == 'submit') {
+                        if(question["type"] == "prog"){
+                            
+                        }else if (question["type"] == "mc"){
+
+                        }
                         updateChecked(response);
                         updateInfo(response);
                     }

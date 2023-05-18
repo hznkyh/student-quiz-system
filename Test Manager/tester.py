@@ -4,7 +4,7 @@ import socket
 import struct
 import studentRecords as records
 
-# each test can be assigned a session id 
+# each test can be assigned a session id
 # would allow concurrently running sessions to be distinguished
 session_ids = []
 
@@ -49,8 +49,6 @@ class Test:
     
     # For when the next question button is pressed
     def nextQuestion(self):
-        # if self.question_counter >= self.getNumQuestions() - 1:
-        #     return json.dumps({"message": "can't go forward anymore"})
         if self.question_counter < self.getNumQuestions() - 1:
             self.question_counter += 1
 
@@ -59,8 +57,6 @@ class Test:
 
     # For when the previous question button is pressed
     def previousQuestion(self):
-        # if self.question_counter == 0:
-        #     return json.dumps({"message": "can't go back anymore"})
         if self.question_counter != 0:
             self.question_counter -= 1
 
@@ -78,37 +74,16 @@ class Test:
     def saveState(self):
         pass
 
-    def generate_question_dict(self, question_number):
-        remaining_attempts = 3
-        question_id = random.randint(0, 1000)
-        temp_dict = {
-            "question_id": str(question_id),
-            "question_number": str(question_number),
-            "question": "WHat is this ____" + str(random.randint(0, 100)),
-            "remaining_attempts": str(remaining_attempts),
-            "options": {
-                "option_a": "test a" + str(random.randint(0, 100)),
-                "option_b": "test b" + str(random.randint(0, 100)),
-                "option_c": "test c" + str(random.randint(0, 100)),
-                "option_d": "test d" + str(random.randint(0, 100))
-            },
-            "message": ""
-        }
-
-        return temp_dict
 
     def get_question_dict(self):
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
-
-        header = "questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        header = "mc_questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
-
-        message = "2"
+        message = "3"
         data = header_len_bytes + header.encode() + message.encode()
-
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
         response = sock.recv(2048)  # Awaits a response.
         message = str(response, 'utf-8')
@@ -123,6 +98,7 @@ class Test:
                 "question_number": str(i),
                 "question": dict[key]["question"],
                 "remaining_attempts": str(remaining_attempts),
+                "type": dict[key]["type"],
                 "options": {
                     "option_a": dict[key]["option_a"],
                     "option_b": dict[key]["option_b"],
@@ -131,57 +107,95 @@ class Test:
                 },
                 "message": ""
             }
-            i+=1
+            i += 1
             temp_questions_list.append(temp_dict)
-        return temp_questions_list
-
-    def format_question(self, question_number, question_id, ):
-        remaining_attempts = 3
-        question_id = random.randint(0, 1000)
-        temp_dict = {
-            "question_id": str(question_id),
-            "question_number": str(question_number),
-            "question": "WHat is this ____" + str(random.randint(0, 100)),
-            "remaining_attempts": str(remaining_attempts),
-            "options": {
-                "option_a": "test a" + str(random.randint(0, 100)),
-                "option_b": "test b" + str(random.randint(0, 100)),
-                "option_c": "test c" + str(random.randint(0, 100)),
-                "option_d": "test d" + str(random.randint(0, 100))
-            },
-            "message": ""
-        }
-
-        return temp_dict
-
-
-    def getAnswer(self, question_bank, question_number, answer):
-        sock = connect_to_server(self.QB_IP, QB_PORT)
-        server_address = (self.QB_IP, QB_PORT)
-
-        header = "mc_answer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        
+        header = "c_questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
-        questionID = getQuestionID(question_bank.questions, question_number+1)
-        message = "{}={}".format(questionID, answer) #The 'question_id' being sent here is just the question number, not the ID
+        message = "2"
         data = header_len_bytes + header.encode() + message.encode()
-
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(1024)  # Awaits a response.
-        msg = str(response, 'utf-8')
-        if (msg == 'T'):
-            print(f"Received response: '{msg}', answer was CORRECT")
-            return True
-        else:
-            print(f"Received response: '{msg}', answer was INCORRECT")
-            return False
+        response = sock.recv(2048)
+        message = str(response, 'utf-8')
+        dict = json.loads(message)
+        for key in dict.keys():
+            remaining_attempts = 3
+            question_id = random.randint(0, 1000)
+            temp_dict = {
+                "question_id": str(key),
+                "question_number": str(i),
+                "question": dict[key]["question"],
+                "remaining_attempts": str(remaining_attempts),
+                "type": dict[key]["type"],
+                "options": {
+                    "option_a": dict[key]["option_a"],
+                    "option_b": dict[key]["option_b"],
+                    "option_c": dict[key]["option_c"],
+                    "option_d": dict[key]["option_d"]
+                },
+                "message": ""
+            }
+            i += 1
+            temp_questions_list.append(temp_dict)
+
+        return temp_questions_list
+
     
-    def getCorrectAnswer(self, question_bank, question_number):
+    def getAnswer(self, question_bank, question_number, answer):
+        # Check question type and perform relevant action
+        question_type = question_bank.questions[question_number]["type"]
+        if question_type == "mc":
+            return self.getMultipleChoiceAnswer(question_bank, question_number, answer)
+        elif question_type == "tf":
+            return self.getProgAnswer(question_bank, question_number, answer)
+        else:
+            return None  # Handle other question types as needed
+    
+    def markMultipleChoiceAnswer(self, question_bank, question_number, answer):
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
+        header = "mark_mc_answer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        header_len = len(header)
+        questionID = getQuestionID(question_bank.questions, question_number+1)
+        header_len_bytes = struct.pack("!I", header_len)
+        data = header_len_bytes + header.encode() + str(questionID).encode()
+        sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
+        response = sock.recv(2048)  # Awaits a response.
+        answer = str(response, 'utf-8')
+        return answer
+    
+    def markProgAnswer(self, question_bank, question_number, answer):
+        question_type = question_bank.questions[question_number]["type"]
+        sock = connect_to_server(self.QB_IP, QB_PORT)
+        server_address = (self.QB_IP, QB_PORT)
+        header = "send_" + question_type + "_answer"
+        header_len = len(header)
+        questionID = getQuestionID(question_bank.questions, question_number+1)
+        header_len_bytes = struct.pack("!I", header_len)
+        data = header_len_bytes + header.encode() + str(questionID).encode()
+        sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
+        response = sock.recv(2048)  # Awaits a response.
+        answer = str(response, 'utf-8')
+        return answer
 
-        header = "sendAnswer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+
+    def getCorrectAnswer(self, question_bank, question_number):
+        # Check question type and perform relevant action
+        question_type = question_bank.questions[question_number]["type"]
+        if question_type == "mc":
+            return self.getMultipleChoiceAnswer(question_bank, question_number)
+        elif question_type == "c" or question_type == "py":
+            return self.getProgAnswer(question_bank, question_number, question_type)
+        else:
+            return None
+    
+    #Returns the correct answer for a question, used when out of attempts.
+    def getMultipleChoiceAnswer(self, question_bank, question_number):
+        sock = connect_to_server(self.QB_IP, QB_PORT)
+        server_address = (self.QB_IP, QB_PORT)
+        header = "send_mc_answer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         questionID = getQuestionID(question_bank.questions, question_number+1)
         # Pack the header length as a 4-byte integer in network byte order
@@ -189,17 +203,33 @@ class Test:
         data = header_len_bytes + header.encode() + str(questionID).encode()
 
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(1024)  # Awaits a response.
+        response = sock.recv(2048)  # Awaits a response.
         answer = str(response, 'utf-8')
         return answer
-
+    
+    #Returns the correct answer output for a programming question, used when out of attempts.
+    def getProgAnswer(self, question_bank, question_number, question_type):
+        sock = connect_to_server(self.QB_IP, QB_PORT)
+        server_address = (self.QB_IP, QB_PORT)
+        header = "send_" + question_type + "_answer" #This will be either "c"+"Answer" or "py"+"Answer"
+        print(f"Sending header: {header}")
+        header_len = len(header)
+        questionID = getQuestionID(question_bank.questions, question_number+1)
+        # Pack the header length as a 4-byte integer in network byte order
+        header_len_bytes = struct.pack("!I", header_len)
+        data = header_len_bytes + header.encode() + str(questionID).encode()
+        sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
+        response = sock.recv(2048)  # Awaits a response.
+        answer = str(response, 'utf-8')
+        return answer
+    
 
 def getQuestionID(questions_list, current_question_number):
-        for question in questions_list:
-            question_id = question["question_id"]
-            question_number = question['question_number']
-            if int(question_number) == int(current_question_number):
-                return question_id
+    for question in questions_list:
+        question_id = question["question_id"]
+        question_number = question["question_number"]
+        if int(question_number) == int(current_question_number):
+            return question_id
                 
 
 
