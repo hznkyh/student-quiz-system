@@ -75,7 +75,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/html')
             self.end_headers()
 
-            # displays the main test page
+            # displays the error page
             with open('error.html', 'r') as f:
                 content = f.read()
 
@@ -98,14 +98,15 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
             # Check if the username and password are correct
             if records.check_login(username, password):
-                # print(process_login(username))
                 connection = process_login(username)
+                # Check if connection if successful
                 if connection:
                     # sends response to update the page to the test pages
                     self.send_response(302)
                     self.send_header('Location', '/test')
                     self.end_headers()
                 else:
+                    # sends response to update the page to the error page
                     self.send_response(302)
                     self.send_header('Location', '/error')
                     self.end_headers()
@@ -241,6 +242,7 @@ def process_login(student_id):
     print("Creating test object for student {}".format(student_id))
     # creates test object
     test_obj = tester.Test(student_id, QB_HOST)
+    # checks if test object was created successfully, if not, returns false
     if not test_obj.questions:
         return False
     else:

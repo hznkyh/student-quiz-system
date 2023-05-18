@@ -29,6 +29,7 @@ class Test:
         if not existing_test:  # if the user has not previously started a test
             self.questions = self.get_question_dict()
 
+            # If question is None, then the QB is not available
             if self.questions != None:
                 records.set_grade(student_id, 0)
 
@@ -83,6 +84,7 @@ class Test:
 
     def get_question_dict(self):
         sock = connect_to_server(self.QB_IP, QB_PORT)
+        # Check if the connection was successful, else return None
         if sock == None:
             return None
         server_address = (self.QB_IP, QB_PORT)
