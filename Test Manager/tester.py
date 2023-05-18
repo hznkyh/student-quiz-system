@@ -76,6 +76,7 @@ class Test:
 
 
     def get_question_dict(self):
+        print("HERE")
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
         header = "mc_questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
@@ -110,7 +111,12 @@ class Test:
             i += 1
             temp_questions_list.append(temp_dict)
         
-        header = "c_questions"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        print("HERE 2")
+        print(temp_questions_list)
+        sock = connect_to_server(self.QB_IP, QB_PORT)
+        #Randomly choose between requesting C questions and Python Questions
+        selected_question_set = random.choice(["c_questions", "py_questions"])
+        header = selected_question_set  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
@@ -124,21 +130,16 @@ class Test:
             remaining_attempts = 3
             question_id = random.randint(0, 1000)
             temp_dict = {
-                "question_id": str(key),
+                "question_id": str(key), 
                 "question_number": str(i),
                 "question": dict[key]["question"],
                 "remaining_attempts": str(remaining_attempts),
-                "type": dict[key]["type"],
-                "options": {
-                    "option_a": dict[key]["option_a"],
-                    "option_b": dict[key]["option_b"],
-                    "option_c": dict[key]["option_c"],
-                    "option_d": dict[key]["option_d"]
-                },
-                "message": ""
+                "type": dict[key]["type"]
             }
             i += 1
             temp_questions_list.append(temp_dict)
+
+        print("HERE 3")
 
         return temp_questions_list
 

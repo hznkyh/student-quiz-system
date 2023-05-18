@@ -156,7 +156,7 @@ void handle_connection(int sockfd) {
     else if (strcmp(header, "py_questions") == 0){
         int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
         printf("TM requested %d C programming questions...\n",numOfQuestions);
-        questions = read_p_questions_file(numOfQuestions, "p_questions.txt");
+        questions = read_p_questions_file(numOfQuestions, "py_questions.txt");
         send_p_questions(questions, connfd, numOfQuestions, "py");
     
     }
@@ -280,7 +280,11 @@ int* generate_questions_numbers(int num_questions) {
         }
     }
     //This is the random numbers generated that will be used as the question IDs we access.
-    printf("Q IDs to send: %d | %d | %d | %d | %d\n", question_numbers[0], question_numbers[1], question_numbers[2], question_numbers[3], question_numbers[4]);
+    printf("Q IDs to send: ");
+    for(int i=0; i < num_questions; i++){
+        printf("%d | ", question_numbers[i]);
+    }
+    printf("\n");
 
     // Dynamically allocate an array and copy the contents of the question_numbers array to it
     int* random_numbers = malloc(sizeof(int) *num_questions);
@@ -356,7 +360,7 @@ Question* read_questions_file(int num_questions, char *filename){
 }
 
 Question* read_p_questions_file(int num_questions, char *filename){
-
+    printf("opening file '%s'\n",filename);
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) { 
         perror("Error opening file");
@@ -513,7 +517,7 @@ void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char 
         if (questions[i].question[0] != '\0') {
             sprintf(buffer + strlen(buffer), "\"%d\": {", questions[i].id);
             sprintf(buffer + strlen(buffer), "\"question\": \"%s\",", questions[i].question);
-            sprintf(buffer + strlen(buffer), "\"type\": \"%s\",", language);
+            sprintf(buffer + strlen(buffer), "\"type\": \"%s\"", language);
             sprintf(buffer + strlen(buffer), "},");
         }
     }
@@ -531,6 +535,7 @@ void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char 
     }
     
     printf("Programming Questions sent to TM\n");
+    printf("Question Set: %s\n",buffer);
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory

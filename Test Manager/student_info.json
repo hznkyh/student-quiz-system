@@ -6,69 +6,46 @@
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "4",
+                "question_id": "1",
                 "question_number": "1",
-                "question": "What is the keyword used to define a function in Python?",
+                "question": "What is Python?",
                 "remaining_attempts": "3",
+                "type": "mc",
                 "options": {
-                    "option_a": "def",
-                    "option_b": "fun",
-                    "option_c": "function",
-                    "option_d": "class"
+                    "option_a": "A programming language",
+                    "option_b": "A snake",
+                    "option_c": "A bird",
+                    "option_d": "A type of food"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "5",
+                "question_id": "14",
                 "question_number": "2",
-                "question": "What symbol is used for single-line comments in Python?",
+                "question": "What does the 'import' keyword do in Python?",
                 "remaining_attempts": "3",
+                "type": "mc",
                 "options": {
-                    "option_a": "#",
-                    "option_b": "//",
-                    "option_c": "/*",
-                    "option_d": "**"
+                    "option_a": "Imports a module",
+                    "option_b": "Defines a function",
+                    "option_c": "Prints a message to the console",
+                    "option_d": "Calculates a mathematical expression"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "8",
+                "question_id": "1",
                 "question_number": "3",
-                "question": "What does the 'len()' function do in Python?",
+                "question": "Write a C program to calculate the sum of all numbers in a list.",
                 "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Returns the length of a string",
-                    "option_b": "Calculates the logarithm",
-                    "option_c": "Converts a number to a string",
-                    "option_d": "Generates a random number"
-                },
-                "message": ""
+                "type": "c"
             },
             "3": {
-                "question_id": "10",
+                "question_id": "14",
                 "question_number": "4",
-                "question": "What is the output of the following code snippet? print('Hello",
+                "question": "Write a C program to calculate the sum of all numbers in a list.",
                 "remaining_attempts": "3",
-                "options": {
-                    "option_a": " ' + 'world!')?",
-                    "option_b": "Hello",
-                    "option_c": " world!",
-                    "option_d": "Hello"
-                },
-                "message": ""
-            },
-            "4": {
-                "question_id": "23",
-                "question_number": "5",
-                "question": "What does the 'random' module in Python provide?",
-                "remaining_attempts": "3",
-                "options": {
-                    "option_a": "Functions for generating random numbers",
-                    "option_b": "Functions for sorting lists",
-                    "option_c": "Functions for performing mathematical calculations",
-                    "option_d": "Functions for reading and writing files"
-                },
-                "message": ""
+                "type": "c"
             }
         }
     },
