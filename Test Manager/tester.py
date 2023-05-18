@@ -11,8 +11,8 @@ session_ids = []
 QB_PORT = 9001
 
 class Test:
-    def __init__(self, student_id, question_bank_ip, resume_state=False, num_questions=5):
-
+    def __init__(self, student_id, question_bank_ip):
+        # checks the flag for if the student has an active test going on
         existing_test = records.getActiveState(student_id)
 
         self.QB_IP = question_bank_ip
@@ -26,21 +26,22 @@ class Test:
         else:
             self.session_id = session_ids[-1] + 1
 
-        # if not existing_test: # if the user has not previously started a test
-        self.questions = self.get_question_dict()
+        if not existing_test:  # if the user has not previously started a test
+            self.questions = self.get_question_dict()
+            records.setGrade(student_id, 0)
 
-        # puts all the questions into a json folder
-        test_data = {}
-        for index, question in enumerate(self.questions):
-            test_data[index] = question
-        records.setTestData(self.student_id, test_data)
+            # puts all the questions into a json folder
+            test_data = {}
+            for index, question in enumerate(self.questions):
+                test_data[index] = question
+            records.setTestData(self.student_id, test_data)
 
-        records.setTestActiveState(student_id, active=True)
+            records.setTestActiveState(student_id, active=True)
 
-        # else:  # if state is to be resumed i.e. the user is halfway through a test
-        #     test_data = records.getTestData(student_id)
-        #     for key in test_data.keys():
-        #         self.questions.append(test_data[key])
+        else:  # if state is to be resumed i.e. the user is halfway through a test
+            test_data = records.getTestData(student_id)
+            for key in test_data.keys():
+                self.questions.append(test_data[key])
 
 
     # For refreshing the current question

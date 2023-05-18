@@ -425,8 +425,7 @@ int mark_MC_Question(int question_id, char *student_answer, char *filename) {
     }
 
     if (current_answer != NULL) {
-        if (strcmp(current_answer, student_answer) == 0) {
-            free(current_answer);
+        if (strcmp(current_answer, student_answer) == 0) {  
             return 1;
         }
         
@@ -448,6 +447,7 @@ void send_questions(Question* questions, int sockfd, int numOfQuestions){
             buffer_size += strlen(questions[i].question);
         }
     }
+    
     
     char* buffer = malloc(buffer_size);
     if (buffer == NULL) {

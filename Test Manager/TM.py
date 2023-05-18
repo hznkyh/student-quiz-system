@@ -1,7 +1,8 @@
+# module imports
 import os
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-import webbrowser  # for opening browser
+import webbrowser
 
 # local imports
 import studentRecords as records
@@ -13,44 +14,57 @@ HTML_LOGIN_FILENAME = "login.html"
 HTML_TEST_FILENAME = "test.html"
 JSON_FILENAME = "student_info.json"
 
+# to store all active tests, allows for distinguishing concurrent users
 active_tests = {}
 
 
 def main():
+    """
+    Main function
+    """
+
+    # global variable defined in main due to python assuming a local variable if accesses from the default global scope
     global QB_HOST
+
+    # user has to enter IP address of the QB
     ip = input("Enter IP address: ")
     QB_HOST = ip
 
-    webbrowser.open_new('http://localhost:9000')  # open in new window
+    # opens browser in new window/tab (depends on system default browser)
+    webbrowser.open_new('http://localhost:9000')
 
     # Set up the HTTP server to listen on port 9000
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     server_address = ('', 9000)
     httpd = HTTPServer(server_address, HTTPRequestHandler)
 
-    httpd.serve_forever()  # anything past this won't be run
+    httpd.serve_forever()
+    # anything past this won't be run
 
-
-#################################################
-# Dealing with networking with the Browser
-#################################################
 
 class HTTPRequestHandler(BaseHTTPRequestHandler):
+    """
+    This does all the dealing with the networking between client web browser and TM
+    """
+
     def do_GET(self):
         if self.path == '/':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
 
+            # displays the login page
             with open('login.html', 'r') as f:
                 content = f.read()
 
             self.wfile.write(bytes(content, 'utf-8'))
+
         elif self.path == '/test':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
 
+            # displays the main test page
             with open('test.html', 'r') as f:
                 content = f.read()
 
@@ -60,76 +74,94 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         message_data = self.rfile.read(content_length)
 
+        # decodes the message data in utf-8 format
         data = message_data.decode('utf-8')
 
-        if data[0:9] == "username=":  # need to change
-            button = data.split('&')[-1].split('=')[1]
+        # runs if the TM detects that the request sent was a login request
+        if data.split('&')[-1] == "Login=Login":
             message = data.split('&')[0:-1]
 
-            if button == "Login":
-                username = message[0].split('=')[1]
-                password = message[1].split('=')[1]
+            # derives the username and password from the login form
+            username = message[0].split('=')[1]
+            password = message[1].split('=')[1]
 
-                # Check if the username and password are correct
-                if records.checkLogin(username, password):
-                    processLogin(username)
+            # Check if the username and password are correct
+            if records.checkLogin(username, password):
+                processLogin(username)
 
-                    self.send_response(302)
-                    self.send_header('Location', '/test')
-                    self.end_headers()
+                # sends response to update the page to the test pages
+                self.send_response(302)
+                self.send_header('Location', '/test')
+                self.end_headers()
 
-                else:
-                    # Send a response to the client indicating that the login credentials are incorrect
-                    self.send_response(200)
-                    self.send_header('Content-type', 'text/html')
-                    self.end_headers()
-                    response_message = "Incorrect login credentials"
-                    self.wfile.write(bytes(response_message, "utf8"))
-                    with open('login.html', 'r') as f:
-                        content = f.read()
-                    self.wfile.write(bytes(content, "utf8"))
+            else:
+                # Send a response to the client indicating that the login credentials are incorrect
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
 
+                # response message sent to user (can be changed to whatever)
+                response_message = "Incorrect login credentials"
+                self.wfile.write(bytes(response_message, "utf8"))
+
+                # reloads login page
+                with open('login.html', 'r') as f:
+                    content = f.read()
+                self.wfile.write(bytes(content, "utf8"))
+
+        # runs if the request sent was not a login request and hence must be an AJAX request from the test page
         else:
+            # converts the json data sent in ajax request to a python dict
             json_data = json.loads(data)
 
             # For grabbing unique question for username
             username = json_data['username']
 
-            send_response = True
+            # checks the json data action field and decides what to to based on what the webpage has requested
+
+            # next question
             if json_data['action'] == 'next':
                 response = active_tests[username].nextQuestion()
 
+            # previous question
             elif json_data['action'] == 'back':
                 response = active_tests[username].previousQuestion()
 
+            # student info
             elif json_data['action'] == 'info':
-                response = self.generate_student_info(username)
+                response = generate_student_info(username)
 
+            # test info
             elif json_data["action"] == 'test_info':
                 response = json.dumps({"num_questions": active_tests[username].getNumQuestions()})
 
-            # Send latest attempts
+            # latest attempts
             elif json_data['action'] == 'attempts':
                 question_num = active_tests[username].getCurrentQuestionNum()
                 response = records.remaining_attempts(username, question_num)
-                send_response = False
 
+            # test finished
             elif json_data['action'] == 'finished':
                 print("FINISHED TEST")
-                response = str(records.getGrade(username)/0.15)
+                records.setTestActiveState(username, False)
+                response = str(records.getGrade(username) / 0.15)
 
+            # submit question
             elif json_data['action'] == 'submit':
                 # Retrieve the remaining attempts for the current question
                 question_num = active_tests[username].getCurrentQuestionNum()
                 attempts = int(records.remaining_attempts(username, question_num))
 
+                # if the student submitted the correct answer
                 if (active_tests[username].getAnswer(active_tests[username],
                                                      active_tests[username].getCurrentQuestionNum(),
                                                      json_data["answer"])):
                     response = "correct"
+
                     # Update grade
                     grade = int(records.getGrade(username))
                     records.setGrade(username, grade + attempts)
+
                     # Set remaining attempts to 0
                     records.set_remaining_attempts(username, question_num, "0")
                 else:
@@ -138,53 +170,62 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                         correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[
                             username].getCurrentQuestionNum())
                         response = "No more attempts left. The correct answer was {}".format(correct_answer)
-                        print(response)
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
 
+                    # if the user has already been told they have no more remaining attempts
                     elif attempts == 0:
-                        # if the user has already been told they have no more remaining attempts
                         correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[
                             username].getCurrentQuestionNum())
                         response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(
                             correct_answer)
 
+                    # If there are remaining attempts, decrement the attempts and send the response
                     else:
-                        # If there are remaining attempts, decrement the attempts and send the response
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
                         response = "incorrect"
 
+            # shouldn't get to here
             else:
                 response = 0
 
-            # Whats is this if statement for?
-            # if send_response or send_response==False:
-
-            print("response: {}".format(response))
+            # send the response back to the webpage
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            print(response)
             self.wfile.write(bytes(response, 'utf-8'))
 
-    def generate_student_info(self, student_id):
-        if student_id in records.readRecords():
-            student = records.getStudent(student_id)
-            name = student['name']
-            grade = student['grade']
-            temp_dict = {
-                "name": name,
-                "grade": grade
-            }
-            temp_json = json.dumps(temp_dict)
-            return temp_json
-        else:
-            return None
+
+def generate_student_info(student_id):
+    """
+    Generates the student info from existing records stored in the json file
+    @param student_id:
+    @return: json file if student exists, None otherwise
+    """
+    if student_id in records.readRecords():
+        student = records.getStudent(student_id)
+        name = student['name']
+        grade = student['grade']
+        temp_dict = {
+            "name": name,
+            "grade": grade
+        }
+        temp_json = json.dumps(temp_dict)
+        return temp_json
+    else:
+        return None
 
 
 def processLogin(student_id):
-    print("processing login")
-    print("created test object for student_id {}".format(student_id))
-    test_obj = tester.Test(student_id, QB_HOST, resume_state=False, num_questions=5)
+    """
+    Processes the student login and creates test object for the student
+    @param student_id:
+    @return: n/a
+    """
+    print("Processing login...")
+    print("Created test object for student {}".format(student_id))
+    # creates test object
+    test_obj = tester.Test(student_id, QB_HOST)
+    # adds text object to active tests dict
     active_tests[student_id] = test_obj
 
 

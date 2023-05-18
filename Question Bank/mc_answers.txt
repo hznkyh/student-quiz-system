@@ -18,7 +18,7 @@
 18,To generate a sequence of numbers
 19,open('data.txt')
 20,Removes leading and trailing whitespace
-21,==
+21,double equals
 22,th
 23,Functions for generating random numbers
 24,To do nothing
