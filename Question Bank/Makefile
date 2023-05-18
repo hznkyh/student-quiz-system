@@ -1,12 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -Wextra
+CFLAGS = -Wall
 
-QB: QB.o
-	$(CC) $(CFLAGS) -o QB QB.o
-
-QB.o: QB.c QB.h
-	$(CC) $(CFLAGS) -c QB.c
+QB: QB.c QB.h
+	$(CC) $(CFLAGS) -o QB QB.c
 
 .PHONY: clean
 clean:
-	rm -f QB.o QB
+	rm -f QB
