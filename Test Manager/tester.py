@@ -8,6 +8,7 @@ import studentRecords as records
 # would allow concurrently running sessions to be distinguished
 session_ids = []
 
+# default value
 QB_PORT = 9001
 
 class Test:

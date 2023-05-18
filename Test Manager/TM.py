@@ -9,7 +9,6 @@ import studentRecords as records
 import tester
 
 # constants
-QB_PORT = 9001
 HTML_LOGIN_FILENAME = "login.html"
 HTML_TEST_FILENAME = "test.html"
 JSON_FILENAME = "student_info.json"
@@ -27,8 +26,13 @@ def main():
     global QB_HOST
 
     # user has to enter IP address of the QB
-    ip = input("Enter IP address: ")
+    ip = input("Enter IP address:\n> ")
     QB_HOST = ip
+
+    #user also has to enter port number of QB
+    port = int(input("Enter port:\n> "))
+    tester.QB_PORT = port
+
 
     # opens browser in new window/tab (depends on system default browser)
     webbrowser.open_new('http://localhost:9000')
