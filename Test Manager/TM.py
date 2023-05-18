@@ -73,7 +73,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 content = f.read()
 
             self.wfile.write(bytes(content, 'utf-8'))
-        
+
         elif self.path == '/error':
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
@@ -138,7 +138,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             # For grabbing unique question for username
             username = json_data['username']
 
-            # checks the json data action field and decides what to to based on what the webpage has requested
+            # checks the json data action field and decides what to do based on what the webpage has requested
 
             # next question
             if json_data['action'] == 'next':
@@ -180,7 +180,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 if (active_tests[username].get_answer(active_tests[username],
                                                      active_tests[username].get_current_questionNum(),
                                                      json_data["answer"])):
-                    
+
                     response = "correct"
 
                     # Update grade
@@ -192,17 +192,32 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 else:
                     # If there are no remaining attempts
                     if attempts == 1:
-                        correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
-                            username].get_current_questionNum())
-                        response = "No more attempts left. The correct answer was {}".format(correct_answer)
+                        correct_answer = active_tests[username].get_correct_answer(active_tests[username],
+                                            active_tests[username].get_current_questionNum())
+
+                        # output for multi choice questions
+                        if correct_answer != 0:
+                            response = "No more attempts left. The correct answer was {}".format(correct_answer)
+                        # output for programming questions
+                        else:
+                            response = "No more attempts left. Your code output did not match the correct output."
+
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
 
                     # if the user has already been told they have no more remaining attempts
-                    elif attempts == 0:
+                    elif attempts == False:
                         correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
                             username].get_current_questionNum())
-                        response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(
-                            correct_answer)
+
+                        # output for multi choice questions
+                        if correct_answer != False:
+                            response = "Nothing has changed sorry, no more attempts left." \
+                                       "The correct answer was {}".format(correct_answer)
+
+                        # output for programming questions
+                        else:
+                            response = "Nothing has changed sorry, no more attempts left. Your code output did not " \
+                                       "match the correct output."
 
                     # If there are remaining attempts, decrement the attempts and send the response
                     else:

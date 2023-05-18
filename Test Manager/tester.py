@@ -50,6 +50,8 @@ class Test:
             for key in test_data.keys():
                 self.questions.append(test_data[key])
 
+        print(self.questions)
+
 
     # For refreshing the current question
     def get_current_question(self):
@@ -191,7 +193,7 @@ class Test:
         if question_type == "mc":
             return self.get_multiple_choice_answer(question_bank, question_number)
         elif question_type == "py" or question_type == "c":
-            return self.get_prog_answer(question_bank, question_number, question_type)
+            return self.get_prog_answer(question_bank, question_number, question_type)  # Not functional
         else:
             return None  # Handle other question types as needed
     
@@ -203,7 +205,7 @@ class Test:
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
         questionID = get_question_id(question_bank.questions, question_number+1)
-        message = "{}={}".format(questionID, answer) #The 'question_id' being sent here is just the question number, not the ID
+        message = "{}={}".format(questionID, answer) # The 'question_id' being sent here is just the question number, not the ID
         data = header_len_bytes + header.encode() + message.encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
         response = sock.recv(1024)  # Awaits a response.
@@ -252,12 +254,13 @@ class Test:
         response = sock.recv(2048)  # Awaits a response.
         answer = str(response, 'utf-8')
         return answer
-    
-    #Returns the correct answer output for a programming question, used when out of attempts.
+
+    # NOT FUNCTIONAL
+    # Returns the correct answer output for a programming question, used when out of attempts.
     def get_prog_answer(self, question_bank, question_number, question_type):
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
-        header = "send_" + question_type + "_answer" #This will be either "c"+"Answer" or "py"+"Answer"
+        header = "send_" + question_type + "_answer" # This will be either "c"+"Answer" or "py"+"Answer"
         print(f"Sending header: {header}")
         header_len = len(header)
         questionID = get_question_id(question_bank.questions, question_number+1)
@@ -265,8 +268,10 @@ class Test:
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        #response = sock.recv(2048)  # Awaits a response.
-        #answer = str(response, 'utf-8')
+        # response = sock.recv(2048)  # Awaits a response.
+        # answer = str(response, 'utf-8')
+
+        # Not functional, returns 0
         return False
     
 
