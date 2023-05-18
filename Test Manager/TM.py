@@ -87,7 +87,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
             # Check if the username and password are correct
             if records.checkLogin(username, password):
-                processLogin(username)
+                process_login(username)
 
                 # sends response to update the page to the test pages
                 self.send_response(302)
@@ -215,7 +215,7 @@ def generate_student_info(student_id):
         return None
 
 
-def processLogin(student_id):
+def process_login(student_id):
     """
     Processes the student login and creates test object for the student
     @param student_id:
