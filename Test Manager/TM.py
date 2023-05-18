@@ -121,11 +121,11 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
             # next question
             if json_data['action'] == 'next':
-                response = active_tests[username].nextQuestion()
+                response = active_tests[username].next_question()
 
             # previous question
             elif json_data['action'] == 'back':
-                response = active_tests[username].previousQuestion()
+                response = active_tests[username].previous_question()
 
             # student info
             elif json_data['action'] == 'info':
@@ -133,11 +133,11 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
             # test info
             elif json_data["action"] == 'test_info':
-                response = json.dumps({"num_questions": active_tests[username].getNumQuestions()})
+                response = json.dumps({"num_questions": active_tests[username].get_num_questions()})
 
             # latest attempts
             elif json_data['action'] == 'attempts':
-                question_num = active_tests[username].getCurrentQuestionNum()
+                question_num = active_tests[username].get_current_questionNum()
                 response = records.remaining_attempts(username, question_num)
 
             # test finished
@@ -149,12 +149,12 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             # submit question
             elif json_data['action'] == 'submit':
                 # Retrieve the remaining attempts for the current question
-                question_num = active_tests[username].getCurrentQuestionNum()
+                question_num = active_tests[username].get_current_questionNum()
                 attempts = int(records.remaining_attempts(username, question_num))
 
                 # if the student submitted the correct answer
-                if (active_tests[username].getAnswer(active_tests[username],
-                                                     active_tests[username].getCurrentQuestionNum(),
+                if (active_tests[username].get_answer(active_tests[username],
+                                                     active_tests[username].get_current_questionNum(),
                                                      json_data["answer"])):
                     response = "correct"
 
@@ -167,15 +167,15 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 else:
                     # If there are no remaining attempts
                     if attempts == 1:
-                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[
-                            username].getCurrentQuestionNum())
+                        correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
+                            username].get_current_questionNum())
                         response = "No more attempts left. The correct answer was {}".format(correct_answer)
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
 
                     # if the user has already been told they have no more remaining attempts
                     elif attempts == 0:
-                        correct_answer = active_tests[username].getCorrectAnswer(active_tests[username], active_tests[
-                            username].getCurrentQuestionNum())
+                        correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
+                            username].get_current_questionNum())
                         response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(
                             correct_answer)
 

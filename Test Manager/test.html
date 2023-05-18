@@ -56,8 +56,8 @@
         
 
         <div id="buttons-container" style="margin:1em;">
-            <button id="back-button" onclick="previousQuestion()" style="float:left;padding: 0.5em;"> Back </button>
-            <button id="next-button" onclick="nextQuestion()" style="padding: 0.5em;"> Next </button>
+            <button id="back-button" onclick="previous_question()" style="float:left;padding: 0.5em;"> Back </button>
+            <button id="next-button" onclick="next_question()" style="padding: 0.5em;"> Next </button>
             <button id="finish-button" onclick="finishTest()" style="float:right;padding: 0.5em 0.5em 0.5em 0.5em;color:red;font-weight:bold;"> Finish Test </button>
 
             <button id="submit-button" onclick="submitQuestion()" style="float:right;padding: 0.5em;"> Submit </button>
@@ -104,13 +104,13 @@
         }
 
         
-        function nextQuestion() {
+        function next_question() {
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('next', current_question);
             sendAjaxRequest('attempts')
         }
         
-        function previousQuestion() {
+        function previous_question() {
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('back');
             sendAjaxRequest('attempts')

@@ -45,19 +45,19 @@ class Test:
 
 
     # For refreshing the current question
-    def getCurrentQuestion(self):
+    def get_current_question(self):
         return json.dumps(self.questions[self.question_counter])
     
     # For when the next question button is pressed
-    def nextQuestion(self):
-        if self.question_counter < self.getNumQuestions() - 1:
+    def next_question(self):
+        if self.question_counter < self.get_num_questions() - 1:
             self.question_counter += 1
 
         # turns the dict into a json file (str)
         return json.dumps(self.questions[self.question_counter])
 
     # For when the previous question button is pressed
-    def previousQuestion(self):
+    def previous_question(self):
         if self.question_counter != 0:
             self.question_counter -= 1
 
@@ -65,14 +65,14 @@ class Test:
         return json.dumps(self.questions[self.question_counter])
 
     # returns the number of questions in the test session
-    def getNumQuestions(self):
+    def get_num_questions(self):
         return len(self.questions)
 
-    def getCurrentQuestionNum(self):
+    def get_current_questionNum(self):
         return self.question_counter
 
     # save the state of the current question to a file
-    def saveState(self):
+    def save_state(self):
         pass
 
 
@@ -139,35 +139,35 @@ class Test:
             temp_questions_list.append(temp_dict)
         return temp_questions_list
 
-    def getAnswer(self, question_bank, question_number, answer):
+    def get_answer(self, question_bank, question_number, answer):
         # Check question type and perform relevant action
         question_type = question_bank.questions[question_number]["type"]
         if question_type == "mc":
-            return self.markMultipleChoiceAnswer(question_bank, question_number, answer)
+            return self.mark_multiple_choice_answer(question_bank, question_number, answer)
         elif question_type == "py" or question_type == "c":
-            return self.markProgAnswer(question_bank, question_number, answer)
+            return self.mark_prog_answer(question_bank, question_number, answer)
         else:
             return None  # Handle other question types as needed
 
 
-    def getCorrectAnswer(self, question_bank, question_number, answer):
+    def get_correct_answer(self, question_bank, question_number, answer):
         # Check question type and perform relevant action
         question_type = question_bank.questions[question_number]["type"]
         if question_type == "mc":
-            return self.getMultipleChoiceAnswer(question_bank, question_number)
+            return self.get_multiple_choice_answer(question_bank, question_number)
         elif question_type == "py" or question_type == "c":
-            return self.getProgAnswer(question_bank, question_number, question_type)
+            return self.get_prog_answer(question_bank, question_number, question_type)
         else:
             return None  # Handle other question types as needed
     
-    def markMultipleChoiceAnswer(self, question_bank, question_number, answer):
+    def mark_multiple_choice_answer(self, question_bank, question_number, answer):
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
         header = "mark_mc_answer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
-        questionID = getQuestionID(question_bank.questions, question_number+1)
+        questionID = get_question_id(question_bank.questions, question_number+1)
         message = "{}={}".format(questionID, answer) #The 'question_id' being sent here is just the question number, not the ID
         data = header_len_bytes + header.encode() + message.encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
@@ -180,13 +180,13 @@ class Test:
             print(f"Received response: '{msg}', answer was INCORRECT")
             return False
     
-    def markProgAnswer(self, question_bank, question_number, answer):
+    def mark_prog_answer(self, question_bank, question_number, answer):
         question_type = question_bank.questions[question_number]["type"]
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
         header = "send_" + question_type + "_answer"
         header_len = len(header)
-        questionID = getQuestionID(question_bank.questions, question_number+1)
+        questionID = get_question_id(question_bank.questions, question_number+1)
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
@@ -196,12 +196,12 @@ class Test:
 
     
     #Returns the correct answer for a question, used when out of attempts.
-    def getMultipleChoiceAnswer(self, question_bank, question_number):
+    def get_multiple_choice_answer(self, question_bank, question_number):
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
         header = "send_mc_answer"  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
-        questionID = getQuestionID(question_bank.questions, question_number+1)
+        questionID = get_question_id(question_bank.questions, question_number+1)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
@@ -212,13 +212,13 @@ class Test:
         return answer
     
     #Returns the correct answer output for a programming question, used when out of attempts.
-    def getProgAnswer(self, question_bank, question_number, question_type):
+    def get_prog_answer(self, question_bank, question_number, question_type):
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
         header = "send_" + question_type + "_answer" #This will be either "c"+"Answer" or "py"+"Answer"
         print(f"Sending header: {header}")
         header_len = len(header)
-        questionID = getQuestionID(question_bank.questions, question_number+1)
+        questionID = get_question_id(question_bank.questions, question_number+1)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
@@ -228,7 +228,7 @@ class Test:
         return answer
     
 
-def getQuestionID(questions_list, current_question_number):
+def get_question_id(questions_list, current_question_number):
     for question in questions_list:
         question_id = question["question_id"]
         question_number = question["question_number"]
