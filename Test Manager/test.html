@@ -31,19 +31,15 @@
 
         <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
         <h3 id="remaining attempts"></h3>
-        <div id="mc-space" style="background-color: aliceblue;border: 1px solid black">
-            <div id="programming-question-box" style="padding:1em;">
-                <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
-                 <!-- Question to be generated -->
-                
-                <textarea id="code" rows="10" cols="50" ></textarea>
-                 
-            </div>
-        </div>
         <div style="background-color: aliceblue;border: 1px solid black">
-            <div id = 'question-box' style="padding:1em">
-                <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
-                 <!-- Question to be generated -->
+            <p id="question" style="margin: 0px;margin-bottom: 0.5em;margin:10px;"></p>
+            <div id="programming-question-box" style="padding:0;">
+                <!-- AREA FOR CODING QUESTIONS TO BE ASNWERED-->
+                <textarea id="code" rows="10" cols="50" ></textarea>
+
+            </div>
+            <div id="question-box" style="padding:1em">
+                <!-- AREA FOR CODING MULTIPLE CHOICE QUESTIONS TO BE ASNWERED-->
                 <form>
                     <input type="radio" name="question" id="a" value="a"> 
                     <label> </label> <label id="label a"></label><br>
@@ -55,7 +51,9 @@
                     <label> </label> <label id="label d"></label><br>
                 </form> 
             </div>
+        
         </div>
+        
 
         <div id="buttons-container" style="margin:1em;">
             <button id="back-button" onclick="previousQuestion()" style="float:left;padding: 0.5em;"> Back </button>
@@ -134,8 +132,6 @@
             document.getElementById('submit-button').style.visibility = 'hidden';
             document.getElementById('finish-button').style.visibility = 'hidden';
 
-
-
             document.getElementById("question number").innerHTML = "Test Completed";
             document.getElementById("question").innerHTML = "";
         
@@ -171,11 +167,12 @@
                         updateInfo(response);
                     }
                     else if (action == 'submit') {
-                        if(question["type"] == "prog"){
+                        // if(question["type"] == "py" || question["type"] == "c"){
                             
-                        }else if (question["type"] == "mc"){
 
-                        }
+                        // }else if (question["type"] == "mc"){
+
+                        // }
                         updateChecked(response);
                         updateInfo(response);
                     }
@@ -204,13 +201,31 @@
             // turns the response into a json object
             response_object = JSON.parse(response);
             
-            if (response_object["message"] == "") {
+            if (response_object["type"] == "c" || response_object["type"] == "py") {
+                //DO SOMETHING HERE IF IT'S A PROGRAMMING QUESTION.
+                document.getElementById("programming-question-box").style.visibility = "visible";
+                document.getElementById("question-box").style.visibility = "hidden";
+                document.getElementById("programming-question-box").style.height = "60%";
+                console.log("programming question detected...");
+                console.log("TYPE: " + response_object["type"]);
+
+                current_question = response_object["question_number"];
+                question = response_object["question"];
+                remaining_attempts = response_object["remaining_attempts"];
+                document.getElementById("question number").innerHTML = "Question " + current_question +  "/5";
+                document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
+                document.getElementById("question").innerHTML = question;
+
+            } else {
+                console.log("THIS IS THE TYPE: " + response_object["type"]);
+            
+                document.getElementById("programming-question-box").style.visibility = "hidden";
+                document.getElementById("programming-question-box").style.height = 0;
+                document.getElementById("question-box").style.visibility = "visible";
                 // gets the data from the json file passed across 
                 current_question = response_object["question_number"];
                 question = response_object["question"];
                 remaining_attempts = response_object["remaining_attempts"];
-                console.log(question)
-                console.log(remaining_attempts);
                 option_a = response_object["options"]["option_a"];
                 option_b = response_object["options"]["option_b"];
                 option_c = response_object["options"]["option_c"];
@@ -220,31 +235,19 @@
                 document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
                 document.getElementById("question").innerHTML = question;
 
-                
-                if (response_object["type"] == "c" || response_object["type"] == "py") {
-                    //DO SOMETHING HERE IF IT'S A PROGRAMMING QUESTION.
-                    document.getElementById("code").style.visibility = "visible";
-                    document.getElementById("mc-space").style.visibility = "hidden";
-                    console.log("programming question detected...");
-                } else {
-                    console.log("THIS IS THE TYPE: " + response_object["type"]);
-                    // updates text for each of the radio buttons
-                    document.getElementById("label a").innerHTML = option_a
-                    document.getElementById("label b").innerHTML = option_b
-                    document.getElementById("label c").innerHTML = option_c
-                    document.getElementById("label d").innerHTML = option_d
+                // updates text for each of the radio buttons
+                document.getElementById("label a").innerHTML = option_a
+                document.getElementById("label b").innerHTML = option_b
+                document.getElementById("label c").innerHTML = option_c
+                document.getElementById("label d").innerHTML = option_d
 
-                    // ressets radio buttons
-                    document.getElementById('a').checked = false;
-                    document.getElementById('b').checked = false;
-                    document.getElementById('c').checked = false;
-                    document.getElementById('d').checked = false;
-                }
-               
-
-
+                // ressets radio buttons
+                document.getElementById('a').checked = false;
+                document.getElementById('b').checked = false;
+                document.getElementById('c').checked = false;
+                document.getElementById('d').checked = false;
             }
-            else {
+            if(response_object["message"] != ""){
                 // prints a message at the bottom
                 document.getElementById("result").innerText = response_object["message"];
             }

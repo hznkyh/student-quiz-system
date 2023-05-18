@@ -2,7 +2,7 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 80,
+        "grade": 96,
         "active_test": true,
         "test": {
             "0": {
@@ -20,16 +20,16 @@
                 "message": ""
             },
             "1": {
-                "question_id": "8",
+                "question_id": "13",
                 "question_number": "2",
-                "question": "What does the 'len()' function do in Python?",
+                "question": "What does the 'append()' method do in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "Returns the length of a string",
-                    "option_b": "Calculates the logarithm",
-                    "option_c": "Converts a number to a string",
-                    "option_d": "Generates a random number"
+                    "option_a": "Adds an element to a list",
+                    "option_b": "Removes an element from a list",
+                    "option_c": "Sorts a list in ascending order",
+                    "option_d": "Counts the occurrences of an element in a list"
                 },
                 "message": ""
             },
@@ -48,16 +48,16 @@
                 "message": ""
             },
             "3": {
-                "question_id": "3",
+                "question_id": "13",
                 "question_number": "4",
-                "question": "Write a C program to check if a number is prime.",
+                "question": "Write a C program to check if a year is a leap year.",
                 "remaining_attempts": "3",
                 "type": "c"
             },
             "4": {
-                "question_id": "8",
+                "question_id": "14",
                 "question_number": "5",
-                "question": "Write a C program to sort an array of numbers in ascending order.",
+                "question": "Write a C program to find the power of a number using recursion.",
                 "remaining_attempts": "3",
                 "type": "c"
             }
