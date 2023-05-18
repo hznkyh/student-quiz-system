@@ -11,8 +11,8 @@ session_ids = []
 QB_PORT = 9001
 
 class Test:
-    def __init__(self, student_id, question_bank_ip, resume_state=False, num_questions=5):
-
+    def __init__(self, student_id, question_bank_ip):
+        # checks the flag for if the student has an active test going on
         existing_test = records.getActiveState(student_id)
 
         self.QB_IP = question_bank_ip
@@ -26,8 +26,9 @@ class Test:
         else:
             self.session_id = session_ids[-1] + 1
 
-        if not existing_test: # if the user has not previously started a test
+        if not existing_test:  # if the user has not previously started a test
             self.questions = self.get_question_dict()
+            records.setGrade(student_id, 0)
 
             # puts all the questions into a json folder
             test_data = {}

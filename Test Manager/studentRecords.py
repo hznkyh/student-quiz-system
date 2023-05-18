@@ -27,7 +27,6 @@ def printStudentSummary():
 
 # checks if students login details are correct
 def checkLogin(student_id, password):
-    return True # temporary because ceebs logging in to test
     json_data = readRecords()
 
     if student_id in json_data:
