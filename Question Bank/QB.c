@@ -172,6 +172,7 @@ void handle_connection(int sockfd) {
         char *user_code;
         qID = strtok(newPayload, "=");
         user_code = strtok(NULL, "=");
+        printf("%s",qID);
         printf("%s\n",user_code);
 
         // char *modifiedCode = "#include <stdio.h>\n" + user_code;
