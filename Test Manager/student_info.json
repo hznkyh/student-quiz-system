@@ -130,7 +130,65 @@
     "3": {
         "name": "Caleb",
         "password": "pass3",
-        "grade": 0,
-        "active_test": false
+        "grade": 3,
+        "active_test": true,
+        "test": {
+            "0": {
+                "question_id": "9",
+                "question_number": "1",
+                "question": "Which of the following is a valid variable name in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "my_variable",
+                    "option_b": "2ndVariable",
+                    "option_c": "variable_name",
+                    "option_d": "True"
+                },
+                "message": ""
+            },
+            "1": {
+                "question_id": "16",
+                "question_number": "2",
+                "question": "Which module in Python is used to work with dates and times?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "datetime",
+                    "option_b": "math",
+                    "option_c": "time",
+                    "option_d": "calendar"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "22",
+                "question_number": "3",
+                "question": "What is the output of the following code snippet? print('Python'[2:4])",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "th",
+                    "option_b": "no",
+                    "option_c": "Py",
+                    "option_d": "tho"
+                },
+                "message": ""
+            },
+            "3": {
+                "question_id": "1",
+                "question_number": "4",
+                "question": "Write a Python function called def reverse(my_string)",
+                "remaining_attempts": "3",
+                "type": "py"
+            },
+            "4": {
+                "question_id": "2",
+                "question_number": "5",
+                "question": "Write a Python function called def string_length(s)",
+                "remaining_attempts": "0",
+                "type": "py"
+            }
+        }
     }
 }
