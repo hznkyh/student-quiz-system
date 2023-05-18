@@ -1,2 +1,2 @@
-1,Write a Python function called def reverse(my_string), to reverse a string.
-2,Write a Python function called def string_length(s), to find length of a string.
+1,Write a Python function to reverse a string and print it. The function must be: def reverse(my_string)
+2,Write a Python function to find the length of a string. The function must be: def string_length(s)
