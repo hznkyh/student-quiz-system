@@ -139,8 +139,7 @@ void handle_connection(int sockfd) {
             exit(1);
         }
     msg.length = ntohl(msg.length);
-    //msg.payload[strlen(msg.payload)-3] = '\0'; //Shorter messages seem to have issues of adding random characters. 
-                                                //Couldn't figure out why, minimum msg length has to be 12 character to be accurate
+
     char *source = msg.payload;
     char header[msg.length];
     memset(header, 0, sizeof(header));
