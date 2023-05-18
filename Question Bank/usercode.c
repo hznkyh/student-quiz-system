@@ -8,12 +8,4 @@ int main() {
 	return 0;
 }
 
-void stringLength(char* str) {
-    int length = 0;
-
-    while (str[length] != '\0') {
-        length++;
-    }
-
-    printf("%d",length);
-}
+dfdf
