@@ -42,4 +42,8 @@ char *retreiveAnswer(char *question_id);
 void removeNewline(char* str);
 Question* read_p_questions_file(int num_questions, char *filename);
 void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char *language);
+void saveUserCode(char* code);
+void compileUserCode();
+void processOutputAndErrors();
+void runUserCode();
 #endif

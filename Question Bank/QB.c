@@ -168,7 +168,19 @@ void handle_connection(int sockfd) {
         }
     }else if(strcmp(header, "mark_c_answer") == 0){ //Mark C programming question
         printf("Will mark the C question now...\n");
-        printf("%s\n",newPayload);
+        char *qID;
+        char *user_code;
+        qID = strtok(newPayload, "=");
+        user_code = strtok(NULL, "=");
+        printf("%s\n",user_code);
+
+        // char *modifiedCode = "#include <stdio.h>\n" + user_code;
+
+        char* userCode = "#include <stdio.h>\n\nint main() {\n    printf(\"Hello, world!\\n\");\n    return 0;\n}";
+        saveUserCode(userCode);
+        compileUserCode();
+        runUserCode();
+        processOutputAndErrors();
 
     }else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
         printf("Will mark the Python question now...\n");
@@ -191,6 +203,64 @@ void handle_connection(int sockfd) {
     }
 
 }
+
+void saveUserCode(char* code) {
+            FILE* file = fopen("usercode.c", "w");
+            if (file == NULL) {
+                printf("Failed to open the file for writing.\n");
+                return;
+            }
+            fputs(code, file);
+            fclose(file);
+}
+
+void compileUserCode() {
+    int result = system("gcc usercode.c -o usercode");
+    if (result != 0) {
+        printf("Compilation error.\n");
+    } else {
+        printf("Code compiled successfully.\n");
+    }
+}
+
+void runUserCode() {
+    int result = system("./usercode > output.txt 2> errors.txt");
+    if (result != 0) {
+        printf("Execution error.\n");
+    } else {
+        printf("Program executed successfully.\n");
+    }
+}
+
+void processOutputAndErrors() {
+    FILE* outputFile = fopen("output.txt", "r");
+    if (outputFile != NULL) {
+        printf("Program output:\n");
+        char buffer[256];
+        while (fgets(buffer, sizeof(buffer), outputFile) != NULL) {
+            printf("%s", buffer);
+        }
+        fclose(outputFile);
+    } else {
+        printf("Failed to open the output file.\n");
+    }
+
+    FILE* errorsFile = fopen("errors.txt", "r");
+    if (errorsFile != NULL) {
+        printf("Error messages:\n");
+        char buffer[256];
+        while (fgets(buffer, sizeof(buffer), errorsFile) != NULL) {
+            printf("%s", buffer);
+        }
+        fclose(errorsFile);
+    } else {
+        printf("Failed to open the errors file.\n");
+    }
+}
+
+
+
+
 
 void removeNewline(char* str) {
     size_t newlinePos = strcspn(str, "\n");  // Find the position of the newline character
