@@ -115,7 +115,7 @@ class Test:
         sock = connect_to_server(self.QB_IP, QB_PORT)
         # Randomly choose between requesting C questions and Python Questions
         # selected_question_set = random.choice(["c_questions", "py_questions"])
-        header = "py_questions"#selected_question_set  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        header = "c_questions"#selected_question_set  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)

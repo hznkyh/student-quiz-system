@@ -45,7 +45,7 @@ void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char 
 void saveUserCode(char* code);
 void compileUserCode();
 char* processOutputAndErrors();
-int runUserCode();
+void runUserCode();
 void savePythonUserCode(char* code);
 void runUserCodePy();
 char* processOutputAndErrorPy();

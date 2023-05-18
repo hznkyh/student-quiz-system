@@ -484,7 +484,6 @@ void compileUserCode() {
     //Remove any previous file so it doesn't interfere with this new execution if this compile fails.
     if (remove("usercode") != 0) {
         perror("Failed to delete previous usercode executable");
-        return;
     }
     int result = system("gcc usercode.c -o usercode");
     if (result != 0) {
@@ -495,26 +494,21 @@ void compileUserCode() {
 }
 
 // Run code C 
-int runUserCode() {
+void runUserCode() {
     //Sometimes contents of the file stays and returns result of the previous attempt should the execute fail
     FILE* file = fopen("output.txt", "w+");
     if (file == NULL) {
         perror("Failed to open output.txt");
-        return 1;
     }
     fclose(file);
     
-
     // Execute the command
     int result = system("./usercode > output.txt 2> errors.txt");
     if (result != 0) {
         printf("Execution error.\n");
-        return 1;
     } else {
         printf("Program executed successfully.\n");
-        return 0;
     }
-    
 }
 
 // process the output and error for c files.
