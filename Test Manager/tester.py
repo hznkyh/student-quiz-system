@@ -194,7 +194,13 @@ class Test:
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
         response = sock.recv(2048)  # Awaits a response. #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
         answer = str(response, 'utf-8')
-        return answer #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
+        if (answer == 'True'):
+            print(f"Received response: '{answer}', answer was CORRECT")
+            return True
+        else:
+            print(f"Received response: '{answer}', answer was INCORRECT")
+            return False
+        
 
     
     #Returns the correct answer for a question, used when out of attempts.
@@ -225,9 +231,9 @@ class Test:
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(2048)  # Awaits a response.
-        answer = str(response, 'utf-8')
-        return "NOT FOUND"
+        #response = sock.recv(2048)  # Awaits a response.
+        #answer = str(response, 'utf-8')
+        return False
     
 
 def get_question_id(questions_list, current_question_number):
