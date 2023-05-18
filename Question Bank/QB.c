@@ -537,10 +537,8 @@ void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char 
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory
-<<<<<<< HEAD
-    // free(buffer);
-=======
->>>>>>> 67250a530dbb4670134c129c9b91301768cdfa69
+    // free(buffer); //Causing random problems...
+
     free(questions);
 }
 

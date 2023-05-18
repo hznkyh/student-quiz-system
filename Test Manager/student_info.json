@@ -6,43 +6,57 @@
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "1",
+                "question_id": "2",
                 "question_number": "1",
-                "question": "What is Python?",
+                "question": "What is the latest stable version of Python as of September 2021?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "A programming language",
-                    "option_b": "A snake",
-                    "option_c": "A bird",
-                    "option_d": "A type of food"
+                    "option_a": "Python 3.9",
+                    "option_b": "Python 2.7",
+                    "option_c": "Python 3.6",
+                    "option_d": "Python 4.0"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "14",
+                "question_id": "6",
                 "question_number": "2",
-                "question": "What does the 'import' keyword do in Python?",
+                "question": "What is the result of the expression 5 + 2 * 3 in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "Imports a module",
-                    "option_b": "Defines a function",
-                    "option_c": "Prints a message to the console",
-                    "option_d": "Calculates a mathematical expression"
+                    "option_a": "11",
+                    "option_b": "17",
+                    "option_c": "9",
+                    "option_d": "21"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "1",
+                "question_id": "9",
                 "question_number": "3",
+                "question": "Which of the following is a valid variable name in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "my_variable",
+                    "option_b": "2ndVariable",
+                    "option_c": "variable_name",
+                    "option_d": "True"
+                },
+                "message": ""
+            },
+            "3": {
+                "question_id": "2",
+                "question_number": "4",
                 "question": "Write a C program to calculate the sum of all numbers in a list.",
                 "remaining_attempts": "3",
                 "type": "c"
             },
-            "3": {
-                "question_id": "14",
-                "question_number": "4",
+            "4": {
+                "question_id": "9",
+                "question_number": "5",
                 "question": "Write a C program to calculate the sum of all numbers in a list.",
                 "remaining_attempts": "3",
                 "type": "c"
@@ -53,9 +67,7 @@
         "name": "Bob",
         "password": "pass2",
         "grade": 3,
-        "active_test": false,
-        "test": {
-            
+        "active_test": false
     },
     "3": {
         "name": "Caleb",
