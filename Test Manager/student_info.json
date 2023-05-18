@@ -70,6 +70,7 @@
         "active_test": true,
         "test": {
             "0": {
+<<<<<<< HEAD
                 "question_id": "4",
                 "question_number": "1",
                 "question": "What is the keyword used to define a function in Python?",
@@ -84,8 +85,10 @@
                 "message": ""
             },
             "1": {
+=======
+>>>>>>> main
                 "question_id": "5",
-                "question_number": "2",
+                "question_number": "1",
                 "question": "What symbol is used for single-line comments in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
@@ -97,31 +100,55 @@
                 },
                 "message": ""
             },
-            "2": {
-                "question_id": "6",
-                "question_number": "3",
-                "question": "What is the result of the expression 5 + 2 * 3 in Python?",
+            "1": {
+                "question_id": "13",
+                "question_number": "2",
+                "question": "What does the 'append()' method do in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "11",
-                    "option_b": "17",
-                    "option_c": "9",
-                    "option_d": "21"
+                    "option_a": "Adds an element to a list",
+                    "option_b": "Removes an element from a list",
+                    "option_c": "Sorts a list in ascending order",
+                    "option_d": "Counts the occurrences of an element in a list"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "21",
+                "question_number": "3",
+                "question": "Which operator is used to check if two values are equal in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "double equals",
+                    "option_b": "single equals",
+                    "option_c": "!equals",
+                    "option_d": "<equals"
                 },
                 "message": ""
             },
             "3": {
-                "question_id": "1",
+                "question_id": "5",
                 "question_number": "4",
+<<<<<<< HEAD
                 "question": "Write a Python function called def reverse(my_string)",
+=======
+                "question": "Write a C program to count the occurrences of a specific element in an array.",
+>>>>>>> main
                 "remaining_attempts": "3",
                 "type": "py"
             },
             "4": {
+<<<<<<< HEAD
                 "question_id": "2",
                 "question_number": "5",
                 "question": "Write a Python function called def string_length(s)",
+=======
+                "question_id": "13",
+                "question_number": "5",
+                "question": "Write a C program to check if a year is a leap year.",
+>>>>>>> main
                 "remaining_attempts": "3",
                 "type": "py"
             }

@@ -16,7 +16,7 @@
 18,What is the purpose of the 'range()' function in Python?,To generate a sequence of numbers,To round a floating-point number,To reverse a string,To calculate the factorial of a number
 19,What is the correct way to open a file named 'data.txt' in Python?,open('data.txt'),read('data.txt'),write('data.txt'),close('data.txt')
 20,What does the 'strip()' method do for strings in Python?,Removes leading and trailing whitespace,Converts a string to uppercase,Reverses the order of characters in a string,Checks if a substring is present in a string
-21,Which operator is used to check if two values are equal in Python?,double equals,single equals,!equals,<equals
+21,Which operator is used to check if two values are equal in Python?,double equals,single equals,!equals,{equals}
 22,What is the output of the following code snippet? print('Python'[2:4]),th,no,Py,tho
 23,What does the 'random' module in Python provide?,Functions for generating random numbers,Functions for sorting lists,Functions for performing mathematical calculations,Functions for reading and writing files
 24,What is the purpose of the 'pass' statement in Python?,To do nothing,To break out of a loop,To raise an exception,To import a module
