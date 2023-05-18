@@ -151,7 +151,7 @@ class Test:
             return None  # Handle other question types as needed
 
 
-    def get_correct_answer(self, question_bank, question_number, answer):
+    def get_correct_answer(self, question_bank, question_number):
         # Check question type and perform relevant action
         question_type = question_bank.questions[question_number]["type"]
         if question_type == "mc":
@@ -194,7 +194,7 @@ class Test:
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
         #response = sock.recv(2048)  # Awaits a response. #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
         #answer = str(response, 'utf-8')
-        return "Nothing for now" #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
+        return False #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
 
     
     #Returns the correct answer for a question, used when out of attempts.
@@ -225,9 +225,9 @@ class Test:
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(2048)  # Awaits a response.
-        answer = str(response, 'utf-8')
-        return answer
+        #response = sock.recv(2048)  # Awaits a response.
+        #answer = str(response, 'utf-8')
+        return "NOT FOUND"
     
 
 def get_question_id(questions_list, current_question_number):

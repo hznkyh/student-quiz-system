@@ -12,8 +12,6 @@
 #include <ctype.h>
 //gcc QB.c -o QB 
 
-
-
 // Not DHCP, i doubt thats a requirement?
 // based on this https://www.sanfoundry.com/c-program-get-ip-address/
 
@@ -203,7 +201,7 @@ void handle_connection(int sockfd) {
         question_id = newPayload;
         user_code = delimiter + 1;
         printf("USER CODE:'%s'",user_code);
-        if(atol(question_id) == 1){
+        if(atol(question_id) == 1){ //If answer was for question with ID 1
             printf("Will mark the C question one now...(%s)\n",question_id);
             //WE ADD A MAIN FUNCTION AND stdio.h TO THE USERS FILE SO WE CAN RUN IT AND GET THE EXPECTED OUTPUT.
             char* insertMain = "#include <stdio.h>\n#include <string.h>\nvoid reverseString(char* str);\n\nint main() {\n\tchar input[] = \"amazing\";\n\treverseString(input);\n\treturn 0;\n}\n\n";
@@ -221,7 +219,7 @@ void handle_connection(int sockfd) {
             runUserCode();
             processOutputAndErrors();
         }
-        else if(atol(question_id)==2){
+        else if(atol(question_id)==2){ //If answer was for question with ID 2
             printf("Will mark the C question two now... (%s)\n",question_id);
 
             //WE ADD A MAIN FUNCTION AND stdio.h TO THE USERS FILE SO WE CAN RUN IT AND GET THE EXPECTED OUTPUT.
@@ -237,8 +235,14 @@ void handle_connection(int sockfd) {
             saveUserCode(finalCode);
             free(finalCode);
             compileUserCode();
-            runUserCode();
-            processOutputAndErrors();
+            int out = runUserCode();
+            if (!out){
+                if (send(connfd, "F", strlen("F"), 0) < 0) {
+                    perror("Result send failed");
+                    exit(EXIT_FAILURE);
+                    }
+            }
+            char* result = processOutputAndErrors();
         }
         else{
             printf("Unknwon Question ID '%s",question_id);
@@ -325,14 +329,17 @@ void handle_connection(int sockfd) {
     }
     else if (strcmp(header, "send_c_answer") == 0){
         printf("Will send the C answer now...\n");
-    
+        if (send(connfd, "F", strlen("F"), 0) < 0) {
+            perror("Result send failed");
+            exit(EXIT_FAILURE);
+        }
     }
     else if (strcmp(header, "send_py_answer") == 0){
         printf("Will send the Python answer now...\n");
     
     }
     else if (strcmp(header, "send_mc_answer") == 0){
-        char *answer = retreiveAnswer(newPayload);
+        char *answer = retrieveAnswer(newPayload);
         if (send(connfd, answer, strlen(answer), 0) < 0) {
             perror("Result send failed");
             exit(EXIT_FAILURE);
@@ -346,7 +353,7 @@ void handle_connection(int sockfd) {
 }
 
 
-// Save the Python Question
+// Save the Python answer from the user.
 void savePythonUserCode(char* code){
     FILE* file = fopen("usercode_py.py", "w");
         if (file == NULL) {
@@ -368,7 +375,7 @@ void runUserCodePy() {
     }
 }
 
-// Save C questions
+// Save C questions to a file ready to compile.
 void saveUserCode(char* code) {
         FILE* file = fopen("usercode.c", "w");
         if (file == NULL) {
@@ -379,7 +386,7 @@ void saveUserCode(char* code) {
         fclose(file);
 }
 
-// process the output and error for py
+// process the output and error for py files.
 char* processOutputAndErrorPy() {
     FILE* outputFile = fopen("output_py.txt", "r");
     if (outputFile != NULL) {
@@ -410,6 +417,11 @@ char* processOutputAndErrorPy() {
 }
 // Compile C code 
 void compileUserCode() {
+    //Remove any previous file so it doesn't interfere with this new execution if this compile fails.
+    if (remove("usercode") != 0) {
+        perror("Failed to delete previous usercode executable");
+        return;
+    }
     int result = system("gcc usercode.c -o usercode");
     if (result != 0) {
         printf("Compilation error.\n");
@@ -419,46 +431,60 @@ void compileUserCode() {
 }
 
 // Run code C 
-void runUserCode() {
+int runUserCode() {
+    //Sometimes contents of the file stays and returns result of the previous attempt should the execute fail
+    FILE* file = fopen("output.txt", "w+");
+    if (file == NULL) {
+        perror("Failed to open output.txt");
+        return 1;
+    }
+    fclose(file);
+    
+
+    // Execute the command
     int result = system("./usercode > output.txt 2> errors.txt");
     if (result != 0) {
         printf("Execution error.\n");
+        return 1;
     } else {
         printf("Program executed successfully.\n");
+        return 0;
     }
+    
 }
 
-// process the output and error for c
-void processOutputAndErrors() {
+// process the output and error for c files.
+char* processOutputAndErrors() {
+    char outputBuffer[256] = "";
     FILE* outputFile = fopen("output.txt", "r");
     if (outputFile != NULL) {
-        printf("Program output:");
-        char buffer[256];
-        while (fgets(buffer, sizeof(buffer), outputFile) != NULL) {
-            printf("%s\n", buffer);
+        printf("Program output:\n");
+        while (fgets(outputBuffer, 256, outputFile) != NULL) {
+            printf("%s", outputBuffer);
         }
         fclose(outputFile);
     } else {
         printf("Failed to open the output file.\n");
+        return strdup("Error: Failed to open the output file.");
     }
 
+    char errorsBuffer[256] = "";
     FILE* errorsFile = fopen("errors.txt", "r");
     if (errorsFile != NULL) {
         printf("Error messages:\n");
-        char buffer[256];
-        while (fgets(buffer, sizeof(buffer), errorsFile) != NULL) {
-            printf("%s", buffer);
+        while (fgets(errorsBuffer, 256, errorsFile) != NULL) {
+            printf("%s", errorsBuffer);
         }
         fclose(errorsFile);
     } else {
         printf("Failed to open the errors file.\n");
+        return strdup("Error: Failed to open the errors file.");
     }
+
+    return strdup(outputBuffer);
 }
 
-
-
-
-
+//This was used to remove some random new line characters in the header that sometime's popped up.
 void removeNewline(char* str) {
     size_t newlinePos = strcspn(str, "\n");  // Find the position of the newline character
 
@@ -467,11 +493,12 @@ void removeNewline(char* str) {
     }
 }
 
-char* retreiveAnswer(char *qID){
+//This is used to retrieve the answer when people get the question wrong 3 times.
+char* retrieveAnswer(char *qID){
     printf("Getting Answer...\n");
     int wanted_id = atol(qID);
     char *answer;
-    char *filename = "answers.txt";
+    char *filename = "mc_answers.txt";
 
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) { 
@@ -512,7 +539,62 @@ char* retreiveAnswer(char *qID){
 
 }
 
-//Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
+
+//gets the coding solution for the given problem. Need to know the language so we can open the correct file.
+// language arg is either "c" or "py"
+char* retrieveCodingSolution(char *qID, char *language){ 
+    printf("Getting Solution...\n");
+    int wanted_id = atol(qID);
+    char *answer;
+    char *filename = "py_solutions.txt";
+    if(strcmp(language, "c")){
+        char *filename = "c_solutions.txt";
+    }
+    
+
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL) { 
+        perror("Error opening file");
+        return 0;
+    }
+    int current_id;
+    char* current_answer = malloc(128 * sizeof(char));
+    if (current_answer == NULL) {
+        return 0;
+    }
+
+    int i = 0;
+    char line[MAX_LINE_LENGTH];
+    bool found_id = false;
+
+    while (fgets(line, sizeof(line), fp)) {
+        if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
+            printf("Failed to parse line %d in file %s\n", i+1, filename);
+            continue;
+        }
+
+        if (current_id == wanted_id){
+            printf("%s\n",line);
+            printf("Answer found: '%s'\n",current_answer);
+            answer = current_answer;
+            found_id = true;
+            break; // Exit the loop since the desired ID has been found
+        }
+    }
+
+    if (!found_id) {
+        printf("Desired ID not found in file %s\n", filename);
+        return 0;
+    }else{
+        return answer;
+    }
+
+}
+
+
+
+// Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
+// It takes in the min and max values of what question number range there is corresponding to Question IDs in the files.
 int* generate_questions_numbers(int num_questions, int min, int max) {
     int question_numbers[num_questions];
     int num_used = 0; //Keeps track of the number of question numbers we've added to the array.
@@ -562,6 +644,9 @@ int inArray(int val, int arr[], int size) {
     return 0; // not found
 }
 
+/*
+* This is used for multi choice question files to extract the data needed to display onto the page.
+*/
 Question* read_questions_file(int num_questions, char *filename){
 
     FILE* fp = fopen(filename, "r");
@@ -578,7 +663,7 @@ Question* read_questions_file(int num_questions, char *filename){
         return NULL;
     }
 
-    // Read each question from the file and store it in the array
+
     int i = 0;
     char line[MAX_LINE_LENGTH];
     while (fgets(line, sizeof(line), fp) && i < num_questions) {
@@ -589,10 +674,9 @@ Question* read_questions_file(int num_questions, char *filename){
         char option_c[OPTION_SIZE];
         char option_d[OPTION_SIZE];
 
-        // Parse the line into question ID, question text, and answer
+        // Goes through the file and grabs the question id, question and all 4 options for that particular quesstion.
         if (sscanf(line, "%d,%255[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
-            //printf("LINE:line)
             continue;
         }
 
@@ -604,8 +688,8 @@ Question* read_questions_file(int num_questions, char *filename){
             strcpy(questions[i].option_b, option_b);
             strcpy(questions[i].option_c, option_c);
             strcpy(questions[i].option_d, option_d);
-            printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
-            printf("a:'%s' \nb:'%s'\nc:'%s'\nd:'%s'\n",questions[i].option_a,questions[i].option_b,questions[i].option_c,questions[i].option_d);
+            // printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
+            // printf("a:'%s' \nb:'%s'\nc:'%s'\nd:'%s'\n",questions[i].option_a,questions[i].option_b,questions[i].option_c,questions[i].option_d);
             i++;
         }
     }
