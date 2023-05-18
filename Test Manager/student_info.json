@@ -2,48 +2,48 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 11,
+        "grade": 0,
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "5",
+                "question_id": "11",
                 "question_number": "1",
-                "question": "What symbol is used for single-line comments in Python?",
-                "remaining_attempts": "0",
+                "question": "What is the purpose of the 'if' statement in Python?",
+                "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "#",
-                    "option_b": "//",
-                    "option_c": "/*",
-                    "option_d": "**"
+                    "option_a": "To conditionally execute code",
+                    "option_b": "To define a loop",
+                    "option_c": "To import modules",
+                    "option_d": "To perform mathematical operations"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "6",
+                "question_id": "19",
                 "question_number": "2",
-                "question": "What is the result of the expression 5 + 2 * 3 in Python?",
-                "remaining_attempts": "0",
+                "question": "What is the correct way to open a file named 'data.txt' in Python?",
+                "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "11",
-                    "option_b": "17",
-                    "option_c": "9",
-                    "option_d": "21"
+                    "option_a": "open('data.txt')",
+                    "option_b": "read('data.txt')",
+                    "option_c": "write('data.txt')",
+                    "option_d": "close('data.txt')"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "8",
+                "question_id": "25",
                 "question_number": "3",
-                "question": "What does the 'len()' function do in Python?",
-                "remaining_attempts": "0",
+                "question": "What does the 'split()' method do for strings in Python?",
+                "remaining_attempts": "2",
                 "type": "mc",
                 "options": {
-                    "option_a": "Returns the length of a string",
-                    "option_b": "Calculates the logarithm",
-                    "option_c": "Converts a number to a string",
-                    "option_d": "Generates a random number"
+                    "option_a": "Splits a string into a list of substrings",
+                    "option_b": "Joins multiple strings into one",
+                    "option_c": "Replaces a substring with another",
+                    "option_d": "Converts a string to a numeric value"
                 },
                 "message": ""
             },
@@ -51,15 +51,15 @@
                 "question_id": "1",
                 "question_number": "4",
                 "question": "Write a C function to reverse a string and print it to stdout. The function must have prototype: void reverseString(char* str);",
-                "remaining_attempts": "0",
+                "remaining_attempts": "3",
                 "type": "c"
             },
             "4": {
-                "question_id": "2",
+                "question_id": "1",
                 "question_number": "5",
-                "question": "Write a C function to find the length of a string and print it to stdout. The function must have prototype: void stringLength(char* str);",
-                "remaining_attempts": "0",
-                "type": "c"
+                "question": "Write a Python function to reverse a string and print it. The function must be: def reverse(my_string)",
+                "remaining_attempts": "3",
+                "type": "py"
             }
         }
     },
@@ -70,7 +70,6 @@
         "active_test": true,
         "test": {
             "0": {
-<<<<<<< HEAD
                 "question_id": "4",
                 "question_number": "1",
                 "question": "What is the keyword used to define a function in Python?",
@@ -81,22 +80,6 @@
                     "option_b": "fun",
                     "option_c": "function",
                     "option_d": "class"
-                },
-                "message": ""
-            },
-            "1": {
-=======
->>>>>>> main
-                "question_id": "5",
-                "question_number": "1",
-                "question": "What symbol is used for single-line comments in Python?",
-                "remaining_attempts": "3",
-                "type": "mc",
-                "options": {
-                    "option_a": "#",
-                    "option_b": "//",
-                    "option_c": "/*",
-                    "option_d": "**"
                 },
                 "message": ""
             },
@@ -131,24 +114,14 @@
             "3": {
                 "question_id": "5",
                 "question_number": "4",
-<<<<<<< HEAD
-                "question": "Write a Python function called def reverse(my_string)",
-=======
                 "question": "Write a C program to count the occurrences of a specific element in an array.",
->>>>>>> main
                 "remaining_attempts": "3",
                 "type": "py"
             },
             "4": {
-<<<<<<< HEAD
-                "question_id": "2",
-                "question_number": "5",
-                "question": "Write a Python function called def string_length(s)",
-=======
                 "question_id": "13",
                 "question_number": "5",
                 "question": "Write a C program to check if a year is a leap year.",
->>>>>>> main
                 "remaining_attempts": "3",
                 "type": "py"
             }
