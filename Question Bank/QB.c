@@ -217,7 +217,34 @@ void handle_connection(int sockfd) {
             free(finalCode);
             compileUserCode();
             runUserCode();
-            processOutputAndErrors();
+            char* outputContent = processOutputAndErrors();
+            const char* anotherString = "gnizama";
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                    if (send(connfd, "True", strlen("True"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                } else {
+                    printf("Failed test case.\n");
+                    if (send(connfd, "False", strlen("False"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
+            }
         }
         else if(atol(question_id)==2){ //If answer was for question with ID 2
             printf("Will mark the C question two now... (%s)\n",question_id);
@@ -235,14 +262,35 @@ void handle_connection(int sockfd) {
             saveUserCode(finalCode);
             free(finalCode);
             compileUserCode();
-            int out = runUserCode();
-            if (!out){
-                if (send(connfd, "F", strlen("F"), 0) < 0) {
-                    perror("Result send failed");
-                    exit(EXIT_FAILURE);
+            runUserCode();
+            char* outputContent = processOutputAndErrors();
+            const char* anotherString = "13";
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                    if (send(connfd, "True", strlen("True"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
                     }
+                } else {
+                    printf("Failed test case.\n");
+                    if (send(connfd, "False", strlen("False"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
             }
-            char* result = processOutputAndErrors();
         }
         else{
             printf("Unknwon Question ID '%s",question_id);
@@ -558,54 +606,54 @@ char* retrieveAnswer(char *qID){
 
 //gets the coding solution for the given problem. Need to know the language so we can open the correct file.
 // language arg is either "c" or "py"
-char* retrieveCodingSolution(char *qID, char *language){ 
-    printf("Getting Solution...\n");
-    int wanted_id = atol(qID);
-    char *answer;
-    char *filename = "py_solutions.txt";
-    if(strcmp(language, "c")){
-        char *filename = "c_solutions.txt";
-    }
+// char* retrieveCodingSolution(char *qID, char *language){ 
+//     printf("Getting Solution...\n");
+//     int wanted_id = atol(qID);
+//     char *answer;
+//     char *filename = "py_solutions.txt";
+//     if(strcmp(language, "c")){
+//         char *filename = "c_solutions.txt";
+//     }
     
 
-    FILE* fp = fopen(filename, "r");
-    if (fp == NULL) { 
-        perror("Error opening file");
-        return 0;
-    }
-    int current_id;
-    char* current_answer = malloc(128 * sizeof(char));
-    if (current_answer == NULL) {
-        return 0;
-    }
+//     FILE* fp = fopen(filename, "r");
+//     if (fp == NULL) { 
+//         perror("Error opening file");
+//         return 0;
+//     }
+//     int current_id;
+//     char* current_answer = malloc(128 * sizeof(char));
+//     if (current_answer == NULL) {
+//         return 0;
+//     }
 
-    int i = 0;
-    char line[MAX_LINE_LENGTH];
-    bool found_id = false;
+//     int i = 0;
+//     char line[MAX_LINE_LENGTH];
+//     bool found_id = false;
 
-    while (fgets(line, sizeof(line), fp)) {
-        if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
-            printf("Failed to parse line %d in file %s\n", i+1, filename);
-            continue;
-        }
+//     while (fgets(line, sizeof(line), fp)) {
+//         if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
+//             printf("Failed to parse line %d in file %s\n", i+1, filename);
+//             continue;
+//         }
 
-        if (current_id == wanted_id){
-            printf("%s\n",line);
-            printf("Answer found: '%s'\n",current_answer);
-            answer = current_answer;
-            found_id = true;
-            break; // Exit the loop since the desired ID has been found
-        }
-    }
+//         if (current_id == wanted_id){
+//             printf("%s\n",line);
+//             printf("Answer found: '%s'\n",current_answer);
+//             answer = current_answer;
+//             found_id = true;
+//             break; // Exit the loop since the desired ID has been found
+//         }
+//     }
 
-    if (!found_id) {
-        printf("Desired ID not found in file %s\n", filename);
-        return 0;
-    }else{
-        return answer;
-    }
+//     if (!found_id) {
+//         printf("Desired ID not found in file %s\n", filename);
+//         return 0;
+//     }else{
+//         return answer;
+//     }
 
-}
+// }
 
 
 

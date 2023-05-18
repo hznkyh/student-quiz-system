@@ -2,14 +2,14 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 0,
+        "grade": 5,
         "active_test": true,
         "test": {
             "0": {
                 "question_id": "4",
                 "question_number": "1",
                 "question": "What is the keyword used to define a function in Python?",
-                "remaining_attempts": "3",
+                "remaining_attempts": "0",
                 "type": "mc",
                 "options": {
                     "option_a": "def",
@@ -37,7 +37,7 @@
                 "question_id": "15",
                 "question_number": "3",
                 "question": "What does the 'try' and 'except' block in Python help with?",
-                "remaining_attempts": "3",
+                "remaining_attempts": "0",
                 "type": "mc",
                 "options": {
                     "option_a": "Handling exceptions",
@@ -51,7 +51,7 @@
                 "question_id": "1",
                 "question_number": "4",
                 "question": "Write a Python function called def reverse(my_string)",
-                "remaining_attempts": "1",
+                "remaining_attempts": "0",
                 "type": "py"
             },
             "4": {
