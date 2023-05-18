@@ -4,28 +4,9 @@
 
     <head>
         <title>Multiple Choice Questions</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js" type="text/javascript" charset="utf-8"></script>
-        <style>
-            #code-editor {
-              width: 600px;
-              height: 300px;
-              margin-bottom: 20px;
-            }
-          </style>
-          <script>
-            window.addEventListener('DOMContentLoaded', (event) => {
-              // Initialize the Ace Editor
-              var editor = ace.edit("code-editor");
-              editor.setTheme("ace/theme/twilight");
-              editor.session.setMode("ace/mode/c_cpp");
-      
-              // Update the hidden input field with the code from the editor
-              var codeInput = document.getElementById("code-input");
-              editor.getSession().on("change", function () {
-                codeInput.value = editor.getValue();
-              });
-            });
-          </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/python/python.min.js"></script>
     </head>
 
     <body style="margin:2em">
@@ -51,9 +32,14 @@
         <h2 id="question number" style="margin-bottom: 0.5em;"></h2>
         <h3 id="remaining attempts"></h3>
         <div style="background-color: aliceblue;border: 1px solid black">
-            <div id = 'question-box' style="padding:1em">
-                <p id="question" style="margin: 0px;margin-bottom: 0.5em;"></p>
-                 <!-- Question to be generated -->
+            <p id="question" style="margin: 0px;margin-bottom: 0.5em;margin:10px;"></p>
+            <div id="programming-question-box" style="padding:0;">
+                <!-- AREA FOR CODING QUESTIONS TO BE ASNWERED-->
+                <textarea id="code" rows="10" cols="50" ></textarea>
+
+            </div>
+            <div id="question-box" style="padding:1em">
+                <!-- AREA FOR CODING MULTIPLE CHOICE QUESTIONS TO BE ASNWERED-->
                 <form>
                     <input type="radio" name="question" id="a" value="a"> 
                     <label> </label> <label id="label a"></label><br>
@@ -65,12 +51,14 @@
                     <label> </label> <label id="label d"></label><br>
                 </form> 
             </div>
+        
         </div>
+        
 
         <div id="buttons-container" style="margin:1em;">
             <button id="back-button" onclick="previousQuestion()" style="float:left;padding: 0.5em;"> Back </button>
             <button id="next-button" onclick="nextQuestion()" style="padding: 0.5em;"> Next </button>
-            <button id="finish-button" onclick="finishTest()" style="float:right;padding: 0.5em 0.5em 0.5em 0.5em;text-color:red;font-weight: bold;"> Finish Test </button>
+            <button id="finish-button" onclick="finishTest()" style="float:right;padding: 0.5em 0.5em 0.5em 0.5em;color:red;font-weight:bold;"> Finish Test </button>
 
             <button id="submit-button" onclick="submitQuestion()" style="float:right;padding: 0.5em;"> Submit </button>
         </div>
@@ -120,29 +108,12 @@
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('next', current_question);
             sendAjaxRequest('attempts')
-
-
-            //if (current_question <= num_questions){
-            //    document.getElementById("result").innerHTML = "Next question." + current_question;
-            //    sendAjaxRequest('next', current_question);
-            //}else {
-            //    current_question = num_questions;
-            //    document.getElementById("result").innerHTML = "This is the last question.";
-            //}
         }
         
         function previousQuestion() {
             var username = document.cookie.split("=")[1];
             sendAjaxRequest('back');
             sendAjaxRequest('attempts')
-
-            //current_question -= 1;
-            //if (current_question > 0) {
-            //    document.getElementById("result").innerHTML = "Previous question";    
-            //    sendAjaxRequest('back');
-            //} else {
-            //    document.getElementById("result").innerHTML = "Can't go back more";
-            //}
         }
         
         function submitQuestion() {
@@ -160,8 +131,6 @@
             document.getElementById('next-button').style.visibility = 'hidden';
             document.getElementById('submit-button').style.visibility = 'hidden';
             document.getElementById('finish-button').style.visibility = 'hidden';
-
-
 
             document.getElementById("question number").innerHTML = "Test Completed";
             document.getElementById("question").innerHTML = "";
@@ -189,6 +158,7 @@
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     const response = xhr.responseText;
+        
                     if (action == 'next'|| action == 'back') {
                         updateHTML(response);
                         document.getElementById("result").innerText = "";
@@ -197,6 +167,12 @@
                         updateInfo(response);
                     }
                     else if (action == 'submit') {
+                        // if(question["type"] == "py" || question["type"] == "c"){
+                            
+
+                        // }else if (question["type"] == "mc"){
+
+                        // }
                         updateChecked(response);
                         updateInfo(response);
                     }
@@ -225,13 +201,31 @@
             // turns the response into a json object
             response_object = JSON.parse(response);
             
-            if (response_object["message"] == "") {
+            if (response_object["type"] == "c" || response_object["type"] == "py") {
+                //DO SOMETHING HERE IF IT'S A PROGRAMMING QUESTION.
+                document.getElementById("programming-question-box").style.visibility = "visible";
+                document.getElementById("question-box").style.visibility = "hidden";
+                document.getElementById("programming-question-box").style.height = "60%";
+                console.log("programming question detected...");
+                console.log("TYPE: " + response_object["type"]);
+
+                current_question = response_object["question_number"];
+                question = response_object["question"];
+                remaining_attempts = response_object["remaining_attempts"];
+                document.getElementById("question number").innerHTML = "Question " + current_question +  "/5";
+                document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
+                document.getElementById("question").innerHTML = question;
+
+            } else {
+                console.log("THIS IS THE TYPE: " + response_object["type"]);
+            
+                document.getElementById("programming-question-box").style.visibility = "hidden";
+                document.getElementById("programming-question-box").style.height = 0;
+                document.getElementById("question-box").style.visibility = "visible";
                 // gets the data from the json file passed across 
                 current_question = response_object["question_number"];
                 question = response_object["question"];
                 remaining_attempts = response_object["remaining_attempts"];
-                console.log(question)
-                console.log(remaining_attempts);
                 option_a = response_object["options"]["option_a"];
                 option_b = response_object["options"]["option_b"];
                 option_c = response_object["options"]["option_c"];
@@ -240,7 +234,7 @@
                 document.getElementById("question number").innerHTML = "Question " + current_question +  "/5";
                 document.getElementById('remaining attempts').innerHTML = "Remaining attempts: " + remaining_attempts
                 document.getElementById("question").innerHTML = question;
-            
+
                 // updates text for each of the radio buttons
                 document.getElementById("label a").innerHTML = option_a
                 document.getElementById("label b").innerHTML = option_b
@@ -252,22 +246,12 @@
                 document.getElementById('b').checked = false;
                 document.getElementById('c').checked = false;
                 document.getElementById('d').checked = false;
-
-
-            } else {
+            }
+            if(response_object["message"] != ""){
                 // prints a message at the bottom
                 document.getElementById("result").innerText = response_object["message"];
             }
 
-            // For editor
-        //     document.getElementById("question-box").innerHTML = `<form method="POST" action="http://localhost:9000/">
-        //                                                             <h2>Question 6:</h2>
-        //                                                             <p>Write a C program to calculate the factorial of a given number:</p>
-        //                                                             <div id="code-editor"></div>
-        //                                                             <textarea id="code-input" name="q6" style="display: none;"></textarea>
-
-        //                                                             <input type="submit" name="Submit" value="Submit">
-        //                                                         </form>`;
         }
 
         function updateChecked(response) {
@@ -296,4 +280,41 @@
             document.getElementById("remaining attempts").innerText = "Remaining attempts: " + response;
         }
     </script>
+
+<script>
+    // Initialize CodeMirror
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      lineNumbers: true,
+      mode: "python" // Use "text/x-csrc" mode for C, "python" for Python
+    });
+
+
+    // ####   FOR SYNTAX CHECKKING TO WORK NEED TO DOWNLAOD PYFLAKES    ######
+    // editor.on("change", function() {
+    //   clearTimeout(window.syntaxCheckTimeout);
+    //   window.syntaxCheckTimeout = setTimeout(function() {
+    //     var code = editor.getValue();
+    //     //
+    //     // try {
+    //     //   // Attempt to parse the code to check for syntax errors
+    //     //   var syntaxError = false;
+    //     //   PythonParser.parse(code);
+    //     // } catch (error) {
+    //     //   // If an error occurs, display it to the user
+    //     //   syntaxError = true;
+    //     //   console.error(error);
+    //     // }
+  
+    //     // Do something with the syntax error status (e.g., show an error message)
+    //     if (syntaxError) {
+    //       // Display an error message to the user
+    //       document.getElementById("feedback-message").innerText = "Syntax Error!";
+    //     } else {
+    //       // Clear any existing error message
+    //       xample: document.getElementById("feedback-message").innerText = "";
+    //     }
+    //   }, 500); // Adjust the delay (in milliseconds) as needed
+    // });
+  </script>
+  
 </html>

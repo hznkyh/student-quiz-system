@@ -164,7 +164,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 
                     # Set remaining attempts to 0
                     records.set_remaining_attempts(username, question_num, "0")
-
                 else:
                     # If there are no remaining attempts
                     if attempts == 1:
