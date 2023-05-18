@@ -1,18 +1,12 @@
-CC=gcc
-CFLAGS=-Wall -std=c11
+CC = gcc
+CFLAGS = -Wall -Wextra
 
-.PHONY: all clean
-
-all: runQB
+QB: QB.o
+	$(CC) $(CFLAGS) -o QB QB.o
 
 QB.o: QB.c QB.h
 	$(CC) $(CFLAGS) -c QB.c
 
-runQB.o: runQB.c QB.h
-	$(CC) $(CFLAGS) -c runQB.c
-
-runQB: QB.o runQB.o
-	$(CC) $(CFLAGS) QB.o runQB.o -o runQB
-
+.PHONY: clean
 clean:
-	rm -f *.o runQB
+	rm -f QB.o QB
