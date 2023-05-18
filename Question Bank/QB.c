@@ -9,7 +9,7 @@
 #include <netdb.h>
 #include <time.h>
 #include <stdbool.h>
-
+#include <ctype.h>
 //gcc QB.c -o QB 
 
 
@@ -89,6 +89,32 @@ void listen_for_connections(int sockfd) {
         perror("listen failed");
         exit(EXIT_FAILURE);
     }
+}
+
+
+// Function to trim leading and trailing whitespace characters
+void trim(char* str) {
+    int start = 0;
+    int end = strlen(str) - 1;
+
+    // Find the index of the first non-whitespace character
+    while (isspace(str[start])) {
+        start++;
+    }
+
+    // Find the index of the last non-whitespace character
+    while (end >= 0 && isspace(str[end])) {
+        end--;
+    }
+
+    // Shift the remaining characters to the beginning of the string
+    int i, j;
+    for (i = start, j = 0; i <= end; i++, j++) {
+        str[j] = str[i];
+    }
+
+    // Add the null terminator at the end of the trimmed string
+    str[j] = '\0';
 }
 
 void handle_connection(int sockfd) {
@@ -222,6 +248,58 @@ void handle_connection(int sockfd) {
     }
     else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
         printf("Will mark the Python question now...\n");
+        char *qID;
+        char *user_code;
+        qID = strtok(newPayload, "=");
+        user_code = strtok(NULL, "=");
+        
+        printf("%s",qID);
+        printf("%s\n",user_code);
+
+        if (atol(qID) == 1) {
+            char* insertMain = "\nif __name__ == '__main__':\n    result = reverse(\"spaces\")\n    print(result)\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char* finalCode = (char*)malloc(finalSize + 1);
+            strcpy(finalCode, user_code);
+            strcat(finalCode, insertMain);
+
+            savePythonUserCode(finalCode);
+            runUserCodePy();
+            char* outputContent = processOutputAndErrorPy();
+            const char* anotherString = "secaps";
+            printf("anotherString: %s\n", anotherString);
+
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                } else {
+                    printf("Failed test case.\n");
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
+            }
+        }else if(atol(qID) ==2){
+            char *insertMain = "\nif __name__ == '__main__':\n    result = string_length(\"spaces\")\n    print(result)\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char *finalCode = (char*)malloc(finalSize);
+            
+            strcpy(finalCode, insertMain);
+            strcat(finalCode, insertMain);
+            savePythonUserCode(finalCode);
+            runUserCodePy();
+            processOutputAndErrorPy();
+
+        }
+  
 
     }
     else if (strcmp(header, "send_c_answer") == 0){
@@ -246,6 +324,30 @@ void handle_connection(int sockfd) {
 
 }
 
+
+// Save the Python Question
+void savePythonUserCode(char* code){
+    FILE* file = fopen("usercode_py.py", "w");
+        if (file == NULL) {
+            printf("Failed to open the file for writing.\n");
+            return;
+        }
+        fputs(code, file);
+        fclose(file);
+}
+
+// Run python code
+void runUserCodePy() {
+    // Assume we only allow python code
+    int result = system("python3 usercode_py.py > output_py.txt 2> errors_py.txt");
+    if (result != 0) {
+        printf("Execution error.\n");
+    } else {
+        printf("Program executed successfully.\n");
+    }
+}
+
+// Save C questions
 void saveUserCode(char* code) {
         FILE* file = fopen("usercode.c", "w");
         if (file == NULL) {
@@ -256,6 +358,36 @@ void saveUserCode(char* code) {
         fclose(file);
 }
 
+// process the output and error for py
+char* processOutputAndErrorPy() {
+    FILE* outputFile = fopen("output_py.txt", "r");
+    if (outputFile != NULL) {
+        printf("Program output:\n");
+        char buffer[256];
+        char* outputContent = malloc(sizeof(char));  // Allocate initial memory
+        size_t outputSize = 0;  // Track the size of the output content
+
+        while (fgets(buffer, sizeof(buffer), outputFile) != NULL) {
+            printf("%s", buffer);
+
+            // Reallocate memory for the output content
+            outputContent = realloc(outputContent, (outputSize + strlen(buffer) + 1) * sizeof(char));
+            strcat(outputContent, buffer);
+            outputSize += strlen(buffer);
+        }
+        
+        fclose(outputFile);
+
+        // Add a null terminator to the output content
+        outputContent[outputSize] = '\0';
+
+        return outputContent;
+    } else {
+        printf("Failed to open the output file.\n");
+        return NULL;  // Return NULL if the file couldn't be opened
+    }
+}
+// Compile C code 
 void compileUserCode() {
     int result = system("gcc usercode.c -o usercode");
     if (result != 0) {
@@ -265,6 +397,7 @@ void compileUserCode() {
     }
 }
 
+// Run code C 
 void runUserCode() {
     int result = system("./usercode > output.txt 2> errors.txt");
     if (result != 0) {
@@ -274,6 +407,7 @@ void runUserCode() {
     }
 }
 
+// process the output and error for c
 void processOutputAndErrors() {
     FILE* outputFile = fopen("output.txt", "r");
     if (outputFile != NULL) {

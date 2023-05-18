@@ -46,4 +46,8 @@ void saveUserCode(char* code);
 void compileUserCode();
 void processOutputAndErrors();
 void runUserCode();
+void savePythonUserCode(char* code);
+void runUserCodePy();
+char* processOutputAndErrorPy();
+void trim(char* str);
 #endif
