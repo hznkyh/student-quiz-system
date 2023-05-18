@@ -206,13 +206,13 @@ void handle_connection(int sockfd) {
 }
 
 void saveUserCode(char* code) {
-            FILE* file = fopen("usercode.c", "w");
-            if (file == NULL) {
-                printf("Failed to open the file for writing.\n");
-                return;
-            }
-            fputs(code, file);
-            fclose(file);
+        FILE* file = fopen("usercode.c", "w");
+        if (file == NULL) {
+            printf("Failed to open the file for writing.\n");
+            return;
+        }
+        fputs(code, file);
+        fclose(file);
 }
 
 void compileUserCode() {
@@ -317,11 +317,10 @@ char* retreiveAnswer(char *qID){
 }
 
 //Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
-int* generate_questions_numbers(int num_questions) {
+int* generate_questions_numbers(int num_questions, int max) {
     int question_numbers[num_questions];
     int num_used = 0; //Keeps track of the number of question numbers we've added to the array.
     int min = 1; 
-    int max = 27; //The number of questions we have
     int range = max - min + 1;
 
     srand(time(NULL));
@@ -375,7 +374,7 @@ Question* read_questions_file(int num_questions, char *filename){
         perror("Error opening file");
         return NULL;
     }
-    int *question_numbers = generate_questions_numbers(num_questions);
+    int *question_numbers = generate_questions_numbers(num_questions, 25);
     Question *questions = malloc(num_questions * sizeof(Question));
     
     if (questions == NULL) {
@@ -431,7 +430,7 @@ Question* read_p_questions_file(int num_questions, char *filename){
         perror("Error opening file");
         return NULL;
     }
-    int *question_numbers = generate_questions_numbers(num_questions);
+    int *question_numbers = generate_questions_numbers(num_questions, 2);
     Question *questions = malloc(num_questions * sizeof(Question));
     
     if (questions == NULL) {
