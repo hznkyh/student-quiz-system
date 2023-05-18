@@ -11,12 +11,6 @@
         "grade": 3,
         "active_test": false
     },
-    "2": {
-        "name": "Bob",
-        "password": "pass2",
-        "grade": 3,
-        "active_test": false
-    },
     "3": {
         "name": "Caleb",
         "password": "pass3",
