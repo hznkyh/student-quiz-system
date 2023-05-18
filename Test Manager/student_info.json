@@ -3,51 +3,7 @@
         "name": "Alice",
         "password": "pass1",
         "grade": 0,
-        "active_test": true,
-        "test": {
-            "0": {
-                "question_id": "5",
-                "question_number": "1",
-                "question": "What symbol is used for single-line comments in Python?",
-                "remaining_attempts": "3",
-                "type": "mc",
-                "options": {
-                    "option_a": "#",
-                    "option_b": "//",
-                    "option_c": "/*",
-                    "option_d": "**"
-                },
-                "message": ""
-            },
-            "1": {
-                "question_id": "11",
-                "question_number": "2",
-                "question": "What is the purpose of the 'if' statement in Python?",
-                "remaining_attempts": "3",
-                "type": "mc",
-                "options": {
-                    "option_a": "To conditionally execute code",
-                    "option_b": "To define a loop",
-                    "option_c": "To import modules",
-                    "option_d": "To perform mathematical operations"
-                },
-                "message": ""
-            },
-            "2": {
-                "question_id": "1",
-                "question_number": "3",
-                "question": "Write a C function to reverse a string and print it to stdout. Function must have prototype: void reverseString(char* str);",
-                "remaining_attempts": "3",
-                "type": "c"
-            },
-            "3": {
-                "question_id": "2",
-                "question_number": "4",
-                "question": "Write a C function to find the length of a string and print it to stdout. Function must have prototype: void stringLength(char* str);",
-                "remaining_attempts": "3",
-                "type": "c"
-            }
-        }
+        "active_test": false
     },
     "2": {
         "name": "Bob",
