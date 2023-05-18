@@ -2,7 +2,7 @@ import json
 
 JSON_FILENAME = "student_info.json"
 
-def readRecords():
+def read_records():
     """
     returns json records as a dict
     key is the student id (as a string)
@@ -16,7 +16,7 @@ def readRecords():
 
 
 # Probably not really necessary but gives a good basis for how to manage json files
-def printStudentSummary():
+def print_student_summary():
     with open(JSON_FILENAME, "r") as file:
         json_data = json.load(file)
 
@@ -26,8 +26,8 @@ def printStudentSummary():
 
 
 # checks if students login details are correct
-def checkLogin(student_id, password):
-    json_data = readRecords()
+def check_login(student_id, password):
+    json_data = read_records()
 
     if student_id in json_data:
         if json_data[student_id]["password"] == password:
@@ -43,9 +43,9 @@ def checkLogin(student_id, password):
 
 
 # returns info on student in the form of a dictionary
-def getStudent(student_id):
+def get_student(student_id):
 
-    json_data = readRecords()
+    json_data = read_records()
 
     name = json_data[student_id]["name"]
     grade = json_data[student_id]["grade"]
@@ -57,26 +57,26 @@ def getStudent(student_id):
 
 
 # returns student grade
-def getGrade(student_id):
-    json_data = readRecords()
+def get_grade(student_id):
+    json_data = read_records()
 
     return json_data[student_id]["grade"]
 
 
 # sets the grade of the student
-def setGrade(student_id, new_grade):
-    json_data = readRecords()
+def set_grade(student_id, new_grade):
+    json_data = read_records()
     json_data[student_id]["grade"] = new_grade
     json_object = json.dumps(json_data, indent=4)
 
     with open(JSON_FILENAME, "w") as file:
         file.write(json_object)
 
-def getTestData(student_id):
-    return readRecords()[student_id]["test"]
+def get_test_data(student_id):
+    return read_records()[student_id]["test"]
 
-def setTestData(student_id, test_data):
-    json_data = readRecords()
+def set_test_data(student_id, test_data):
+    json_data = read_records()
     json_data[student_id]["test"] = test_data
     json_object = json.dumps(json_data, indent=4)
 
@@ -84,12 +84,12 @@ def setTestData(student_id, test_data):
         file.write(json_object)
 
 def remaining_attempts(student_id, question_num):
-    json_data = readRecords()
+    json_data = read_records()
     number = str(question_num)
     return json_data[student_id]["test"][number]["remaining_attempts"]
 
 def set_remaining_attempts(student_id, question_num, remaining_attempts):
-    json_data = readRecords()
+    json_data = read_records()
     number = str(question_num)
     json_data[student_id]["test"][number]["remaining_attempts"] = remaining_attempts
     json_object = json.dumps(json_data, indent=4)
@@ -97,15 +97,15 @@ def set_remaining_attempts(student_id, question_num, remaining_attempts):
     with open(JSON_FILENAME, "w") as file:
         file.write(json_object)
 
-def getActiveState(student_id):
-    json_data = readRecords()
+def get_active_state(student_id):
+    json_data = read_records()
     if json_data[student_id]["active_test"]:
         return True
     else:
         return False
 
-def setTestActiveState(student_id, active=True):
-    json_data = readRecords()
+def set_test_active_state(student_id, active=True):
+    json_data = read_records()
     json_data[student_id]["active_test"] = active
     json_object = json.dumps(json_data, indent=4)
 
@@ -115,8 +115,8 @@ def setTestActiveState(student_id, active=True):
 
 
 # resets all grades
-def resetGrades():
-    json_data = readRecords()
+def reset_grades():
+    json_data = read_records()
 
     for student_id in json_data:
-        setGrade(student_id, 0)
+        set_grade(student_id, 0)

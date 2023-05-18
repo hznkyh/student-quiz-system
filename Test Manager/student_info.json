@@ -6,22 +6,8 @@
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "1",
-                "question_number": "1",
-                "question": "What is Python?",
-                "remaining_attempts": "3",
-                "type": "mc",
-                "options": {
-                    "option_a": "A programming language",
-                    "option_b": "A snake",
-                    "option_c": "A bird",
-                    "option_d": "A type of food"
-                },
-                "message": ""
-            },
-            "1": {
                 "question_id": "5",
-                "question_number": "2",
+                "question_number": "1",
                 "question": "What symbol is used for single-line comments in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
@@ -33,31 +19,45 @@
                 },
                 "message": ""
             },
-            "2": {
-                "question_id": "6",
-                "question_number": "3",
-                "question": "What is the result of the expression 5 + 2 * 3 in Python?",
+            "1": {
+                "question_id": "13",
+                "question_number": "2",
+                "question": "What does the 'append()' method do in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "11",
-                    "option_b": "17",
-                    "option_c": "9",
-                    "option_d": "21"
+                    "option_a": "Adds an element to a list",
+                    "option_b": "Removes an element from a list",
+                    "option_c": "Sorts a list in ascending order",
+                    "option_d": "Counts the occurrences of an element in a list"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "21",
+                "question_number": "3",
+                "question": "Which operator is used to check if two values are equal in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "double equals",
+                    "option_b": "single equals",
+                    "option_c": "!equals",
+                    "option_d": "<equals"
                 },
                 "message": ""
             },
             "3": {
-                "question_id": "1",
+                "question_id": "5",
                 "question_number": "4",
-                "question": "Write a C program to calculate the sum of all numbers in an array.",
+                "question": "Write a C program to count the occurrences of a specific element in an array.",
                 "remaining_attempts": "3",
                 "type": "c"
             },
             "4": {
-                "question_id": "6",
+                "question_id": "13",
                 "question_number": "5",
-                "question": "Write a C program to find the factorial of a number.",
+                "question": "Write a C program to check if a year is a leap year.",
                 "remaining_attempts": "3",
                 "type": "c"
             }
