@@ -1,0 +1,4 @@
+  File "/Users/owen/Documents/UWA/Year_3/Semester_1/CITS3002/Project1/CITS3002/Question Bank/usercode_py.py", line 1
+    Handling exceptions
+             ^
+SyntaxError: invalid syntax
