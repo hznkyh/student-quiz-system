@@ -3,9 +3,7 @@
         "name": "Alice",
         "password": "pass1",
         "grade": 0,
-        "active_test": false,
-        "test": {
-        }
+        "active_test": false
     },
     "2": {
         "name": "Bob",
