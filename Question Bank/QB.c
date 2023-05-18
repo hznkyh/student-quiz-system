@@ -290,13 +290,34 @@ void handle_connection(int sockfd) {
         }else if(atol(qID) ==2){
             char *insertMain = "\nif __name__ == '__main__':\n    result = string_length(\"spaces\")\n    print(result)\n";
             int finalSize = strlen(insertMain) + strlen(user_code) + 1;
-            char *finalCode = (char*)malloc(finalSize);
-            
-            strcpy(finalCode, insertMain);
+            char* finalCode = (char*)malloc(finalSize + 1);
+            strcpy(finalCode, user_code);
             strcat(finalCode, insertMain);
+
+            
             savePythonUserCode(finalCode);
             runUserCodePy();
-            processOutputAndErrorPy();
+            char* outputContent = processOutputAndErrorPy();
+            const char* anotherString = "6";
+            printf("anotherString: %s\n", anotherString);
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                } else {
+                    printf("Failed test case.\n");
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
+            }
 
         }
   
