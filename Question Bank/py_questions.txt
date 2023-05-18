@@ -1,25 +1,2 @@
-1,Write a Python program to calculate the sum of all numbers in a list.
-2,Write a Python program to find the largest element in a list.
-3,Write a Python program to check if a number is prime.
-4,Write a Python program to reverse a string.
-5,Write a Python program to count the occurrences of a specific element in a list.
-6,Write a Python program to find the factorial of a number.
-7,Write a Python program to check if a string is a palindrome.
-8,Write a Python program to sort a list of numbers in ascending order.
-9,Write a Python program to find the maximum and minimum elements in a list.
-10,Write a Python program to check if two strings are anagrams.
-11,Write a Python program to check if a number is even or odd.
-12,Write a Python program to find the length of a string.
-13,Write a Python program to calculate the average of numbers in a list.
-14,Write a Python program to remove duplicate elements from a list.
-15,Write a Python program to find the index of a specific element in a list.
-16,Write a Python program to check if a string is a palindrome ignoring case.
-17,Write a Python program to concatenate two strings.
-18,Write a Python program to check if a number is a palindrome.
-19,Write a Python program to check if a list is sorted in ascending order.
-20,Write a Python program to check if a number is a prime palindrome.
-21,Write a Python program to find the second largest element in a list.
-22,Write a Python program to convert a string to lowercase.
-23,Write a Python program to check if a string contains only digits.
-24,Write a Python program to find the square root of a number.
-25,Write a Python program to remove vowels from a string.
+1,Write a Python function to reverse a string and print it. The function must be: def reverse(my_string)
+2,Write a Python function to find the length of a string. The function must be: def string_length(s)

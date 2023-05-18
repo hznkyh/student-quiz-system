@@ -1,25 +1,2 @@
-1,Write a C program to calculate the sum of all numbers in an array.
-2,Write a C program to find the largest element in an array.
-3,Write a C program to check if a number is prime.
-4,Write a C program to reverse a string.
-5,Write a C program to count the occurrences of a specific element in an array.
-6,Write a C program to find the factorial of a number.
-7,Write a C program to check if a string is a palindrome.
-8,Write a C program to sort an array of numbers in ascending order.
-9,Write a C program to find the maximum and minimum elements in an array.
-10,Write a C program to check if two strings are anagrams.
-11,Write a C program to find the length of a string.
-12,Write a C program to calculate the average of numbers in an array.
-13,Write a C program to check if a year is a leap year.
-14,Write a C program to find the power of a number using recursion.
-15,Write a C program to find the sum of digits of a number.
-16,Write a C program to find the GCD (Greatest Common Divisor) of two numbers.
-17,Write a C program to check if a number is Armstrong.
-18,Write a C program to check if a number is even or odd.
-19,Write a C program to find the square root of a number.
-20,Write a C program to check if a string is a valid palindrome.
-21,Write a C program to find the factorial of a number using recursion.
-22,Write a C program to check if a number is a perfect square.
-23,Write a C program to calculate the sum of natural numbers.
-24,Write a C program to check if a number is positive or negative or or zero.
-25,Write a C program to find the area of a triangle given its base and height.
+1,Write a C function to reverse a string and print it to stdout. The function must have prototype: void reverseString(char* str);
+2,Write a C function to find the length of a string and print it to stdout. The function must have prototype: void stringLength(char* str);

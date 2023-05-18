@@ -9,10 +9,8 @@
 #include <netdb.h>
 #include <time.h>
 #include <stdbool.h>
-
+#include <ctype.h>
 //gcc QB.c -o QB 
-
-
 
 // Not DHCP, i doubt thats a requirement?
 // based on this https://www.sanfoundry.com/c-program-get-ip-address/
@@ -91,6 +89,32 @@ void listen_for_connections(int sockfd) {
     }
 }
 
+
+// Function to trim leading and trailing whitespace characters
+void trim(char* str) {
+    int start = 0;
+    int end = strlen(str) - 1;
+
+    // Find the index of the first non-whitespace character
+    while (isspace(str[start])) {
+        start++;
+    }
+
+    // Find the index of the last non-whitespace character
+    while (end >= 0 && isspace(str[end])) {
+        end--;
+    }
+
+    // Shift the remaining characters to the beginning of the string
+    int i, j;
+    for (i = start, j = 0; i <= end; i++, j++) {
+        str[j] = str[i];
+    }
+
+    // Add the null terminator at the end of the trimmed string
+    str[j] = '\0';
+}
+
 void handle_connection(int sockfd) {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
@@ -115,8 +139,7 @@ void handle_connection(int sockfd) {
             exit(1);
         }
     msg.length = ntohl(msg.length);
-    //msg.payload[strlen(msg.payload)-3] = '\0'; //Shorter messages seem to have issues of adding random characters. 
-                                                //Couldn't figure out why, minimum msg length has to be 12 character to be accurate
+
     char *source = msg.payload;
     char header[msg.length];
     memset(header, 0, sizeof(header));
@@ -132,6 +155,7 @@ void handle_connection(int sockfd) {
 
     Question* questions;
     
+    //CHECKS THE HEADER TO SEE WHAT IT IS BEING ASKED TO DO
     if (strcmp(header, "mc_questions") == 0){
         int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
         printf("TM requested %d mc questions...\n",numOfQuestions);\
@@ -166,31 +190,358 @@ void handle_connection(int sockfd) {
         }else {
             printf("Result sent to QB ('%c')\n",c_value);
         }
-    }else if(strcmp(header, "mark_c_answer") == 0){ //Mark C programming question
-        printf("Will mark the C question now...\n");
+    }
+    else if(strcmp(header, "mark_c_answer") == 0){ //Mark C programming question
+        char* question_id;
+        char *user_code;
+        char* delimiter = strchr(newPayload, '='); 
+        // Split the input
+        *delimiter = '\0'; // Null-terminate the string at the delimiter
+        question_id = newPayload;
+        user_code = delimiter + 1;
+        printf("USER CODE:'%s'",user_code);
+        if(atol(question_id) == 1){ //If answer was for question with ID 1
+            printf("Will mark the C question one now...(%s)\n",question_id);
+            //WE ADD A MAIN FUNCTION AND stdio.h TO THE USERS FILE SO WE CAN RUN IT AND GET THE EXPECTED OUTPUT.
+            char* insertMain = "#include <stdio.h>\n#include <string.h>\nvoid reverseString(char* str);\n\nint main() {\n\tchar input[] = \"amazing\";\n\treverseString(input);\n\treturn 0;\n}\n\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char* finalCode = (char*)malloc(finalSize);
 
-    }else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
+            strcpy(finalCode, insertMain);
+            strcat(finalCode, user_code);
+            printf("QID:'%s'\n",question_id);
+            printf("%s\n", finalCode);
+
+            saveUserCode(finalCode);
+            free(finalCode);
+            compileUserCode();
+            runUserCode();
+            char* outputContent = processOutputAndErrors();
+            const char* anotherString = "gnizama";
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                    if (send(connfd, "True", strlen("True"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                } else {
+                    printf("Failed test case.\n");
+                    if (send(connfd, "False", strlen("False"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
+            }
+        }
+        else if(atol(question_id)==2){ //If answer was for question with ID 2
+            printf("Will mark the C question two now... (%s)\n",question_id);
+
+            //WE ADD A MAIN FUNCTION AND stdio.h TO THE USERS FILE SO WE CAN RUN IT AND GET THE EXPECTED OUTPUT.
+            char* insertMain = "#include <stdio.h>\n\nvoid stringLength(char* str);\n\nint main() {\n\tchar input[] = \"Hello, World!\";\n\tstringLength(input);\n\treturn 0;\n}\n\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char* finalCode = (char*)malloc(finalSize);
+
+            strcpy(finalCode, insertMain);
+            strcat(finalCode, user_code);
+            printf("qid:'%s'\n",question_id);
+            printf("%s\n", finalCode);
+
+            saveUserCode(finalCode);
+            free(finalCode);
+            compileUserCode();
+            runUserCode();
+            char* outputContent = processOutputAndErrors();
+            const char* anotherString = "13";
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                    if (send(connfd, "True", strlen("True"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                } else {
+                    printf("Failed test case.\n");
+                    if (send(connfd, "False", strlen("False"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
+            }
+        }
+        else{
+            printf("Unknwon Question ID '%s",question_id);
+        }
+        
+
+    }
+    else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
         printf("Will mark the Python question now...\n");
+        char *qID;
+        char *user_code;
+        qID = strtok(newPayload, "=");
+        user_code = strtok(NULL, "=");
+        
+        printf("%s",qID);
+        printf("%s\n",user_code);
 
-    }else if (strcmp(header, "send_c_answer") == 0){
+        if (atol(qID) == 1) {
+            char* insertMain = "\nif __name__ == '__main__':\n    result = reverse(\"spaces\")\n    print(result)\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char* finalCode = (char*)malloc(finalSize + 1);
+            strcpy(finalCode, user_code);
+            strcat(finalCode, insertMain);
+
+            savePythonUserCode(finalCode);
+            runUserCodePy();
+            char* outputContent = processOutputAndErrorPy();
+            const char* anotherString = "secaps";
+            printf("anotherString: %s\n", anotherString);
+
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                    if (send(connfd, "True", strlen("True"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                } else {
+                    printf("Failed test case.\n");
+                    if (send(connfd, "False", strlen("False"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
+            }
+        }else if(atol(qID) ==2){
+            char *insertMain = "\nif __name__ == '__main__':\n    result = string_length(\"spaces\")\n    print(result)\n";
+            int finalSize = strlen(insertMain) + strlen(user_code) + 1;
+            char* finalCode = (char*)malloc(finalSize + 1);
+            strcpy(finalCode, user_code);
+            strcat(finalCode, insertMain);
+
+            
+            savePythonUserCode(finalCode);
+            runUserCodePy();
+            char* outputContent = processOutputAndErrorPy();
+            const char* anotherString = "6";
+            printf("anotherString: %s\n", anotherString);
+            if (outputContent != NULL) {
+                printf("Output Content:\n%s\n", outputContent);
+
+                // Trim leading and trailing whitespace characters from outputContent
+                trim(outputContent);
+
+                printf("Trimmed Output Content:\n%s\n", outputContent);
+
+                if (strcmp(outputContent, anotherString) == 0) {
+                    printf("Test case passed.\n");
+                    if (send(connfd, "True", strlen("True"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                } else {
+                    printf("Failed test case.\n");
+                    if (send(connfd, "False", strlen("False"), 0) < 0) {
+                        perror("Result send failed");
+                        exit(EXIT_FAILURE);
+                    }
+                }
+
+                free(outputContent);
+            } else {
+                printf("Failed to retrieve output content.\n");
+            }
+
+        }
+  
+
+    }
+    else if (strcmp(header, "send_c_answer") == 0){
         printf("Will send the C answer now...\n");
-    
-    }else if (strcmp(header, "send_py_answer") == 0){
+        if (send(connfd, "F", strlen("F"), 0) < 0) {
+            perror("Result send failed");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else if (strcmp(header, "send_py_answer") == 0){
         printf("Will send the Python answer now...\n");
     
-    }else if (strcmp(header, "send_mc_answer") == 0){
-        char *answer = retreiveAnswer(newPayload);
+    }
+    else if (strcmp(header, "send_mc_answer") == 0){
+        char *answer = retrieveAnswer(newPayload);
         if (send(connfd, answer, strlen(answer), 0) < 0) {
             perror("Result send failed");
             exit(EXIT_FAILURE);
         }
         printf("Answer sent to TM: '%s'",answer);
-    }else{
+    }
+    else{
         printf("ERROR: Header '%s' not recognised.\n",header);
     }
 
 }
 
+
+// Save the Python answer from the user.
+void savePythonUserCode(char* code){
+    FILE* file = fopen("usercode_py.py", "w");
+        if (file == NULL) {
+            printf("Failed to open the file for writing.\n");
+            return;
+        }
+        fputs(code, file);
+        fclose(file);
+}
+
+// Run python code
+void runUserCodePy() {
+    // Assume we only allow python code
+    int result = system("python3 usercode_py.py > output_py.txt 2> errors_py.txt");
+    if (result != 0) {
+        printf("Execution error.\n");
+    } else {
+        printf("Program executed successfully.\n");
+    }
+}
+
+// Save C questions to a file ready to compile.
+void saveUserCode(char* code) {
+        FILE* file = fopen("usercode.c", "w");
+        if (file == NULL) {
+            printf("Failed to open the file for writing.\n");
+            return;
+        }
+        fputs(code, file);
+        fclose(file);
+}
+
+// process the output and error for py files.
+char* processOutputAndErrorPy() {
+    FILE* outputFile = fopen("output_py.txt", "r");
+    if (outputFile != NULL) {
+        printf("Program output:\n");
+        char buffer[256];
+        char* outputContent = malloc(sizeof(char));  // Allocate initial memory
+        size_t outputSize = 0;  // Track the size of the output content
+
+        while (fgets(buffer, sizeof(buffer), outputFile) != NULL) {
+            printf("%s", buffer);
+
+            // Reallocate memory for the output content
+            outputContent = realloc(outputContent, (outputSize + strlen(buffer) + 1) * sizeof(char));
+            strcat(outputContent, buffer);
+            outputSize += strlen(buffer);
+        }
+        
+        fclose(outputFile);
+
+        // Add a null terminator to the output content
+        outputContent[outputSize] = '\0';
+
+        return outputContent;
+    } else {
+        printf("Failed to open the output file.\n");
+        return NULL;  // Return NULL if the file couldn't be opened
+    }
+}
+// Compile C code 
+void compileUserCode() {
+    //Remove any previous file so it doesn't interfere with this new execution if this compile fails.
+    if (remove("usercode") != 0) {
+        perror("Failed to delete previous usercode executable");
+    }
+    int result = system("gcc usercode.c -o usercode");
+    if (result != 0) {
+        printf("Compilation error.\n");
+    } else {
+        printf("Code compiled successfully.\n");
+    }
+}
+
+// Run code C 
+void runUserCode() {
+    //Sometimes contents of the file stays and returns result of the previous attempt should the execute fail
+    FILE* file = fopen("output.txt", "w+");
+    if (file == NULL) {
+        perror("Failed to open output.txt");
+    }
+    fclose(file);
+    
+    // Execute the command
+    int result = system("./usercode > output.txt 2> errors.txt");
+    if (result != 0) {
+        printf("Execution error.\n");
+    } else {
+        printf("Program executed successfully.\n");
+    }
+}
+
+// process the output and error for c files.
+char* processOutputAndErrors() {
+    char outputBuffer[256] = "";
+    FILE* outputFile = fopen("output.txt", "r");
+    if (outputFile != NULL) {
+        printf("Program output:\n");
+        while (fgets(outputBuffer, 256, outputFile) != NULL) {
+            printf("%s", outputBuffer);
+        }
+        fclose(outputFile);
+    } else {
+        printf("Failed to open the output file.\n");
+        return strdup("Error: Failed to open the output file.");
+    }
+
+    char errorsBuffer[256] = "";
+    FILE* errorsFile = fopen("errors.txt", "r");
+    if (errorsFile != NULL) {
+        printf("Error messages:\n");
+        while (fgets(errorsBuffer, 256, errorsFile) != NULL) {
+            printf("%s", errorsBuffer);
+        }
+        fclose(errorsFile);
+    } else {
+        printf("Failed to open the errors file.\n");
+        return strdup("Error: Failed to open the errors file.");
+    }
+
+    return strdup(outputBuffer);
+}
+
+//This was used to remove some random new line characters in the header that sometime's popped up.
 void removeNewline(char* str) {
     size_t newlinePos = strcspn(str, "\n");  // Find the position of the newline character
 
@@ -199,11 +550,12 @@ void removeNewline(char* str) {
     }
 }
 
-char* retreiveAnswer(char *qID){
+//This is used to retrieve the answer when people get the question wrong 3 times.
+char* retrieveAnswer(char *qID){
     printf("Getting Answer...\n");
     int wanted_id = atol(qID);
     char *answer;
-    char *filename = "answers.txt";
+    char *filename = "mc_answers.txt";
 
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) { 
@@ -244,12 +596,65 @@ char* retreiveAnswer(char *qID){
 
 }
 
-//Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
-int* generate_questions_numbers(int num_questions) {
+
+//gets the coding solution for the given problem. Need to know the language so we can open the correct file.
+// language arg is either "c" or "py"
+// char* retrieveCodingSolution(char *qID, char *language){ 
+//     printf("Getting Solution...\n");
+//     int wanted_id = atol(qID);
+//     char *answer;
+//     char *filename = "py_solutions.txt";
+//     if(strcmp(language, "c")){
+//         char *filename = "c_solutions.txt";
+//     }
+    
+
+//     FILE* fp = fopen(filename, "r");
+//     if (fp == NULL) { 
+//         perror("Error opening file");
+//         return 0;
+//     }
+//     int current_id;
+//     char* current_answer = malloc(128 * sizeof(char));
+//     if (current_answer == NULL) {
+//         return 0;
+//     }
+
+//     int i = 0;
+//     char line[MAX_LINE_LENGTH];
+//     bool found_id = false;
+
+//     while (fgets(line, sizeof(line), fp)) {
+//         if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
+//             printf("Failed to parse line %d in file %s\n", i+1, filename);
+//             continue;
+//         }
+
+//         if (current_id == wanted_id){
+//             printf("%s\n",line);
+//             printf("Answer found: '%s'\n",current_answer);
+//             answer = current_answer;
+//             found_id = true;
+//             break; // Exit the loop since the desired ID has been found
+//         }
+//     }
+
+//     if (!found_id) {
+//         printf("Desired ID not found in file %s\n", filename);
+//         return 0;
+//     }else{
+//         return answer;
+//     }
+
+// }
+
+
+
+// Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
+// It takes in the min and max values of what question number range there is corresponding to Question IDs in the files.
+int* generate_questions_numbers(int num_questions, int min, int max) {
     int question_numbers[num_questions];
     int num_used = 0; //Keeps track of the number of question numbers we've added to the array.
-    int min = 1; 
-    int max = 27; //The number of questions we have
     int range = max - min + 1;
 
     srand(time(NULL));
@@ -296,6 +701,9 @@ int inArray(int val, int arr[], int size) {
     return 0; // not found
 }
 
+/*
+* This is used for multi choice question files to extract the data needed to display onto the page.
+*/
 Question* read_questions_file(int num_questions, char *filename){
 
     FILE* fp = fopen(filename, "r");
@@ -303,7 +711,7 @@ Question* read_questions_file(int num_questions, char *filename){
         perror("Error opening file");
         return NULL;
     }
-    int *question_numbers = generate_questions_numbers(num_questions);
+    int *question_numbers = generate_questions_numbers(num_questions, 3 , 26);
     Question *questions = malloc(num_questions * sizeof(Question));
     
     if (questions == NULL) {
@@ -312,7 +720,7 @@ Question* read_questions_file(int num_questions, char *filename){
         return NULL;
     }
 
-    // Read each question from the file and store it in the array
+
     int i = 0;
     char line[MAX_LINE_LENGTH];
     while (fgets(line, sizeof(line), fp) && i < num_questions) {
@@ -323,10 +731,9 @@ Question* read_questions_file(int num_questions, char *filename){
         char option_c[OPTION_SIZE];
         char option_d[OPTION_SIZE];
 
-        // Parse the line into question ID, question text, and answer
-        if (sscanf(line, "%d,%1024[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
+        // Goes through the file and grabs the question id, question and all 4 options for that particular quesstion.
+        if (sscanf(line, "%d,%255[^,],%255[^,],%255[^,],%255[^,],%255[^,\n]", &id, question, option_a, option_b, option_c, option_d) != 6) {
             printf("Failed to parse line %d in file %s\n", i+1, filename);
-            //printf("LINE:line)
             continue;
         }
 
@@ -338,8 +745,8 @@ Question* read_questions_file(int num_questions, char *filename){
             strcpy(questions[i].option_b, option_b);
             strcpy(questions[i].option_c, option_c);
             strcpy(questions[i].option_d, option_d);
-            printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
-            printf("a:'%s' \nb:'%s'\nc:'%s'\nd:'%s'\n",questions[i].option_a,questions[i].option_b,questions[i].option_c,questions[i].option_d);
+            // printf("Q'%d':'%s'\n",questions[i].id,questions[i].question);
+            // printf("a:'%s' \nb:'%s'\nc:'%s'\nd:'%s'\n",questions[i].option_a,questions[i].option_b,questions[i].option_c,questions[i].option_d);
             i++;
         }
     }
@@ -359,7 +766,7 @@ Question* read_p_questions_file(int num_questions, char *filename){
         perror("Error opening file");
         return NULL;
     }
-    int *question_numbers = generate_questions_numbers(num_questions);
+    int *question_numbers = generate_questions_numbers(num_questions, 1, 2);
     Question *questions = malloc(num_questions * sizeof(Question));
     
     if (questions == NULL) {
