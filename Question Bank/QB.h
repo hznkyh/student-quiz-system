@@ -35,7 +35,7 @@ void handle_connection(int sockfd);
 void close_connection(int connfd);
 void get_local_ip(char *ip, int size);
 Question* read_questions_file(int num_questions, char *filename);
-int* generate_questions_numbers(int num_questions, int max);
+int* generate_questions_numbers(int num_questions, int min, int max);
 void send_questions(Question* questions, int sockfd, int numOfQuestions);
 int mark_MC_Question(int question_id, char *student_answer, char *filename);
 char *retreiveAnswer(char *question_id);

@@ -317,10 +317,9 @@ char* retreiveAnswer(char *qID){
 }
 
 //Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
-int* generate_questions_numbers(int num_questions, int max) {
+int* generate_questions_numbers(int num_questions, int min, int max) {
     int question_numbers[num_questions];
     int num_used = 0; //Keeps track of the number of question numbers we've added to the array.
-    int min = 1; 
     int range = max - min + 1;
 
     srand(time(NULL));
@@ -374,7 +373,7 @@ Question* read_questions_file(int num_questions, char *filename){
         perror("Error opening file");
         return NULL;
     }
-    int *question_numbers = generate_questions_numbers(num_questions, 25);
+    int *question_numbers = generate_questions_numbers(num_questions, 3 , 26);
     Question *questions = malloc(num_questions * sizeof(Question));
     
     if (questions == NULL) {
@@ -430,7 +429,7 @@ Question* read_p_questions_file(int num_questions, char *filename){
         perror("Error opening file");
         return NULL;
     }
-    int *question_numbers = generate_questions_numbers(num_questions, 2);
+    int *question_numbers = generate_questions_numbers(num_questions, 1, 2);
     Question *questions = malloc(num_questions * sizeof(Question));
     
     if (questions == NULL) {
