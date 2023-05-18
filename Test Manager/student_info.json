@@ -6,44 +6,44 @@
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "8",
+                "question_id": "4",
                 "question_number": "1",
-                "question": "What does the 'len()' function do in Python?",
+                "question": "What is the keyword used to define a function in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "Returns the length of a string",
-                    "option_b": "Calculates the logarithm",
-                    "option_c": "Converts a number to a string",
-                    "option_d": "Generates a random number"
+                    "option_a": "def",
+                    "option_b": "fun",
+                    "option_c": "function",
+                    "option_d": "class"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "16",
+                "question_id": "9",
                 "question_number": "2",
-                "question": "Which module in Python is used to work with dates and times?",
+                "question": "Which of the following is a valid variable name in Python?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "datetime",
-                    "option_b": "math",
-                    "option_c": "time",
-                    "option_d": "calendar"
+                    "option_a": "my_variable",
+                    "option_b": "2ndVariable",
+                    "option_c": "variable_name",
+                    "option_d": "True"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "23",
+                "question_id": "15",
                 "question_number": "3",
-                "question": "What does the 'random' module in Python provide?",
+                "question": "What does the 'try' and 'except' block in Python help with?",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "Functions for generating random numbers",
-                    "option_b": "Functions for sorting lists",
-                    "option_c": "Functions for performing mathematical calculations",
-                    "option_d": "Functions for reading and writing files"
+                    "option_a": "Handling exceptions",
+                    "option_b": "Defining variables",
+                    "option_c": "Performing file I/O operations",
+                    "option_d": "Creating classes"
                 },
                 "message": ""
             },
@@ -51,14 +51,14 @@
                 "question_id": "1",
                 "question_number": "4",
                 "question": "Write a Python function called def reverse(my_string)",
-                "remaining_attempts": "0",
+                "remaining_attempts": "1",
                 "type": "py"
             },
             "4": {
                 "question_id": "2",
                 "question_number": "5",
                 "question": "Write a Python function called def string_length(s)",
-                "remaining_attempts": "1",
+                "remaining_attempts": "2",
                 "type": "py"
             }
         }
@@ -66,8 +66,66 @@
     "2": {
         "name": "Bob",
         "password": "pass2",
-        "grade": 3,
-        "active_test": false
+        "grade": 0,
+        "active_test": true,
+        "test": {
+            "0": {
+                "question_id": "4",
+                "question_number": "1",
+                "question": "What is the keyword used to define a function in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "def",
+                    "option_b": "fun",
+                    "option_c": "function",
+                    "option_d": "class"
+                },
+                "message": ""
+            },
+            "1": {
+                "question_id": "5",
+                "question_number": "2",
+                "question": "What symbol is used for single-line comments in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "#",
+                    "option_b": "//",
+                    "option_c": "/*",
+                    "option_d": "**"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "6",
+                "question_number": "3",
+                "question": "What is the result of the expression 5 + 2 * 3 in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "11",
+                    "option_b": "17",
+                    "option_c": "9",
+                    "option_d": "21"
+                },
+                "message": ""
+            },
+            "3": {
+                "question_id": "1",
+                "question_number": "4",
+                "question": "Write a Python function called def reverse(my_string)",
+                "remaining_attempts": "3",
+                "type": "py"
+            },
+            "4": {
+                "question_id": "2",
+                "question_number": "5",
+                "question": "Write a Python function called def string_length(s)",
+                "remaining_attempts": "3",
+                "type": "py"
+            }
+        }
     },
     "3": {
         "name": "Caleb",

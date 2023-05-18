@@ -192,9 +192,9 @@ class Test:
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + message.encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        #response = sock.recv(2048)  # Awaits a response. #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
-        #answer = str(response, 'utf-8')
-        return False #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
+        response = sock.recv(2048)  # Awaits a response. #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
+        answer = str(response, 'utf-8')
+        return answer #NOT WAITING ATM BECAUSE NOT MARKING IS COMING
 
     
     #Returns the correct answer for a question, used when out of attempts.
