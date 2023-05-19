@@ -10,17 +10,17 @@ The question bank is written entirely in C.
 TO RUN QB Open a terminal, then run the following commands:
 
 1. Navigate to the QB directory.
-`cd qb`
+```cd qb```
 2. Run the makefile.
-`make QBP QBC`
+```make QBP QBC```
 3. Compile the bash script for running the Question Banks.
-`chmod +x runQBs`
+```chmod +x runQBs```
 4. Compule the bash script for quitting the Question Banks.
-`chmod +x killQBs`
+```chmod +x killQBs```
 5. Finally, run the Question Bank bash script.
-`./runQBs`
+```./runQBs```
 6. Once you want to quit the QBs if both are running in the background execute 
-`./killQBs`
+```./killQBs```
 If in foreground, Ctrl + C, then `./killQBs` to kill the second QB.
 
 
