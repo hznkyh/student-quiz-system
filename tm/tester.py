@@ -126,36 +126,14 @@ class Test:
         print(temp_questions_list)
         sock = connect_to_server(self.QB_IP, QB_PORT)
         # WE REQUEST JUST 1 PY Coding Question
-        header = "c_questions" # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
+        header = "py_questions"
+        if(QB_PORT == 9002):
+            header = "c_questions"
+        # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
         header_len = len(header)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
-        message = "1"
-        data = header_len_bytes + header.encode() + message.encode()
-        sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        response = sock.recv(2048)
-        message = str(response, 'utf-8')
-        dict = json.loads(message)
-        for key in dict.keys():
-            remaining_attempts = 3
-            question_id = random.randint(0, 1000)
-            temp_dict = {
-                "question_id": str(key), 
-                "question_number": str(i),
-                "question": dict[key]["question"],
-                "remaining_attempts": str(remaining_attempts),
-                "type": dict[key]["type"]
-            }
-            i += 1
-            temp_questions_list.append(temp_dict)
-        
-        # WE REQUEST JUST 1 PY Coding Question
-        sock = connect_to_server(self.QB_IP, QB_PORT)
-        header = "py_questions"#selected_question_set  # THIS TELLS THE QB WHAT TYPE OF MESSAGE IT IS AND WHAT TO DO
-        header_len = len(header)
-        # Pack the header length as a 4-byte integer in network byte order
-        header_len_bytes = struct.pack("!I", header_len)
-        message = "1"
+        message = "2"
         data = header_len_bytes + header.encode() + message.encode()
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
         response = sock.recv(2048)

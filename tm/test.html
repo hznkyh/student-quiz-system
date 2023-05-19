@@ -130,7 +130,7 @@
         // sends appropriate ajax request for when submit button is clicked
         function submitQuestion() {
             var code = editor.getValue().trim();
-            console.log(code)
+            console.log("CODE: " +code);
             if ((document.getElementById('a').checked) || (document.getElementById('b').checked) || 
                 (document.getElementById('c').checked) || (document.getElementById('d').checked)){
                     console.log("MC answer submitted...");
@@ -212,7 +212,7 @@
                     }
                     else if (action == "finished") {
                         document.getElementById('remaining attempts').innerHTML = "Total score: " + response + "%"
-
+                        
                     }
                 } else {
                     console.error(xhr.statusText);
@@ -321,9 +321,6 @@
       mode: "python" // Use "text/x-csrc" mode for C, "python" for Python
     });
 
-    window.addEventListener('resize', function() {
-    codeEditor.setSize(null, document.getElementById('code-editor').clientHeight);
-    });
 
 
     // ####   FOR SYNTAX CHECKKING TO WORK NEED TO DOWNLAOD PYFLAKES    ######

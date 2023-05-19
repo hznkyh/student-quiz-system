@@ -1,0 +1,25 @@
+1,Code
+2,//
+3,%d
+4,const
+5,To determine the size of a data type
+6,stdio.h
+7,return_type function_name(parameters)
+8,*
+9,To exit a loop or switch statement
+10,while loop
+11,int
+12,struct
+13,#include 'example.h'
+14,To dynamically allocate memory
+15,0 to 2^32-1
+16,&&
+17,To skip the current iteration of a loop and continue with the next iteration
+18,getchar()
+19,To declare a variable with static storage duration
+20,stdio.h
+21,.
+22,To define an alternative condition if the 'if' condition is false
+23,To indicate that a function does not return a value
+24,strcmp()
+25,To create a new name for an existing data type

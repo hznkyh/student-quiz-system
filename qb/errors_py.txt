@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "/Users/hznk/Desktop/network/Project/CITS3002/Question Bank/usercode_py.py", line 3, in <module>
-    result = string_length("spaces")
-             ^^^^^^^^^^^^^
-NameError: name 'string_length' is not defined

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/owen/Documents/UWA/Year_3/Semester_1/CITS3002/Project1/CITS3002/qb/python_qb/usercode_py.py", line 1, in <module>
+    vbf
+NameError: name 'vbf' is not defined
