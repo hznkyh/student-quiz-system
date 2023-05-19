@@ -156,28 +156,28 @@ void handle_connection(int sockfd) {
     Question* questions;
     
     //CHECKS THE HEADER TO SEE WHAT IT IS BEING ASKED TO DO
-    if (strcmp(header, "mc_questions") == 0){
+    if (strcmp(header, "mc_questions") == 0){ //TM Has requested Multiple choice questions
         int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
         printf("TM requested %d mc questions...\n",numOfQuestions);\
         questions = read_questions_file(numOfQuestions, "mc_questions.txt");
         send_questions(questions, connfd, numOfQuestions);
     
     }
-    else if (strcmp(header, "c_questions") == 0){
+    else if (strcmp(header, "c_questions") == 0){ //TM Has requested C programming challenge questions
         int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
         printf("TM requested %d C programming questions...\n",numOfQuestions);
         questions = read_p_questions_file(numOfQuestions, "c_questions.txt");
         send_p_questions(questions, connfd, numOfQuestions, "c");
     
     }
-    else if (strcmp(header, "py_questions") == 0){
+    else if (strcmp(header, "py_questions") == 0){ //TM Has requested Python programming challenge questions
         int numOfQuestions = atol(newPayload); //Payload is how many questions TM wants.
         printf("TM requested %d C programming questions...\n",numOfQuestions);
         questions = read_p_questions_file(numOfQuestions, "py_questions.txt");
         send_p_questions(questions, connfd, numOfQuestions, "py");
     
     }
-    else if(strcmp(header, "mark_mc_answer") == 0){
+    else if(strcmp(header, "mark_mc_answer") == 0){ //Mark Multiple Choice programming question
         char *qID;
         char *qAnswer;
         qID = strtok(newPayload, "=");
@@ -650,59 +650,6 @@ char* retrieveAnswer(char *qID){
     }
 
 }
-
-
-//gets the coding solution for the given problem. Need to know the language so we can open the correct file.
-// language arg is either "c" or "py"
-// char* retrieveCodingSolution(char *qID, char *language){ 
-//     printf("Getting Solution...\n");
-//     int wanted_id = atol(qID);
-//     char *answer;
-//     char *filename = "py_solutions.txt";
-//     if(strcmp(language, "c")){
-//         char *filename = "c_solutions.txt";
-//     }
-    
-
-//     FILE* fp = fopen(filename, "r");
-//     if (fp == NULL) { 
-//         perror("Error opening file");
-//         return 0;
-//     }
-//     int current_id;
-//     char* current_answer = malloc(128 * sizeof(char));
-//     if (current_answer == NULL) {
-//         return 0;
-//     }
-
-//     int i = 0;
-//     char line[MAX_LINE_LENGTH];
-//     bool found_id = false;
-
-//     while (fgets(line, sizeof(line), fp)) {
-//         if (sscanf(line, "%d,%128[^,\n]", &current_id, current_answer) != 2) {
-//             printf("Failed to parse line %d in file %s\n", i+1, filename);
-//             continue;
-//         }
-
-//         if (current_id == wanted_id){
-//             printf("%s\n",line);
-//             printf("Answer found: '%s'\n",current_answer);
-//             answer = current_answer;
-//             found_id = true;
-//             break; // Exit the loop since the desired ID has been found
-//         }
-//     }
-
-//     if (!found_id) {
-//         printf("Desired ID not found in file %s\n", filename);
-//         return 0;
-//     }else{
-//         return answer;
-//     }
-
-// }
-
 
 
 // Used to randomly generate a number within the range of the number of questions we have. Ensures no duplicates.
