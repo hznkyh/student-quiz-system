@@ -194,14 +194,14 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                     if attempts == 1:
                         correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
                             username].get_current_questionNum())
-                        response = "No more attempts left. The correct answer was {}".format(correct_answer)
+                        response = "No more attempts left. The correct answer was: {}".format(correct_answer)
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
 
                     # if the user has already been told they have no more remaining attempts
                     elif attempts == 0:
                         correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
                             username].get_current_questionNum())
-                        response = "Nothing has changed sorry, no more attempts left. The correct answer was {}".format(
+                        response = "Nothing has changed sorry, no more attempts left. The correct answer was: {}".format(
                             correct_answer)
 
                     # If there are remaining attempts, decrement the attempts and send the response

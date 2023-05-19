@@ -258,16 +258,17 @@ class Test:
         sock = connect_to_server(self.QB_IP, QB_PORT)
         server_address = (self.QB_IP, QB_PORT)
         header = "send_" + question_type + "_answer" #This will be either "c"+"Answer" or "py"+"Answer"
-        print(f"Sending header: {header}")
         header_len = len(header)
         questionID = get_question_id(question_bank.questions, question_number+1)
         # Pack the header length as a 4-byte integer in network byte order
         header_len_bytes = struct.pack("!I", header_len)
         data = header_len_bytes + header.encode() + str(questionID).encode()
+        print(f"Sending header: {header} Message: {questionID}")
         sock.sendto(data, server_address)  # TCP Should be reliable so don't think we need a check on this.
-        #response = sock.recv(2048)  # Awaits a response.
-        #answer = str(response, 'utf-8')
-        return False
+        response = sock.recv(2048)  # Awaits a response.
+        answer = str(response, 'utf-8')
+        print(f"RECIEVED SOLUTION: {answer}") 
+        return answer
     
 
 def get_question_id(questions_list, current_question_number):

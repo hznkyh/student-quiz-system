@@ -2,63 +2,63 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 0,
+        "grade": 5,
         "active_test": true,
         "test": {
             "0": {
-                "question_id": "11",
+                "question_id": "4",
                 "question_number": "1",
-                "question": "What is the purpose of the 'if' statement in Python?",
-                "remaining_attempts": "3",
+                "question": "What is the keyword used to define a function in Python?",
+                "remaining_attempts": "0",
                 "type": "mc",
                 "options": {
-                    "option_a": "To conditionally execute code",
-                    "option_b": "To define a loop",
-                    "option_c": "To import modules",
-                    "option_d": "To perform mathematical operations"
+                    "option_a": "def",
+                    "option_b": "fun",
+                    "option_c": "function",
+                    "option_d": "class"
                 },
                 "message": ""
             },
             "1": {
-                "question_id": "19",
+                "question_id": "10",
                 "question_number": "2",
-                "question": "What is the correct way to open a file named 'data.txt' in Python?",
+                "question": "What is the output of the following code snippet? print('Hello",
                 "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "open('data.txt')",
-                    "option_b": "read('data.txt')",
-                    "option_c": "write('data.txt')",
-                    "option_d": "close('data.txt')"
+                    "option_a": " ' + 'world!')?",
+                    "option_b": "Hello",
+                    "option_c": " world!",
+                    "option_d": "Hello"
                 },
                 "message": ""
             },
             "2": {
-                "question_id": "25",
+                "question_id": "12",
                 "question_number": "3",
-                "question": "What does the 'split()' method do for strings in Python?",
-                "remaining_attempts": "2",
+                "question": "Which keyword is used to exit a loop prematurely in Python?",
+                "remaining_attempts": "3",
                 "type": "mc",
                 "options": {
-                    "option_a": "Splits a string into a list of substrings",
-                    "option_b": "Joins multiple strings into one",
-                    "option_c": "Replaces a substring with another",
-                    "option_d": "Converts a string to a numeric value"
+                    "option_a": "break",
+                    "option_b": "continue",
+                    "option_c": "exit",
+                    "option_d": "return"
                 },
                 "message": ""
             },
             "3": {
-                "question_id": "1",
+                "question_id": "2",
                 "question_number": "4",
-                "question": "Write a C function to reverse a string and print it to stdout. The function must have prototype: void reverseString(char* str);",
-                "remaining_attempts": "3",
+                "question": "Write a C function to find the length of a string and print it to stdout. The function must have prototype: void stringLength(char* str);",
+                "remaining_attempts": "0",
                 "type": "c"
             },
             "4": {
-                "question_id": "1",
+                "question_id": "2",
                 "question_number": "5",
-                "question": "Write a Python function to reverse a string and print it. The function must be: def reverse(my_string)",
-                "remaining_attempts": "3",
+                "question": "Write a Python function to find the length of a string. The function must be: def string_length(s)",
+                "remaining_attempts": "0",
                 "type": "py"
             }
         }

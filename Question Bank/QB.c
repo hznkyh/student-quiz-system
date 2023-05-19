@@ -392,14 +392,69 @@ void handle_connection(int sockfd) {
     }
     else if (strcmp(header, "send_c_answer") == 0){
         printf("Will send the C answer now...\n");
-        if (send(connfd, "F", strlen("F"), 0) < 0) {
-            perror("Result send failed");
-            exit(EXIT_FAILURE);
-        }
+         if(atol(newPayload) == 1){
+            char code[] = "\nvoid reverseString(char* str) {\n"
+                    "\tint length = strlen(str);\n"
+                    "\tint i, j;\n"
+                    "\tchar temp;\n"
+                    "\n"
+                    " \t// Swap characters from both ends of the string towards the middle\n"
+                    " \tfor (i = 0, j = length - 1; i < j; i++, j--) {\n"
+                    "\t\ttemp = str[i];\n"
+                    "\t\tstr[i] = str[j];\n"
+                    "\t\tstr[j] = temp;\n"
+                    "\t}\n"
+                    "\n"
+                    "\tprintf(\"%s\", str);\n"
+                    "}";
+            
+            if (send(connfd, code, strlen(code), 0) < 0) {
+                perror("Result send failed");
+                exit(EXIT_FAILURE);
+            }
+         }else if(atol(newPayload) == 2){
+            char code[] = "\n\nvoid reverseString(char* str) {\n"
+                    "\tint length = strlen(str);\n"
+                    "\tint i, j;\n"
+                    "\tchar temp;\n"
+                    "\n"
+                    "\t// Swap characters from both ends of the string towards the middle\n"
+                    "\t\tfor (i = 0, j = length - 1; i < j; i++, j--) {\n"
+                    "\t\ttemp = str[i];\n"
+                    "\t\tstr[i] = str[j];\n"
+                    "\t\tstr[j] = temp;\n"
+                    "    }\n"
+                    "\n"
+                    "    printf(\"%s\", str);\n"
+                    "}";
+            
+            if (send(connfd, code, strlen(code), 0) < 0) {
+                perror("Result send failed");
+                exit(EXIT_FAILURE);
+            }
+         }
     }
     else if (strcmp(header, "send_py_answer") == 0){
         printf("Will send the Python answer now...\n");
-    
+         if(atol(newPayload) == 1){
+            char code[] = "def reverse(my_string):"
+                        "\treversed_string = my_string[::-1]"
+                        "\tprint(reversed_string";
+            
+            if (send(connfd, code, strlen(code), 0) < 0) {
+                perror("Result send failed");
+                exit(EXIT_FAILURE);
+            }
+         }else if(atol(newPayload) == 2){
+            char code[] = "\n\ndef string_length(s):\n"
+                    "\tlength = len(s)\n"
+                    "\treturn length\n";
+            
+            if (send(connfd, code, strlen(code), 0) < 0) {
+                perror("Result send failed");
+                exit(EXIT_FAILURE);
+            }
+         }
     }
     else if (strcmp(header, "send_mc_answer") == 0){
         char *answer = retrieveAnswer(newPayload);
