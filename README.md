@@ -10,6 +10,7 @@ Created by:
   
 
 ## Overview
+This project is a 3-tier network-based system which tests students' ability to demonstrate their understanding of contemporary programming languages by correctly answering multi-choice questions and short programming challenges.
 
 
 ## Running the Question Bank (QB)
@@ -46,11 +47,13 @@ Enter port:
 > 
 ```
 
-Once the port number is entered, the users default web browser will open and be directed to the login page.
+Once the port number is entered, the users default web browser will open and be directed to the login page where they can login. 
 
+### Test Manager Supporting Files
+The test manager has a supporting `studentRecords.json` file which is used to store all student info. This is accessed and changed dynamically during Test Manager runtime. 
 
 ## Client Webpage 
-The client webpage is written in HTML, CSS and Javascript.
+The client webpage is written in HTML, CSS and Javascript and in its current implementation is run locally on the same machine as the TM. 
 
 
 
