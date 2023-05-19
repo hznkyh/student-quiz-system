@@ -43,7 +43,7 @@ Server running on 192.168.1.100:9001
 * Ready to accept()
 ```
 
-The QB will now be ready to accept communication with the test manager (TM). As seen in the first line, the QB displays the current IP address and port number it is able to receive connections on. This information is required to give the TM a location for which to connect.
+The QB will now be ready to accept communication with the test manager (TM). As seen in the first line, the QB displays the current IP address and port number it is able to receive connections on (PORT 9001 for Python Quiz, PORT 9002 for C Quiz). This information is required to give the TM a location for which to connect.
 
 ### Question Bank Supporting Files
 The question bank has multiple `.txt` files it has access to within its directory which store all relevant questions and answers. These files are required to allow the QB to run.
@@ -58,7 +58,7 @@ Enter IP address:
 > 
 ```
 
-Once the IP address is entered, the TM will ask for the respective port number which is also displayed on the QB terminal window
+Once the IP address is entered, the TM will ask for the respective port number which is also displayed on the QB terminal window (PORT 9001 for Python Quiz, PORT 9002 for C Quiz).
 
 ```
 Enter IP address:
@@ -68,6 +68,23 @@ Enter port:
 ```
 
 Once the port number is entered, the users default web browser will open and be directed to the login page where they can login. 
+
+### TO LOGIN
+Login Credentials (enter a username and password): 
+
+```
+Student: Alice
+Username: 1
+Password: pass1
+
+Student: Bob
+Username: 2
+Password: pass2
+
+Student: Caleb
+Username: 3
+Password: pass3
+```
 
 ### Test Manager Supporting Files
 The test manager has a supporting `studentRecords.json` file which is used to store all student info. This is accessed and changed dynamically during Test Manager runtime. 
