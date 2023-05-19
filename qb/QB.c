@@ -12,9 +12,11 @@
 #include <ctype.h>
 //gcc QB.c -o QB 
 
-// Not DHCP, i doubt thats a requirement?
-// based on this https://www.sanfoundry.com/c-program-get-ip-address/
 
+/**
+ * get_local_ip:
+ * 
+*/
 void get_local_ip(char *ip, int size) {
     struct ifaddrs *ifaddr, *ifa;
     struct sockaddr_in *sa;
@@ -28,7 +30,7 @@ void get_local_ip(char *ip, int size) {
     }
     // Iterate over list of network interfaces
     for (ifa = ifaddr; ifa != NULL && !found; ifa = ifa->ifa_next) {
-        // Retriee IPV4 addredd
+        // IF A VALID ADDRESS IS FOUND
         if (ifa->ifa_addr != NULL && ifa->ifa_addr->sa_family == AF_INET) {
             // Make sure that it doesnt use local host
             sa = (struct sockaddr_in *) ifa->ifa_addr;
@@ -51,7 +53,7 @@ void get_local_ip(char *ip, int size) {
     }
 }
 
-// Create Socket
+// Creates a socket to bind the ip to
 void create_socket(int *sockfd) {
     if ((*sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("socket creation failed");
@@ -59,7 +61,7 @@ void create_socket(int *sockfd) {
     }
 }
 
-// Bind Socket
+// Bind Socket socket to the IP by getting the local IP instead of 127
 void bind_socket(int sockfd) {
     struct sockaddr_in server_addr;
     char ip[NI_MAXHOST];
@@ -82,6 +84,7 @@ void bind_socket(int sockfd) {
     }
 }
 
+// Listens for TM connections
 void listen_for_connections(int sockfd) {
     if (listen(sockfd, 5) < 0) {
         perror("listen failed");
@@ -90,7 +93,8 @@ void listen_for_connections(int sockfd) {
 }
 
 
-// Function to trim leading and trailing whitespace characters
+// Simple trim function used to avoid white space during coding question
+// test cases.
 void trim(char* str) {
     int start = 0;
     int end = strlen(str) - 1;
@@ -110,11 +114,11 @@ void trim(char* str) {
     for (i = start, j = 0; i <= end; i++, j++) {
         str[j] = str[i];
     }
-
     // Add the null terminator at the end of the trimmed string
     str[j] = '\0';
 }
 
+// Handles connection from TM to QB and their communication
 void handle_connection(int sockfd) {
     struct sockaddr_in client_addr;
     socklen_t client_len = sizeof(client_addr);
@@ -125,13 +129,15 @@ void handle_connection(int sockfd) {
         perror("accept failed");
         exit(EXIT_FAILURE);
     } 
+    // When successful this is outputted
     printf("* Transmission accepted\n");
 
     // Read the message and size
     struct message msg;
     ssize_t n;
-    
+    // Set memory for the message payload
     memset(msg.payload, 0, sizeof(msg.payload));
+
     //Receive the Message header
     n = recv(connfd, &msg, sizeof(msg), 0);
         if (n <= 0) {
@@ -139,6 +145,8 @@ void handle_connection(int sockfd) {
             exit(1);
         }
     msg.length = ntohl(msg.length);
+
+
 
     char *source = msg.payload;
     char header[msg.length];
@@ -150,9 +158,11 @@ void handle_connection(int sockfd) {
     removeNewline(header); 
     char *newPayload = msg.payload+msg.length;
     
+    // Acknowledges that the message has been recieved, and shows the HEADER and the payload
     printf("MESSAGE RECEIVED: '%s'",msg.payload);
     printf("HEADER: '%s' | PAYLOAD: '%s'\n",header, newPayload);
-
+    
+    // Note: HEADER indicates if it is requestion for a question or answer
     Question* questions;
     
     //CHECKS THE HEADER TO SEE WHAT IT IS BEING ASKED TO DO
