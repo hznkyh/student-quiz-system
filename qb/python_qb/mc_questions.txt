@@ -1,3 +1,5 @@
+1,What is Python?,A programming language,A snake,A bird,A type of food
+2,What is the latest stable version of Python as of September 2021?,Python 3.9,Python 2.7,Python 3.6,Python 4.0
 3,Which of the following is NOT a Python data type?,Integer,List,Dictionary,Loop
 4,What is the keyword used to define a function in Python?,def,fun,function,class
 5,What symbol is used for single-line comments in Python?,#,//,/*,**

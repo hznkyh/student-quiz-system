@@ -219,8 +219,8 @@ void handle_connection(int sockfd) {
 
             strcpy(finalCode, insertMain);
             strcat(finalCode, user_code);
-            printf("QID:'%s'\n",question_id);
-            printf("%s\n", finalCode);
+            //printf("QID:'%s'\n",question_id);
+            //printf("%s\n", finalCode);
 
             saveUserCode(finalCode);
             free(finalCode);
@@ -229,12 +229,12 @@ void handle_connection(int sockfd) {
             char* outputContent = processOutputAndErrors();
             const char* anotherString = "gnizama";
             if (outputContent != NULL) {
-                printf("Output Content:\n%s\n", outputContent);
+                //printf("Output Content:\n%s\n", outputContent);
 
                 // Trim leading and trailing whitespace characters from outputContent
                 trim(outputContent);
 
-                printf("Trimmed Output Content:\n%s\n", outputContent);
+                //printf("Trimmed Output Content:\n%s\n", outputContent);
 
                 if (strcmp(outputContent, anotherString) == 0) {
                     printf("Test case passed.\n");
@@ -259,7 +259,7 @@ void handle_connection(int sockfd) {
             printf("Will mark the C question two now... (%s)\n",question_id);
 
             //WE ADD A MAIN FUNCTION AND stdio.h TO THE USERS FILE SO WE CAN RUN IT AND GET THE EXPECTED OUTPUT.
-            char* insertMain = "#include <stdio.h>\n\nvoid stringLength(char* str);\n\nint main() {\n\tchar input[] = \"Hello, World!\";\n\tstringLength(input);\n\treturn 0;\n}\n\n";
+            char* insertMain = "#include <stdio.h>\n#include <string.h>\nvoid stringLength(char* str);\n\nint main() {\n\tchar input[] = \"Hello, World!\";\n\tstringLength(input);\n\treturn 0;\n}\n\n";
             int finalSize = strlen(insertMain) + strlen(user_code) + 1;
             char* finalCode = (char*)malloc(finalSize);
 
@@ -309,20 +309,21 @@ void handle_connection(int sockfd) {
     }
     else if(strcmp(header, "mark_py_answer") == 0){ //Mark Python programming question
         printf("Will mark the Python question now...\n");
-        char *qID;
+        char* qID;
         char *user_code;
-        qID = strtok(newPayload, "=");
-        user_code = strtok(NULL, "=");
-        
-        printf("%s",qID);
-        printf("%s\n",user_code);
+        char* delimiter = strchr(newPayload, '='); 
+        // Split the input
+        *delimiter = '\0'; // Null-terminate the string at the delimiter
+        qID = newPayload;
+        user_code = delimiter + 1;
 
         if (atol(qID) == 1) {
-            char* insertMain = "\nif __name__ == '__main__':\n    result = reverse(\"spaces\")\n    print(result)\n";
+            char* insertMain = "\nif __name__ == '__main__':\n\tresult=reverse(\"spaces\")\n\tprint(result)\n";
             int finalSize = strlen(insertMain) + strlen(user_code) + 1;
             char* finalCode = (char*)malloc(finalSize + 1);
             strcpy(finalCode, user_code);
             strcat(finalCode, insertMain);
+            printf("FINAL CODE:'%s'",finalCode);
 
             savePythonUserCode(finalCode);
             runUserCodePy();
@@ -362,7 +363,7 @@ void handle_connection(int sockfd) {
             char* finalCode = (char*)malloc(finalSize + 1);
             strcpy(finalCode, user_code);
             strcat(finalCode, insertMain);
-
+            printf("FINAL CODE:'%s'",finalCode);
             
             savePythonUserCode(finalCode);
             runUserCodePy();
@@ -447,9 +448,9 @@ void handle_connection(int sockfd) {
     else if (strcmp(header, "send_py_answer") == 0){
         printf("Will send the Python answer now...\n");
          if(atol(newPayload) == 1){
-            char code[] = "\ndef reverse(my_string):"
-                        "\treversed_string = my_string[::-1]"
-                        "\tprint(reversed_string";
+            char code[] = "\ndef reverse(my_string):\n"
+                        "\treversed_string = my_string[::-1]\n"
+                        "\tprint(reversed_string)";
             
             if (send(connfd, code, strlen(code), 0) < 0) {
                 perror("Result send failed");
@@ -494,6 +495,11 @@ void savePythonUserCode(char* code){
 
 // Run python code
 void runUserCodePy() {
+    FILE* file = fopen("output_py.txt", "w+");
+    if (file == NULL) {
+        perror("Failed to open output.txt");
+    }
+    fclose(file);
     // Assume we only allow python code
     int result = system("python3 usercode_py.py > output_py.txt 2> errors_py.txt");
     if (result != 0) {
@@ -516,32 +522,33 @@ void saveUserCode(char* code) {
 
 // process the output and error for py files.
 char* processOutputAndErrorPy() {
+    char outputBuffer[256] = "";
     FILE* outputFile = fopen("output_py.txt", "r");
     if (outputFile != NULL) {
         printf("Program output:\n");
-        char buffer[256];
-        char* outputContent = malloc(sizeof(char));  // Allocate initial memory
-        size_t outputSize = 0;  // Track the size of the output content
-
-        while (fgets(buffer, sizeof(buffer), outputFile) != NULL) {
-            printf("%s", buffer);
-
-            // Reallocate memory for the output content
-            outputContent = realloc(outputContent, (outputSize + strlen(buffer) + 1) * sizeof(char));
-            strcat(outputContent, buffer);
-            outputSize += strlen(buffer);
-        }
+        fgets(outputBuffer, 256, outputFile);
+        printf("%s", outputBuffer);
         
         fclose(outputFile);
-
-        // Add a null terminator to the output content
-        outputContent[outputSize] = '\0';
-
-        return outputContent;
     } else {
         printf("Failed to open the output file.\n");
-        return NULL;  // Return NULL if the file couldn't be opened
+        return strdup("Error: Failed to open the output file.");
     }
+
+    char errorsBuffer[256] = "";
+    FILE* errorsFile = fopen("errors_py.txt", "r");
+    if (errorsFile != NULL) {
+        printf("Error messages:\n");
+        while (fgets(errorsBuffer, 256, errorsFile) != NULL) {
+            printf("%s", errorsBuffer);
+        }
+        fclose(errorsFile);
+    } else {
+        printf("Failed to open the errors file.\n");
+        return strdup("Error: Failed to open the errors file.");
+    }
+
+    return strdup(outputBuffer);
 }
 // Compile C code 
 void compileUserCode() {
@@ -690,11 +697,12 @@ int* generate_questions_numbers(int num_questions, int min, int max) {
         }
     }
     //This is the random numbers generated that will be used as the question IDs we access.
-    printf("Q IDs to send: ");
-    for(int i=0; i < num_questions; i++){
-        printf("%d | ", question_numbers[i]);
-    }
-    printf("\n");
+    // THIS IS FOR DEBUGGING OR EXTRA INFORMATION
+    //printf("Q IDs to send: ");
+    // for(int i=0; i < num_questions; i++){
+    //     printf("%d | ", question_numbers[i]);
+    // }
+    // printf("\n");
 
     // Dynamically allocate an array and copy the contents of the question_numbers array to it
     int* random_numbers = malloc(sizeof(int) *num_questions);
@@ -772,7 +780,7 @@ Question* read_questions_file(int num_questions, char *filename){
 }
 
 Question* read_p_questions_file(int num_questions, char *filename){
-    printf("opening file '%s'\n",filename);
+    //printf("opening file '%s'\n",filename);
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) { 
         perror("Error opening file");
@@ -944,7 +952,7 @@ void send_p_questions(Question* questions, int sockfd, int numOfQuestions, char 
     }
     
     printf("Programming Questions sent to TM\n");
-    printf("Question Set: %s\n",buffer);
+    //printf("Question Set: %s\n",buffer);
     //printf("Questions sent to TM\n%s\n",buffer); //Prints the list of questions sent to the TM.
     
     // Free the buffer memory

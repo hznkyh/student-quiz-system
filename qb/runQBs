@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Directory paths
+dir1="c_qb"
+dir2="python_qb"
+
+# Executable names
+exe1="QBC"
+exe2="QBP"
+
+# Change to directory 1 and execute program 1
+cd "$dir1"
+./"$exe1" &
+
+# Change back to the original directory
+cd ..
+
+# Change to directory 2 and execute program 2
+cd "$dir2"
+./"$exe2" &

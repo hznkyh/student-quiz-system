@@ -2,7 +2,7 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 10,
+        "grade": 12,
         "active_test": false
     },
     "2": {
@@ -14,7 +14,7 @@
     "3": {
         "name": "Caleb",
         "password": "pass3",
-        "grade": 9,
+        "grade": 0,
         "active_test": false
     }
 }

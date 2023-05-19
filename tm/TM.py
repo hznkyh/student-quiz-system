@@ -164,7 +164,7 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             # test finished
             elif json_data['action'] == 'finished':
                 print("FINISHED TEST")
-                records.set_test_active_state(username, False)
+                #records.set_test_active_state(username, False)
                 response = str(records.get_grade(username) / 0.15)
 
             # submit question

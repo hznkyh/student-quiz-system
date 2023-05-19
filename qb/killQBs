@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Find and kill the processes with the given executable names
+pkill QBC
+pkill QBP
