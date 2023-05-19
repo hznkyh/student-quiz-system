@@ -192,17 +192,26 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
                 else:
                     # If there are no remaining attempts
                     if attempts == 1:
+                        response = "No more attempts left. "
                         correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
                             username].get_current_questionNum())
-                        response = "No more attempts left. The correct answer was: {}".format(correct_answer)
+                        #   If it's answer for programming question
+                        if correct_answer[1:5] == "void" or correct_answer[1:4] == "def":
+                            response += f"The sample solution is: {correct_answer}"
+                        else:
+                            response += f"The correct answer is: {correct_answer}"
                         records.set_remaining_attempts(username, question_num, str(attempts - 1))
 
                     # if the user has already been told they have no more remaining attempts
                     elif attempts == False:
+                        response = "Nothing has changed sorry, no more attempts left. "
                         correct_answer = active_tests[username].get_correct_answer(active_tests[username], active_tests[
                             username].get_current_questionNum())
-                        response = "Nothing has changed sorry, no more attempts left. The correct answer was: {}".format(
-                            correct_answer)
+                        #   If it's answer for programming question
+                        if correct_answer[1:5] == "void" or correct_answer[1:4] == "def":
+                            response += f"The sample solution is: {correct_answer}"
+                        else:
+                            response += f"The correct answer is: {correct_answer}"
 
                     # If there are remaining attempts, decrement the attempts and send the response
                     else:
