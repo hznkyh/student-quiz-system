@@ -7,6 +7,9 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/codemirror.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.2/mode/python/python.min.js"></script>
+        <style>
+     
+        </style>
     </head>
 
     <body style="margin:2em">
@@ -65,7 +68,7 @@
 
         <div>
         <pre id="result">
-            
+
         </pre>
         </div> 
     </body>
@@ -227,7 +230,8 @@
                 //DO SOMETHING HERE IF IT'S A PROGRAMMING QUESTION.
                 document.getElementById("programming-question-box").style.visibility = "visible";
                 document.getElementById("question-box").style.visibility = "hidden";
-                document.getElementById("display-div").style.height = "37vh";
+                document.getElementById("programming-question-box").style.height = "auto";
+                document.getElementById("display-div").style.height = "45vh";
                 console.log("programming question detected...");
                 console.log("TYPE: " + response_object["type"]);
 
@@ -315,6 +319,10 @@
     var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
       lineNumbers: true,
       mode: "python" // Use "text/x-csrc" mode for C, "python" for Python
+    });
+
+    window.addEventListener('resize', function() {
+    codeEditor.setSize(null, document.getElementById('code-editor').clientHeight);
     });
 
 
