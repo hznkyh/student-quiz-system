@@ -51,7 +51,7 @@ The question bank has multiple `.txt` files it has access to within its director
 ## Running the Test Manager (TM)
 The test manager is written entirely in Python.
 
-To run the test manager, the user must have Python3.5 or later installed on their machine (functionality is not guaranteed with earlier versions). Users may run the TM using the command `python3 TM.py`. This will promt the user to enter the IP address of the question bank which can be copied from the initial output from the QB.
+To run the test manager, the user must have Python3.5 or later installed on their machine (functionality is not guaranteed with earlier versions). Users may run the TM using the command `python3 TM.py`. This will prompt the user to enter the IP address of the question bank which can be copied from the initial output from the QB.
 
 ```
 Enter IP address:
