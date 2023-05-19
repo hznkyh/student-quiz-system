@@ -1,19 +1,5 @@
 # CITS3002 Quiz System Project
 
-TO RUN QB Open a terminal, then run the following commands:
-1. cd qb
-2. make QBP QBC
-3. chmod +x runQBs
-4. chmod +x killQBs
-5. ./runQBs
-6. Once you want to quit the QBs if both are running in the background execute './killQBs'. If in foreground, Ctrl + C, then './killQBs' to kill the second QB.
-
-TO RUN TM: Open a second terminal run the following commands:
-1. 'python3 TM.py' or 'python TM.py' (Depending on System)
-2. Enter IP address - Prompted by the TM
-3. 
-
-
 ## Overview
 This project is a 3-tier network-based system which tests students' ability to demonstrate their understanding of contemporary programming languages by correctly answering multi-choice questions and short programming challenges.
 
@@ -21,7 +7,36 @@ This project is a 3-tier network-based system which tests students' ability to d
 ## Running the Question Bank (QB)
 The question bank is written entirely in C.
 
-To run a QB on a machine, the user can run the command `gcc QB.c -o qb` in terminal to create an executable QB object. The object can then be run with `./qb`. When the QB is executed, the following text will be displayed in the terminal window:
+TO RUN QB Open a terminal, then run the following commands:
+
+1. Navigate to the QB directory.
+```
+cd qb
+```
+2. Run the makefile.
+```
+make QBP QBC
+```
+3. Compile the bash script for running the Question Banks.
+```
+chmod +x runQBs
+```
+4. Compule the bash script for quitting the Question Banks.
+```
+chmod +x killQBs
+```
+5. Finally, run the Question Bank bash script.
+```
+./runQBs
+```
+6. Once you want to quit the QBs if both are running in the background execute 
+```
+./killQBs
+```
+If in foreground, Ctrl + C, then `./killQBs` to kill the second QB.
+
+
+When the QB is executed, the following text will be displayed in the terminal window:
 
 ```
 Server running on 192.168.1.100:9001
@@ -36,7 +51,7 @@ The question bank has multiple `.txt` files it has access to within its director
 ## Running the Test Manager (TM)
 The test manager is written entirely in Python.
 
-To run the test manager, the user must have Python3.5 or later installed on their machine (functionality is not guaranteed with earlier versions). Users may run the TM using the command `python3 TM.py`. This will promt the user to enter the IP address of the question bank which can be copied from the initial output from the QB.
+To run the test manager, the user must have Python3.5 or later installed on their machine (functionality is not guaranteed with earlier versions). Users may run the TM using the command `python3 TM.py`. This will prompt the user to enter the IP address of the question bank which can be copied from the initial output from the QB.
 
 ```
 Enter IP address:
