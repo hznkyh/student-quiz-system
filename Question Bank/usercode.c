@@ -8,4 +8,11 @@ int main() {
 	return 0;
 }
 
-ssd
+void stringLength(char* str) {
+    int length = 0;
+    while (*str != '\0') {
+        length++;
+        str++;
+    }
+    printf("%d", length);
+}

@@ -413,7 +413,7 @@ void handle_connection(int sockfd) {
                 exit(EXIT_FAILURE);
             }
          }else if(atol(newPayload) == 2){
-            char code[] = "\n\nvoid reverseString(char* str) {\n"
+            char code[] = "\nvoid reverseString(char* str) {\n"
                     "\tint length = strlen(str);\n"
                     "\tint i, j;\n"
                     "\tchar temp;\n"
@@ -437,7 +437,7 @@ void handle_connection(int sockfd) {
     else if (strcmp(header, "send_py_answer") == 0){
         printf("Will send the Python answer now...\n");
          if(atol(newPayload) == 1){
-            char code[] = "def reverse(my_string):"
+            char code[] = "\ndef reverse(my_string):"
                         "\treversed_string = my_string[::-1]"
                         "\tprint(reversed_string";
             
@@ -446,7 +446,7 @@ void handle_connection(int sockfd) {
                 exit(EXIT_FAILURE);
             }
          }else if(atol(newPayload) == 2){
-            char code[] = "\n\ndef string_length(s):\n"
+            char code[] = "\ndef string_length(s):\n"
                     "\tlength = len(s)\n"
                     "\treturn length\n";
             

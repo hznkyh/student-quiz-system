@@ -1,6 +1,4 @@
 Traceback (most recent call last):
-  File "/Users/owen/Documents/UWA/Year_3/Semester_1/CITS3002/Project1/CITS3002/Question Bank/usercode_py.py", line 4, in <module>
-    result = string_length("spaces")
-  File "/Users/owen/Documents/UWA/Year_3/Semester_1/CITS3002/Project1/CITS3002/Question Bank/usercode_py.py", line 2, in string_length
-    length 
-NameError: name 'length' is not defined
+  File "/Users/owen/Documents/UWA/Year_3/Semester_1/CITS3002/Project1/CITS3002/Question Bank/usercode_py.py", line 1, in <module>
+    dfdf
+NameError: name 'dfdf' is not defined
