@@ -2,8 +2,66 @@
     "1": {
         "name": "Alice",
         "password": "pass1",
-        "grade": 12,
-        "active_test": false
+        "grade": 6,
+        "active_test": true,
+        "test": {
+            "0": {
+                "question_id": "8",
+                "question_number": "1",
+                "question": "What does the 'len()' function do in Python?",
+                "remaining_attempts": "0",
+                "type": "mc",
+                "options": {
+                    "option_a": "Returns the length of a string",
+                    "option_b": "Calculates the logarithm",
+                    "option_c": "Converts a number to a string",
+                    "option_d": "Generates a random number"
+                },
+                "message": ""
+            },
+            "1": {
+                "question_id": "9",
+                "question_number": "2",
+                "question": "Which of the following is a valid variable name in Python?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "my_variable",
+                    "option_b": "2ndVariable",
+                    "option_c": "variable_name",
+                    "option_d": "True"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "15",
+                "question_number": "3",
+                "question": "What does the 'try' and 'except' block in Python help with?",
+                "remaining_attempts": "3",
+                "type": "mc",
+                "options": {
+                    "option_a": "Handling exceptions",
+                    "option_b": "Defining variables",
+                    "option_c": "Performing file I/O operations",
+                    "option_d": "Creating classes"
+                },
+                "message": ""
+            },
+            "3": {
+                "question_id": "1",
+                "question_number": "4",
+                "question": "Write a Python function to reverse a string and print it. The function must be: def reverse(my_string)",
+                "remaining_attempts": "0",
+                "type": "py"
+            },
+            "4": {
+                "question_id": "2",
+                "question_number": "5",
+                "question": "Write a Python function to find the length of a string. The function must be: def string_length(s)",
+                "remaining_attempts": "0",
+                "type": "py"
+            }
+        }
     },
     "2": {
         "name": "Bob",
@@ -14,7 +72,65 @@
     "3": {
         "name": "Caleb",
         "password": "pass3",
-        "grade": 0,
-        "active_test": false
+        "grade": 12,
+        "active_test": true,
+        "test": {
+            "0": {
+                "question_id": "11",
+                "question_number": "1",
+                "question": "What is the purpose of the 'if' statement in Python?",
+                "remaining_attempts": "0",
+                "type": "mc",
+                "options": {
+                    "option_a": "To conditionally execute code",
+                    "option_b": "To define a loop",
+                    "option_c": "To import modules",
+                    "option_d": "To perform mathematical operations"
+                },
+                "message": ""
+            },
+            "1": {
+                "question_id": "19",
+                "question_number": "2",
+                "question": "What is the correct way to open a file named 'data.txt' in Python?",
+                "remaining_attempts": "0",
+                "type": "mc",
+                "options": {
+                    "option_a": "open('data.txt')",
+                    "option_b": "read('data.txt')",
+                    "option_c": "write('data.txt')",
+                    "option_d": "close('data.txt')"
+                },
+                "message": ""
+            },
+            "2": {
+                "question_id": "23",
+                "question_number": "3",
+                "question": "What does the 'random' module in Python provide?",
+                "remaining_attempts": "0",
+                "type": "mc",
+                "options": {
+                    "option_a": "Functions for generating random numbers",
+                    "option_b": "Functions for sorting lists",
+                    "option_c": "Functions for performing mathematical calculations",
+                    "option_d": "Functions for reading and writing files"
+                },
+                "message": ""
+            },
+            "3": {
+                "question_id": "1",
+                "question_number": "4",
+                "question": "Write a Python function to reverse a string and print it. The function must be: def reverse(my_string)",
+                "remaining_attempts": "0",
+                "type": "py"
+            },
+            "4": {
+                "question_id": "2",
+                "question_number": "5",
+                "question": "Write a Python function to find the length of a string. The function must be: def string_length(s)",
+                "remaining_attempts": "0",
+                "type": "py"
+            }
+        }
     }
 }

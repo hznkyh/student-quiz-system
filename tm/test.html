@@ -194,11 +194,6 @@
                         updateInfo(response);
                     }
                     else if (action == 'submit') {
-                        // if(question["type"] == "py" || question["type"] == "c") {
-
-                        // } else if (question["type"] == "mc"){
-
-                        // }
                         updateChecked(response);
                         updateInfo(response);
                     }
@@ -228,6 +223,11 @@
             
             if (response_object["type"] == "c" || response_object["type"] == "py") {
                 //DO SOMETHING HERE IF IT'S A PROGRAMMING QUESTION.
+                document.getElementById('a').checked = false;
+                document.getElementById('b').checked = false;
+                document.getElementById('c').checked = false;
+                document.getElementById('d').checked = false;
+                
                 document.getElementById("programming-question-box").style.visibility = "visible";
                 document.getElementById("question-box").style.visibility = "hidden";
                 document.getElementById("programming-question-box").style.height = "auto";
@@ -303,6 +303,7 @@
 
         // updates the students info including grade and name
         function updateInfo(response) {
+            console.log("THIS:"+response);
             response_object = JSON.parse(response);
             document.getElementById("grade").innerText = response_object["grade"];
             document.getElementById("name").innerText = response_object["name"];
